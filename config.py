@@ -9,7 +9,7 @@ class Config:
     TELEGRAM_WEBHOOK_URL = os.getenv('TELEGRAM_WEBHOOK_URL')
     
     # Database Configuration
-    DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:///./yo_store.db')
+    DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:///./electronics_store.db')
     
     # App Configuration
     SECRET_KEY = os.getenv('SECRET_KEY', 'your-secret-key-change-this')

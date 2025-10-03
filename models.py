@@ -21,12 +21,14 @@ class Product(Base):
     __tablename__ = "products"
     
     id = Column(Integer, primary_key=True, index=True)
+    sku = Column(String(50), unique=True, index=True)  # Уникальный SKU товара
     name = Column(String(200), index=True)
     description = Column(Text)
     brand = Column(String(100))
     model = Column(String(100))
     category_id = Column(Integer, ForeignKey("categories.id"))
-    image_url = Column(String(500))
+    image_url = Column(String(500))  # Основное изображение (для совместимости)
+    images = Column(Text)  # JSON массив изображений
     specifications = Column(Text)  # JSON string
     is_available = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)

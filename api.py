@@ -13,6 +13,19 @@ import io
 from excel_handler import ExcelHandler
 from manual_price_manager import manual_price_manager
 
+def get_product_images(product):
+    """Получить массив изображений товара"""
+    try:
+        images = json.loads(product.images) if product.images else []
+    except json.JSONDecodeError:
+        images = []
+    
+    # Если нет множественных изображений, используем основное
+    if not images and product.image_url:
+        images = [product.image_url]
+    
+    return images
+
 app = FastAPI(title="Yo Store API", version="1.0.0")
 
 # Mount static files
@@ -21,12 +34,14 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # Pydantic models for API
 class ProductResponse(BaseModel):
     id: int
+    sku: str  # Уникальный SKU товара
     name: str
     description: str
     brand: str
     model: str
     category_name: str
     image_url: str
+    images: List[str] = []  # Массив изображений
     specifications: dict
     price: float
     old_price: float
@@ -49,12 +64,14 @@ class CategoryResponse(BaseModel):
 
 class ProductDetailResponse(BaseModel):
     id: int
+    sku: str  # Уникальный SKU товара
     name: str
     description: str
     brand: str
     model: str
     category_name: str
     image_url: str
+    images: List[str] = []  # Массив изображений
     specifications: dict
     price: float
     old_price: float
@@ -118,14 +135,18 @@ async def get_products(
         except json.JSONDecodeError:
             specifications = {}
         
+        images = get_product_images(product)
+        
         products.append(ProductResponse(
             id=product.id,
+            sku=product.sku,
             name=product.name,
             description=product.description,
             brand=product.brand,
             model=product.model,
             category_name=category.name,
-            image_url=product.image_url,
+            image_url=images[0] if images else product.image_url,
+            images=images,
             specifications=specifications,
             price=price.price,
             old_price=price.old_price,
@@ -155,14 +176,18 @@ async def get_product(product_id: int, db: Session = Depends(get_db)):
     except json.JSONDecodeError:
         specifications = {}
     
+    images = get_product_images(product)
+    
     return ProductDetailResponse(
         id=product.id,
+        sku=product.sku,
         name=product.name,
         description=product.description,
         brand=product.brand,
         model=product.model,
         category_name=category.name,
         image_url=product.image_url,
+        images=images,
         specifications=specifications,
         price=price.price,
         old_price=price.old_price,
@@ -201,14 +226,18 @@ async def search_products(
         except json.JSONDecodeError:
             specifications = {}
         
+        images = get_product_images(product)
+        
         products.append(ProductResponse(
             id=product.id,
+            sku=product.sku,
             name=product.name,
             description=product.description,
             brand=product.brand,
             model=product.model,
             category_name=category.name,
-            image_url=product.image_url,
+            image_url=images[0] if images else product.image_url,
+            images=images,
             specifications=specifications,
             price=price.price,
             old_price=price.old_price,

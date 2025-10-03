@@ -221,6 +221,86 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
         
+        /* Стили для карусели изображений */
+        .product-image-carousel {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 15px;
+        }
+        
+        .product-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+        
+        .image-placeholder {
+            width: 100%;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            background: #f0f0f0;
+            border-radius: 15px;
+        }
+        
+        .image-indicators {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 5px;
+        }
+        
+        .indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .indicator.active {
+            background: white;
+        }
+        
+        .image-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .product-image-carousel:hover .image-nav {
+            opacity: 1;
+        }
+        
+        .image-nav.prev {
+            left: 10px;
+        }
+        
+        .image-nav.next {
+            right: 10px;
+        }
+        
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
@@ -334,7 +414,10 @@
                 content.innerHTML = `
                     <button class="back-button" onclick="loadCategories()">← Назад к категориям</button>
                     <div class="products-grid">
-                        ${products.map(product => createProductCard(product)).join('')}
+                        ${products.map(product => {
+                            storeProductImages(product);
+                            return createProductCard(product);
+                        }).join('')}
                     </div>
                 `;
             } catch (error) {
@@ -363,7 +446,10 @@
                     content.innerHTML = `
                         <button class="back-button" onclick="loadCategories()">← Назад к категориям</button>
                         <div class="products-grid">
-                            ${products.map(product => createProductCard(product)).join('')}
+                            ${products.map(product => {
+                                storeProductImages(product);
+                                return createProductCard(product);
+                            }).join('')}
                         </div>
                     `;
                 }
@@ -382,10 +468,44 @@
                 ? `<span class="old-price">${Math.round(product.old_price).toLocaleString()} ₽</span>` 
                 : '';
             
+            // Обработка изображений
+            let imageHtml = '📱'; // Эмодзи по умолчанию
+            
+            if (product.images && product.images.length > 0) {
+                // Если есть множественные изображения
+                if (product.images.length > 1) {
+                    imageHtml = `
+                        <div class="product-image-carousel" data-product-id="${product.id}">
+                            <img src="${product.images[0]}" alt="${product.name}" class="product-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <div class="image-placeholder" style="display: none;">📱</div>
+                            <div class="image-indicators">
+                                ${product.images.map((_, index) => 
+                                    `<span class="indicator ${index === 0 ? 'active' : ''}" data-index="${index}"></span>`
+                                ).join('')}
+                            </div>
+                            <div class="image-nav prev" onclick="event.stopPropagation(); changeImage(${product.id}, -1)">‹</div>
+                            <div class="image-nav next" onclick="event.stopPropagation(); changeImage(${product.id}, 1)">›</div>
+                        </div>
+                    `;
+                } else {
+                    // Одно изображение
+                    imageHtml = `
+                        <img src="${product.images[0]}" alt="${product.name}" class="product-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <div class="image-placeholder" style="display: none;">📱</div>
+                    `;
+                }
+            } else if (product.image_url) {
+                // Старое поле image_url
+                imageHtml = `
+                    <img src="${product.image_url}" alt="${product.name}" class="product-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div class="image-placeholder" style="display: none;">📱</div>
+                `;
+            }
+            
             return `
                 <div class="product-card" onclick="showProductDetails(${product.id})">
                     <div class="product-image">
-                        📱
+                        ${imageHtml}
                     </div>
                     <div class="product-info">
                         <div class="product-name">${product.name}</div>
@@ -404,6 +524,57 @@
         // Show product details (placeholder)
         function showProductDetails(productId) {
             alert(`Детали товара #${productId}\n\nЗдесь будет подробная информация о товаре, характеристики, отзывы и возможность заказа.`);
+        }
+        
+        // Управление каруселью изображений
+        const productImages = {}; // Хранилище изображений для каждого товара
+        
+        function changeImage(productId, direction) {
+            console.log('changeImage called:', productId, direction);
+            const carousel = document.querySelector(`[data-product-id="${productId}"]`);
+            if (!carousel) {
+                console.log('Carousel not found for product:', productId);
+                return;
+            }
+            
+            const indicators = carousel.querySelectorAll('.indicator');
+            const currentActive = carousel.querySelector('.indicator.active');
+            const currentIndex = parseInt(currentActive.dataset.index);
+            
+            let newIndex = currentIndex + direction;
+            
+            // Циклическое переключение
+            if (newIndex < 0) {
+                newIndex = indicators.length - 1;
+            } else if (newIndex >= indicators.length) {
+                newIndex = 0;
+            }
+            
+            console.log('Changing from index', currentIndex, 'to', newIndex);
+            
+            // Обновить активный индикатор
+            currentActive.classList.remove('active');
+            indicators[newIndex].classList.add('active');
+            
+            // Обновить изображение
+            const img = carousel.querySelector('.product-img');
+            if (productImages[productId] && productImages[productId][newIndex]) {
+                console.log('Changing image to:', productImages[productId][newIndex]);
+                img.src = productImages[productId][newIndex];
+            } else {
+                console.log('No image found for product:', productId, 'index:', newIndex);
+                console.log('Available images:', productImages[productId]);
+            }
+        }
+        
+        // Сохранить изображения товара при загрузке
+        function storeProductImages(product) {
+            if (product.images && product.images.length > 0) {
+                productImages[product.id] = product.images;
+                console.log('Stored images for product', product.id, ':', product.images);
+            } else {
+                console.log('No images for product', product.id);
+            }
         }
         
         // Show loading state

@@ -1,11 +1,20 @@
 #!/usr/bin/env python3
 """
-Quick start script for Electronics Store Mini App
+Yo Store Telegram Mini App
+Main application entry point with quick start features
 """
 
-import os
+import asyncio
+import threading
+import signal
 import sys
-import subprocess
+import os
+import time
+from config import Config
+from database import init_database
+from telegram_bot import ElectronicsStoreBot
+import uvicorn
+from api import app
 
 def check_requirements():
     """Check if all requirements are installed"""
@@ -14,7 +23,6 @@ def check_requirements():
         import uvicorn
         import telegram
         import sqlalchemy
-        import schedule
         print("✅ All requirements are installed")
         return True
     except ImportError as e:
@@ -33,7 +41,7 @@ TELEGRAM_BOT_TOKEN=your_bot_token_here
 TELEGRAM_WEBHOOK_URL=https://yourdomain.com/webhook
 
 # Database Configuration
-DATABASE_URL=sqlite:///./yo_store.db
+DATABASE_URL=sqlite:///./electronics_store.db
 
 # App Configuration
 SECRET_KEY=your-secret-key-change-this
@@ -52,8 +60,108 @@ PORT=8000
         print("✅ .env file found")
         return True
 
+class ElectronicsStoreApp:
+    def __init__(self):
+        self.bot = None
+        self.api_server = None
+        self.running = False
+    
+    def setup_signal_handlers(self):
+        """Setup signal handlers for graceful shutdown"""
+        def signal_handler(signum, frame):
+            print(f"\nReceived signal {signum}, shutting down...")
+            self.shutdown()
+            sys.exit(0)
+        
+        signal.signal(signal.SIGINT, signal_handler)
+        signal.signal(signal.SIGTERM, signal_handler)
+    
+    def start_api_server(self):
+        """Start the FastAPI server"""
+        port = int(os.environ.get('PORT', Config.PORT))
+        host = os.environ.get('HOST', Config.HOST)
+        print(f"Starting API server on {host}:{port}")
+        config = uvicorn.Config(
+            app=app,
+            host=host,
+            port=port,
+            log_level="info"
+        )
+        self.api_server = uvicorn.Server(config)
+        
+        # Run in a separate thread
+        api_thread = threading.Thread(target=self.api_server.run, daemon=True)
+        api_thread.start()
+        
+        return api_thread
+    
+    def start_telegram_bot(self):
+        """Start the Telegram bot"""
+        if not Config.TELEGRAM_BOT_TOKEN:
+            print("⚠️  TELEGRAM_BOT_TOKEN not set, skipping Telegram bot")
+            return None
+        
+        print("Starting Telegram bot...")
+        self.bot = ElectronicsStoreBot()
+        
+        # Run bot in a separate thread
+        bot_thread = threading.Thread(target=self.bot.run, daemon=True)
+        bot_thread.start()
+        
+        return bot_thread
+    
+    def run(self):
+        """Run the application"""
+        print("🛍️  Starting Yo Store Mini App...")
+        
+        # Setup signal handlers
+        self.setup_signal_handlers()
+        
+        # Initialize database
+        print("Initializing database...")
+        init_database()
+        
+        # Start components
+        api_thread = self.start_api_server()
+        bot_thread = self.start_telegram_bot()
+        
+        self.running = True
+        
+        print("\n" + "="*50)
+        print("🚀 Yo Store Mini App is running!")
+        print("="*50)
+        print(f"📱 API Server: http://{Config.HOST}:{Config.PORT}")
+        print(f"🛍️  Web App: http://{Config.HOST}:{Config.PORT}/webapp")
+        print(f"📊 Health Check: http://{Config.HOST}:{Config.PORT}/health")
+        print(f"🤖 Telegram Bot: {'Running' if bot_thread else 'Not configured'}")
+        print(f"💰 Price Management: Manual via Excel API only")
+        print("="*50)
+        print("\nPress Ctrl+C to stop the application")
+        
+        try:
+            # Keep main thread alive
+            while self.running:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            self.shutdown()
+    
+    def shutdown(self):
+        """Shutdown the application gracefully"""
+        if not self.running:
+            return
+        
+        print("\n🛑 Shutting down application...")
+        self.running = False
+        
+        # Stop API server
+        if self.api_server:
+            self.api_server.should_exit = True
+            print("✅ API server stopped")
+        
+        print("✅ Application shutdown complete")
+
 def main():
-    """Main function"""
+    """Main function with quick start checks"""
     print("🛍️  Yo Store Mini App - Quick Start")
     print("=" * 50)
     
@@ -74,10 +182,10 @@ def main():
     print("\n🚀 Starting Yo Store Mini App...")
     print("=" * 50)
     
-    # Import and run the main application
+    # Create and run the application
     try:
-        from main import main as run_app
-        run_app()
+        app = ElectronicsStoreApp()
+        app.run()
     except KeyboardInterrupt:
         print("\n👋 Application stopped by user")
     except Exception as e:
