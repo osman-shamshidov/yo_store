@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест цветных кнопок</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .product-card {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 400px;
+        }
+        .product-brand {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .variant-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .variant-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        /* Основные стили кнопок */
+        .variant-btn {
+            padding: 8px 16px;
+            border: 2px solid #667eea;
+            border-radius: 18px;
+            background: #f7fafc;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .variant-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .variant-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            font-weight: 600;
+        }
+        
+        /* Особые стили для цветных кнопок */
+        .color-btn {
+            position: relative;
+            overflow: hidden;
+            border: 2px solid;
+            font-weight: 600;
+            text-shadow: 0px 0px 2px rgba(0,0,0,0.3);
+            min-width: 70px;
+            padding: 6px 12px;
+        }
+        
+        .color-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 50%);
+            pointer-events: none;
+        }
+        
+        .color-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            filter: brightness(1.1);
+        }
+        
+        .color-btn.active {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            filter: brightness(1.2);
+        }
+        
+        .button {
+            background: #4ECDC4;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        .button:hover {
+            background: #45b7aa;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎨 Тест цветных кнопок</h1>
+    
+    <button class="button" onclick="testColorButtons()">Протестировать цветные кнопки</button>
+    <button class="button" onclick="testFunctions()">Протестировать функции</button>
+    
+    <div id="result" style="margin-top: 20px;"></div>
+    
+    <script>
+        // Функции цветов из webapp.html
+        function getColorStyle(colorName) {
+            const colorMap = {
+                // iPhone colors
+                'ultramarine': '#663399', // Более фиолетовый
+                'black': '#000000', 'white': '#FFFFFF', 'pink': '#FFB6C1', // Светло розовый
+                'titanium-black': '#000000', // Чисто черный
+                'titanium-white': '#FFFFFF', 'titanium-natural': '#979792', 'titanium-desert': '#B89569',
+                'deep-blue': '#1B2951', 'cosmic-orange': '#FF6B35', 'silver': '#E8E8E8', // Светло серебристый
+                'teal': '#20B2AA', // Бирюзовый
+                
+                // MacBook colors
+                'space-gray': '#7F7F7F', 'silver': '#C0C0C0',
+                
+                // iPad colors
+                'space-gray': '#6B7280', 'blue': '#2563EB', 'silver': '#C0C0C0', 'yellow': '#FFE24B',
+                
+                // Общие цвета
+                'gray': '#6B7280', 'white': '#FFFFFF', 'yellow': '#FFE24B', 'blue': '#0EA5E9', 'green': '#059669',
+            };
+            
+            return colorMap[colorName.toLowerCase()] || '#6B7280'; // Цвет по умолчанию (серый)
+        }
+        
+        function getTextColor(backgroundColor) {
+            const hex = backgroundColor.slice(1);
+            const r = parseInt(hex.substr(0, 2), 16);
+            const g = parseInt(hex.substr(2, 2), 16);
+            const b = parseInt(hex.substr(4, 2), 16);
+            
+            const brightness = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+            
+            return brightness > 128 ? '#000000' : '#FFFFFF';
+        }
+        
+        function getColorLabel(colorName) {
+            const colorLabels = {
+                'ultramarine': 'Ультрамарин',
+                'titanium-black': 'Титан Чёрный',
+                'titanium-white': 'Титан Белый', 
+                'titanium-natural': 'Титан Натуральный',
+                'titanium-desert': 'Титан Песок',
+                'deep-blue': 'Глубокий Синий',
+                'cosmic-orange': 'Космический Оранжевый',
+                'silver': 'Серебристый',
+                'space-gray': 'Космос Серый',
+                'black': 'Чёрный',
+                'white': 'Белый',
+                'pink': 'Розовый',
+                'yellow': 'Жёлтый',
+                'teal': 'Бирюзовый',
+                'blue': 'Синий',
+                'green': 'Зелёный',
+            };
+            
+            return colorLabels[colorName.toLowerCase()] || colorName;
+        }
+        
+        function testFunctions() {
+            const colors = ['ultramarine', 'teal', 'pink', 'silver', 'titanium-black'];
+            let result = '<h3>🧪 Тестирование функций:</h3>';
+            
+            colors.forEach(color => {
+                const bgColor = getColorStyle(color);
+                const textColor = getTextColor(bgColor);
+                const label = getColorLabel(color);
+                
+                result += `
+                    <div style="margin: 10px;">
+                        <strong>${color}</strong>: bg=${bgColor}, text=${textColor}, label="${label}"
+                        <div style="display: inline-block; background: ${bgColor}; color: ${textColor}; padding: 5px 10px; border-radius: 3px; margin-left: 10px;">${label}</div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('result').innerHTML = result;
+        }
+        
+        function testColorButtons() {
+            const colors = ['ultramarine', 'teal', 'pink', 'silver', 'titanium-black'];
+            
+            const html = `
+                <div class="product-card">
+                    <div class="product-brand">Apple iPhone 17 Pro</div>
+                    <div class="variant-group">
+                        <label>Цвет:</label>
+                        <div class="variant-buttons" id="colorContainer">
+                            ${colors.map((color, index) => {
+                                const isActive = index === 0 ? 'active' : '';
+                                const actualColorValue = color;
+                                const folderName = actualColorValue.toLowerCase().replace(/\s+/g, '_');
+                                const colorStyle = getColorStyle(actualColorValue);
+                                const label = getColorLabel(actualColorValue);
+                                const textColor = getTextColor(colorStyle);
+                                
+                                console.log(`🎨 Создаю кнопку для цвета ${actualColorValue}:`, { colorStyle, label, textColor });
+                                
+                                return `<button class="variant-btn color-btn ${isActive}" data-type="color" data-value="${actualColorValue}" data-color-folder="${folderName}" style="background-color: ${colorStyle}; color: ${textColor}; border-color: ${colorStyle};">${label}</button>`;
+                            }).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('result').innerHTML = '<h3>🎨 Цветные кнопки:</h3>' + html;
+            
+            console.log('✅ Цветные кнопки созданы');
+        }
+        
+        // Тестируем сразу при загрузке
+        window.onload = function() {
+            console.log('🚀 Страница загружена, тестируем функции...');
+            testFunctions();
+            testColorButtons();
+        };
+    </script>
+</body>
+</html>

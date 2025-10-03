@@ -16,9 +16,19 @@ from manual_price_manager import manual_price_manager
 def get_product_images(product):
     """Получить массив изображений товара"""
     try:
-        images = json.loads(product.images) if product.images else []
+        images_data = json.loads(product.images) if product.images else []
     except json.JSONDecodeError:
-        images = []
+        images_data = []
+    
+    # Извлекаем URL из объектов изображений или используем строки напрямую
+    images = []
+    for img_data in images_data:
+        if isinstance(img_data, dict):
+            # Новый формат: {"url": "...", "alt": "..."}
+            images.append(img_data["url"])
+        elif isinstance(img_data, str):
+            # Старый формат: просто строка URL
+            images.append(img_data)
     
     # Если нет множественных изображений, используем основное
     if not images and product.image_url:
@@ -47,7 +57,6 @@ class ProductResponse(BaseModel):
     old_price: float
     discount_percentage: float
     currency: str
-    is_available: bool
     
     class Config:
         from_attributes = True
@@ -97,8 +106,6 @@ async def get_categories(db: Session = Depends(get_db)):
     """Get all main categories with product counts and subcategories"""
     # Получить только основные категории (не подкатегории)
     main_categories = db.query(Category).filter(
-        Category.is_active == True
-    ).filter(
         Category.parent_category_id == None
     ).all()
     
@@ -106,18 +113,18 @@ async def get_categories(db: Session = Depends(get_db)):
     for category in main_categories:
         # Подсчитать товары в основной категории
         product_count = db.query(Product).filter(
-            and_(Product.category_id == category.id, Product.is_available == True)
+            Product.category_id == category.id
         ).count()
         
         # Получить подкатегории
         subcategories = db.query(Category).filter(
-            and_(Category.parent_category_id == category.id, Category.is_active == True)
+            Category.parent_category_id == category.id
         ).all()
         
         subcategory_responses = []
         for subcat in subcategories:
             subcat_product_count = db.query(Product).filter(
-                and_(Product.category_id == subcat.id, Product.is_available == True)
+                Product.category_id == subcat.id
             ).count()
             
             subcategory_responses.append(CategoryResponse(
@@ -157,9 +164,7 @@ async def get_products(
     """Get products with optional category and brand filters"""
     query = db.query(Product, CurrentPrice, Category).join(
         CurrentPrice, Product.id == CurrentPrice.product_id
-    ).join(Category, Product.category_id == Category.id).filter(
-        Product.is_available == True
-    )
+    ).join(Category, Product.category_id == Category.id)
     
     if category_id and brand:
         # Если указаны и категория, и бренд, ищем товары в подкатегориях этой категории с нужным брендом
@@ -188,7 +193,8 @@ async def get_products(
     elif brand:
         query = query.filter(Product.brand == brand)
     
-    results = query.offset(offset).limit(limit).all()
+    # Сортировка по убыванию названия (от Z до A)
+    results = query.order_by(Product.name.desc()).offset(offset).limit(limit).all()
     
     products = []
     for product, price, category in results:
@@ -214,7 +220,6 @@ async def get_products(
             old_price=price.old_price,
             discount_percentage=price.discount_percentage,
             currency=price.currency,
-            is_available=product.is_available
         ))
     
     return products
@@ -279,7 +284,7 @@ async def search_products(
                 Product.model.ilike(search_term)
             )
         )
-    ).limit(limit).all()
+    ).order_by(Product.name.desc()).limit(limit).all()
     
     products = []
     for product, price, category in results:
@@ -305,7 +310,6 @@ async def search_products(
             old_price=price.old_price,
             discount_percentage=price.discount_percentage,
             currency=price.currency,
-            is_available=product.is_available
         ))
     
     return products
@@ -557,6 +561,261 @@ async def update_single_price(
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=400, detail=f"Ошибка обновления цены: {str(e)}")
+
+@app.get("/product-images/{model_key}/{color}")
+async def get_product_images_by_color(model_key: str, color: str):
+    """Get images for a specific product color"""
+    import os
+    
+    model_key_mapping = {
+        'iphone-16': 'IPHONE16',
+        'iphone-16-pro': 'IPHONE16Pro', 
+        'iphone-16-pro-max': 'IPHONE16ProMax',
+        'iphone-17-pro': 'IPHONE17Pro',
+        'iphone-17-pro-max': 'IPHONE17ProMax',
+        'macbook-air-m2': 'MACBOOKAirM2',
+        'ipad-air': 'IPADAir',
+        'airpods-pro2': 'AIRPODSPro2',
+        'homepod-mini': 'HOMEPODmini',
+        'samsung': 'SAM',
+        'google': 'GOO',
+        'lenovo': 'LEN',
+        'asus': 'ASU'
+    }
+    actual_model_key = model_key_mapping.get(model_key, model_key.upper())
+    
+    try:
+        # Определяем папку с изображениями на основе model_key и цвета
+        image_folder = f"static/images/products/{actual_model_key}/{color}"
+        
+        # Проверяем существование папки
+        if not os.path.exists(image_folder):
+            raise HTTPException(status_code=404, detail=f"Папка изображений не найдена: {image_folder}")
+        
+        # Формируем пути к реальным файлам
+        image_paths = []
+        try:
+            # Получаем список всех файлов в папке
+            all_files = os.listdir(image_folder)
+            # Фильтруем только jpg файлы
+            jpg_files = [f for f in all_files if f.endswith('.jpg')]
+            # Сортируем файлы по имени
+            jpg_files.sort()
+            
+            # Формируем пути к изображениям
+            for file_name in jpg_files:
+                image_path = f"/static/images/products/{actual_model_key}/{color}/{file_name}"
+                image_paths.append(image_path)
+                
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Ошибка чтения папки: {str(e)}")
+                
+        return {"image_paths": image_paths}
+        
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=f"Изображения не найдены: {str(e)}")
+
+@app.get("/color-schemes/{model_key}")
+async def get_color_schemes(model_key: str):
+    """Get color schemes for a product"""
+    model_key_mapping = {
+        'iphone-16': 'IPHONE16',
+        'iphone-16-pro': 'IPHONE16Pro', 
+        'iphone-16-pro-max': 'IPHONE16ProMax',
+        'iphone-17-pro': 'IPHONE17Pro',
+        'iphone-17-pro-max': 'IPHONE17ProMax',
+        'macbook-air-m2': 'MACBOOKAirM2',
+        'ipad-air': 'IPADAir',
+        'airpods-pro2': 'AIRPODSPro2',
+        'homepod-mini': 'HOMEPODmini',
+        'samsung': 'SAM',
+        'google': 'GOO',
+        'lenovo': 'LEN',
+        'asus': 'ASU'
+    }
+    actual_key = model_key_mapping.get(model_key, model_key.upper())
+    
+    # Статичные данные цветов для каждой модели
+    color_schemes = {
+        "IPHONE16": {
+            "colors": [
+                {"value": "ultramarine"},
+                {"value": "black"},
+                {"value": "white"},
+                {"value": "pink"},
+                {"value": "teal"}
+            ],
+            "default_color": "ultramarine"
+        },
+        "IPHONE16Pro": {
+            "colors": [
+                {"value": "titanium-black"},
+                {"value": "titanium-white"},
+                {"value": "titanium-natural"},
+                {"value": "titanium-desert"}
+            ],
+            "default_color": "titanium-black"
+        },
+        "IPHONE16ProMax": {
+            "colors": [
+                {"value": "titanium-black"},
+                {"value": "titanium-white"},
+                {"value": "titanium-natural"},
+                {"value": "titanium-desert"}
+            ],
+            "default_color": "titanium-black"
+        },
+        "MACBOOKAirM2": {
+            "colors": [
+                {"value": "space-gray"},
+                {"value": "silver"}
+            ],
+            "default_color": "space-gray"
+        },
+        "IPADAir": {
+            "colors": [
+                {"value": "space-gray"},
+                {"value": "blue"},
+                {"value": "silver"}
+            ],
+            "default_color": "space-gray"
+        },
+        "AIRPODSPro2": {
+            "colors": [
+                {"value": "white"}
+            ],
+            "default_color": "white"
+        },
+        "HOMEPODmini": {
+            "colors": [
+                {"value": "black"},
+                {"value": "white"}
+            ],
+            "default_color": "black"
+        },
+        "SAM": {
+            "colors": [
+                {"value": "black"},
+                {"value": "silver"}
+            ],
+            "default_color": "black"
+        },
+        "GOO": {
+            "colors": [
+                {"value": "black"},
+                {"value": "blue"},
+                {"value": "white"}
+            ],
+            "default_color": "black"
+        },
+        "IPHONE17Pro": {
+            "colors": [
+                {"value": "deep-blue"},
+                {"value": "cosmic-orange"},
+                {"value": "silver"}
+            ],
+            "default_color": "deep-blue"
+        },
+        "IPHONE17ProMax": {
+            "colors": [
+                {"value": "deep-blue"},
+                {"value": "cosmic-orange"},
+                {"value": "silver"}
+            ],
+            "default_color": "deep-blue"
+        }
+    }
+    
+    if actual_key not in color_schemes:
+        raise HTTPException(status_code=404, detail=f"Цветовая схема не найдена для {model_key}")
+    
+    return color_schemes[actual_key]
+
+@app.get("/variant-schemes/{model_key}")
+async def get_variant_schemes(model_key: str):
+    """Get variant schemes for a product"""
+    model_key_mapping = {
+        'iphone-16': 'IPHONE16',
+        'iphone-16-pro': 'IPHONE16Pro', 
+        'iphone-16-pro-max': 'IPHONE16ProMax',
+        'iphone-17-pro': 'IPHONE17Pro',
+        'iphone-17-pro-max': 'IPHONE17ProMax',
+        'macbook-air-m2': 'MACBOOKAirM2',
+        'ipad-air': 'IPADAir',
+        'airpods-pro2': 'AIRPODSPro2',
+        'homepod-mini': 'HOMEPODmini',
+        'samsung': 'SAM',
+        'google': 'GOO',
+        'lenovo': 'LEN',
+        'asus': 'ASU'
+    }
+    actual_key = model_key_mapping.get(model_key, model_key.upper())
+    
+    # Статичные данные вариантов для каждой модели
+    variant_schemes = {
+        "IPHONE16": {
+            "variants": {
+                "storage": ["128GB", "256GB", "512GB"],
+                "color": ["ultramarine", "black", "white", "pink", "teal"],
+                "sim": ["2eSIM", "SIM+ESIM", "2SIM"]
+            }
+        },
+        "IPHONE16Pro": {
+            "variants": {
+                "storage": ["256GB", "512GB", "1TB"],
+                "color": ["titanium-black", "titanium-white", "titanium-natural", "titanium-desert"],
+                "sim": ["2eSIM", "SIM+ESIM", "2SIM"]
+            }
+        },
+        "IPHONE16ProMax": {
+            "variants": {
+                "storage": ["256GB", "512GB", "1TB"],
+                "color": ["titanium-black", "titanium-white", "titanium-natural", "titanium-desert"],
+                "sim": ["2eSIM", "SIM+ESIM", "2SIM"]
+            }
+        },
+        "MACBOOKAirM2": {
+            "variants": {
+                "storage": ["256GB", "512GB"],
+                "color": ["space-gray", "silver"]
+            }
+        },
+        "IPADAir": {
+            "variants": {
+                "storage": ["64GB", "256GB"],
+                "color": ["space-gray", "blue", "silver"]
+            }
+        },
+        "AIRPODSPro2": {
+            "variants": {
+                "color": ["white"]
+            }
+        },
+        "HOMEPODmini": {
+            "variants": {
+                "color": ["black", "white"]
+            }
+        },
+        "IPHONE17Pro": {
+            "variants": {
+                "storage": ["256GB", "512GB", "1TB", "2TB"],
+                "color": ["deep-blue", "cosmic-orange", "silver"],
+                "sim": ["2eSIM", "SIM+ESIM", "2SIM"]
+            }
+        },
+        "IPHONE17ProMax": {
+            "variants": {
+                "storage": ["256GB", "512GB", "1TB", "2TB"], 
+                "color": ["deep-blue", "cosmic-orange", "silver"],
+                "sim": ["2eSIM", "SIM+ESIM", "2SIM"]
+            }
+        }
+    }
+    
+    if actual_key not in variant_schemes:
+        raise HTTPException(status_code=404, detail=f"Схема вариантов не найдена для {model_key}")
+    
+    return variant_schemes[actual_key]
 
 if __name__ == "__main__":
     import uvicorn
