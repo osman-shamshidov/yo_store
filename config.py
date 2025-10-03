@@ -17,6 +17,7 @@ class Config:
     HOST = os.getenv('HOST', '0.0.0.0')
     PORT = int(os.getenv('PORT', 8000))
     
-    # Price Update Configuration
-    PRICE_UPDATE_INTERVAL = 10  # minutes
+    # Price Update Configuration - REMOVED
+    # Automatic price updates removed - now only manual via Excel API
+    # PRICE_UPDATE_INTERVAL = 10  # minutes
 

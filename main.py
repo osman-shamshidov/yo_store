@@ -11,7 +11,7 @@ import sys
 import os
 from config import Config
 from database import init_database
-from price_updater import price_updater
+# from price_updater import price_updater  # Удалено автоматическое обновление цен
 from telegram_bot import ElectronicsStoreBot
 import uvicorn
 from api import app
@@ -20,7 +20,7 @@ class ElectronicsStoreApp:
     def __init__(self):
         self.bot = None
         self.api_server = None
-        self.price_updater = price_updater
+        # self.price_updater = price_updater  # Удалено автоматическое обновление цен
         self.running = False
     
     def setup_signal_handlers(self):
@@ -67,10 +67,11 @@ class ElectronicsStoreApp:
         
         return bot_thread
     
-    def start_price_updater(self):
-        """Start the price updater"""
-        print("Starting price updater...")
-        self.price_updater.start_scheduler()
+    # def start_price_updater(self):
+    #     """Start the price updater"""
+    #     print("Starting price updater...")
+    #     self.price_updater.start_scheduler()
+    # Удалено автоматическое обновление цен - теперь только через Excel API
     
     def run(self):
         """Run the application"""
@@ -86,7 +87,7 @@ class ElectronicsStoreApp:
         # Start components
         api_thread = self.start_api_server()
         bot_thread = self.start_telegram_bot()
-        self.start_price_updater()
+        # self.start_price_updater()  # Удалено автоматическое обновление цен
         
         self.running = True
         
@@ -97,7 +98,7 @@ class ElectronicsStoreApp:
         print(f"🛍️  Web App: http://{Config.HOST}:{Config.PORT}/webapp")
         print(f"📊 Health Check: http://{Config.HOST}:{Config.PORT}/health")
         print(f"🤖 Telegram Bot: {'Running' if bot_thread else 'Not configured'}")
-        print(f"💰 Price Updater: Running (updates every {Config.PRICE_UPDATE_INTERVAL} minutes)")
+        print(f"💰 Price Management: Manual via Excel API only")
         print("="*50)
         print("\nPress Ctrl+C to stop the application")
         
@@ -117,10 +118,8 @@ class ElectronicsStoreApp:
         print("\n🛑 Shutting down application...")
         self.running = False
         
-        # Stop price updater
-        if self.price_updater:
-            self.price_updater.stop_scheduler()
-            print("✅ Price updater stopped")
+        # Price updater removed - no automatic updates
+        # print("✅ Price updater stopped")
         
         # Stop API server
         if self.api_server:

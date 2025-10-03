@@ -11,6 +11,7 @@ from datetime import datetime
 import json
 import io
 from excel_handler import ExcelHandler
+from manual_price_manager import manual_price_manager
 
 app = FastAPI(title="Yo Store API", version="1.0.0")
 
@@ -337,51 +338,17 @@ async def import_prices_from_excel(file: UploadFile = File(...), db: Session = D
         excel_handler = ExcelHandler()
         prices_data = excel_handler.parse_prices_excel(file_content)
         
-        # Обновляем цены в базе данных
+        # Обновляем цены в базе данных через ручной менеджер
         updated_count = 0
         errors = []
         
         for i, price_data in enumerate(prices_data):
             try:
-                # Найти товар
-                product = db.query(Product).filter(Product.id == price_data['product_id']).first()
-                if not product:
-                    errors.append(f"Строка {i+1}: Товар с ID {price_data['product_id']} не найден")
-                    continue
-                
-                # Найти текущую цену
-                current_price = db.query(CurrentPrice).filter(
-                    CurrentPrice.product_id == price_data['product_id']
-                ).first()
-                
-                if current_price:
-                    # Обновить существующую цену
-                    current_price.old_price = current_price.price
-                    current_price.price = price_data['price']
-                    current_price.currency = price_data['currency']
-                    current_price.updated_at = datetime.utcnow()
-                    
-                    # Рассчитать скидку
-                    if current_price.old_price > current_price.price:
-                        current_price.discount_percentage = round(
-                            ((current_price.old_price - current_price.price) / current_price.old_price) * 100, 2
-                        )
-                    else:
-                        current_price.discount_percentage = 0.0
+                success = manual_price_manager.update_price_from_excel_data(price_data, db)
+                if success:
+                    updated_count += 1
                 else:
-                    # Создать новую цену
-                    new_price = CurrentPrice(
-                        product_id=price_data['product_id'],
-                        price=price_data['price'],
-                        old_price=price_data['old_price'],
-                        discount_percentage=0.0,
-                        currency=price_data['currency'],
-                        updated_at=datetime.utcnow()
-                    )
-                    db.add(new_price)
-                
-                updated_count += 1
-                
+                    errors.append(f"Строка {i+1}: Не удалось обновить цену")
             except Exception as e:
                 errors.append(f"Строка {i+1}: {str(e)}")
         
@@ -439,6 +406,66 @@ async def export_products_to_excel(db: Session = Depends(get_db)):
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Ошибка при экспорте: {str(e)}")
+
+# Additional Price Management API
+@app.get("/api/prices/current")
+async def get_current_prices():
+    """Получить все текущие цены"""
+    try:
+        prices = manual_price_manager.get_all_current_prices()
+        return {
+            "message": "Текущие цены получены",
+            "prices": prices,
+            "total": len(prices)
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ошибка получения цен: {str(e)}")
+
+@app.get("/api/prices/history/{product_id}")
+async def get_price_history(product_id: int, limit: int = 10):
+    """Получить историю цен товара"""
+    try:
+        history = manual_price_manager.get_price_history(product_id, limit)
+        return {
+            "message": f"История цен товара {product_id}",
+            "product_id": product_id,
+            "history": history,
+            "total": len(history)
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ошибка получения истории цен: {str(e)}")
+
+@app.post("/api/prices/update-single")
+async def update_single_price(
+    product_id: int,
+    new_price: float,
+    currency: str = "RUB",
+    db: Session = Depends(get_db)
+):
+    """Обновить цену одного товара"""
+    try:
+        price_data = {
+            'product_id': product_id,
+            'price': new_price,
+            'currency': currency
+        }
+        
+        success = manual_price_manager.update_price_from_excel_data(price_data, db)
+        
+        if success:
+            db.commit()
+            return {
+                "message": "Цена успешно обновлена",
+                "product_id": product_id,
+                "new_price": new_price,
+                "currency": currency
+            }
+        else:
+            raise HTTPException(status_code=400, detail="Не удалось обновить цену")
+            
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Ошибка обновления цены: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn
