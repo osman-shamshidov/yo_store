@@ -13,7 +13,7 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
             min-height: 100vh;
             color: #333;
         }
@@ -26,7 +26,7 @@
         
         .header {
             text-align: center;
-            color: white;
+            color: #333;
             margin-bottom: 30px;
         }
         
@@ -88,6 +88,134 @@
         .category-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        /* Стили для подкатегорий */
+        .subcategories {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .subcategory-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            margin: 5px 0;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+        
+        .subcategory-item:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateX(5px);
+        }
+        
+        .subcategory-icon {
+            margin-right: 8px;
+            font-size: 1.1em;
+        }
+        
+        .subcategory-name {
+            flex: 1;
+            font-weight: 500;
+        }
+        
+        .subcategory-count {
+            font-size: 0.8em;
+            opacity: 0.8;
+            background: rgba(255,255,255,0.2);
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+        
+        .brand-header {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            color: #333;
+            border-radius: 15px;
+        }
+        
+        .brand-header h2 {
+            margin: 0 0 5px 0;
+            font-size: 2em;
+        }
+        
+        .brand-header p {
+            margin: 0;
+            opacity: 0.9;
+        }
+        
+        .category-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            border-radius: 15px;
+            color: #333;
+        }
+        
+        .category-header h2 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        
+        .category-header p {
+            margin: 8px 0 0 0;
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+        
+        .subcategories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            padding: 1rem 0;
+        }
+        
+        .subcategory-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .subcategory-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border-color: #667eea;
+        }
+        
+        .subcategory-card .subcategory-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .subcategory-card .subcategory-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subcategory-card .subcategory-count {
+            font-size: 0.9rem;
+            color: #666;
+            background: #f8f9fa;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            display: inline-block;
         }
         
         .category-icon {
@@ -174,7 +302,7 @@
         
         .discount {
             background: #e74c3c;
-            color: white;
+            color: #333;
             padding: 2px 8px;
             border-radius: 10px;
             font-size: 0.8rem;
@@ -190,14 +318,14 @@
         .loading {
             text-align: center;
             padding: 40px;
-            color: white;
+            color: #333;
             font-size: 1.2rem;
         }
         
         .error {
             text-align: center;
             padding: 40px;
-            color: white;
+            color: #333;
             background: rgba(231, 76, 60, 0.1);
             border-radius: 15px;
             margin: 20px 0;
@@ -206,7 +334,7 @@
         .no-products {
             text-align: center;
             padding: 40px;
-            color: white;
+            color: #333;
             font-size: 1.1rem;
         }
         
@@ -275,7 +403,7 @@
             top: 50%;
             transform: translateY(-50%);
             background: rgba(0, 0, 0, 0.5);
-            color: white;
+            color: #333;
             width: 30px;
             height: 30px;
             border-radius: 50%;
@@ -299,6 +427,201 @@
         
         .image-nav.next {
             right: 10px;
+        }
+        
+        /* Стили для детального просмотра товара */
+        .product-details {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .product-details-header {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .product-details-image {
+            flex: 0 0 300px;
+        }
+        
+        .details-img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+        
+        .details-placeholder {
+            width: 100%;
+            height: 300px;
+            background: #f5f5f5;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+        }
+        
+        .product-details-info {
+            flex: 1;
+        }
+        
+        .product-details-name {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #333;
+            margin: 0 0 10px 0;
+        }
+        
+        .product-details-brand {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .product-details-price {
+            margin-bottom: 15px;
+        }
+        
+        .product-details-sku {
+            font-size: 0.9em;
+            color: #888;
+            font-family: monospace;
+        }
+        
+        .product-details-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .product-description-section,
+        .product-specifications-section {
+            margin-bottom: 30px;
+        }
+        
+        .product-description-section h3,
+        .product-specifications-section h3 {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #007AFF;
+        }
+        
+        .product-full-description {
+            line-height: 1.6;
+            color: #555;
+            font-size: 1.1em;
+        }
+        
+        .specifications-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .spec-category {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #007AFF;
+        }
+        
+        .spec-category h4 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 1.2em;
+            text-transform: capitalize;
+        }
+        
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 5px 0;
+        }
+        
+        .spec-key {
+            font-weight: 600;
+            color: #555;
+            flex: 0 0 40%;
+        }
+        
+        .spec-value {
+            color: #333;
+            flex: 1;
+            text-align: right;
+        }
+        
+        .product-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .buy-button,
+        .favorite-button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .buy-button {
+            background: #007AFF;
+            color: #333;
+            flex: 1;
+        }
+        
+        .buy-button:hover {
+            background: #0056CC;
+            transform: translateY(-2px);
+        }
+        
+        .favorite-button {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #ddd;
+        }
+        
+        .favorite-button:hover {
+            background: #e9ecef;
+            border-color: #007AFF;
+        }
+        
+        @media (max-width: 768px) {
+            .product-details-header {
+                flex-direction: column;
+            }
+            
+            .product-details-image {
+                flex: none;
+            }
+            
+            .product-details-name {
+                font-size: 2em;
+            }
+            
+            .specifications-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .product-actions {
+                flex-direction: column;
+            }
         }
         
         @media (max-width: 768px) {
@@ -387,10 +710,21 @@
                 content.innerHTML = `
                     <div class="categories">
                         ${categories.map(category => `
-                            <div class="category-card" onclick="loadProducts(${category.id})">
+                            <div class="category-card" onclick="loadSubcategories(${category.id})">
                                 <div class="category-icon">${category.icon}</div>
                                 <div class="category-name">${category.name}</div>
                                 <div class="category-count">${category.product_count} товаров</div>
+                                ${category.subcategories && category.subcategories.length > 0 ? `
+                                    <div class="subcategories">
+                                        ${category.subcategories.map(subcat => `
+                                            <div class="subcategory-item" onclick="event.stopPropagation(); loadProductsByBrand('${subcat.brand}', ${category.id})">
+                                                <span class="subcategory-icon">${subcat.icon}</span>
+                                                <span class="subcategory-name">${subcat.brand}</span>
+                                                <span class="subcategory-count">${subcat.product_count}</span>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                ` : ''}
                             </div>
                         `).join('')}
                     </div>
@@ -400,7 +734,46 @@
             }
         }
         
-        // Load products for category
+        // Load subcategories for category
+        async function loadSubcategories(categoryId) {
+            try {
+                showLoading();
+                const response = await fetch(`${API_BASE}/categories`);
+                const categories = await response.json();
+                
+                // Найти нужную категорию
+                const category = categories.find(cat => cat.id === categoryId);
+                if (!category || !category.subcategories || category.subcategories.length === 0) {
+                    showError('Подкатегории не найдены');
+                    return;
+                }
+                
+                currentView = 'subcategories';
+                currentCategoryId = categoryId;
+                
+                const content = document.getElementById('content');
+                content.innerHTML = `
+                    <button class="back-button" onclick="loadCategories()">← Назад к категориям</button>
+                    <div class="category-header">
+                        <h2>${category.icon} ${category.name}</h2>
+                        <p>Выберите бренд для просмотра товаров</p>
+                    </div>
+                    <div class="subcategories-grid">
+                        ${category.subcategories.map(subcat => `
+                            <div class="subcategory-card" onclick="loadProductsByBrand('${subcat.brand}', ${categoryId})">
+                                <div class="subcategory-icon">${subcat.icon}</div>
+                                <div class="subcategory-name">${subcat.brand}</div>
+                                <div class="subcategory-count">${subcat.product_count} товаров</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } catch (error) {
+                showError('Ошибка загрузки подкатегорий');
+            }
+        }
+        
+        // Load products for category (all products in category and subcategories)
         async function loadProducts(categoryId) {
             try {
                 showLoading();
@@ -422,6 +795,35 @@
                 `;
             } catch (error) {
                 showError('Ошибка загрузки товаров');
+            }
+        }
+        
+        // Load products by brand
+        async function loadProductsByBrand(brand, categoryId) {
+            try {
+                showLoading();
+                const response = await fetch(`${API_BASE}/products?category_id=${categoryId}&brand=${encodeURIComponent(brand)}&limit=20`);
+                const products = await response.json();
+                
+                currentView = 'products';
+                currentCategoryId = categoryId;
+                
+                const content = document.getElementById('content');
+                content.innerHTML = `
+                    <button class="back-button" onclick="loadCategories()">← Назад к категориям</button>
+                    <div class="brand-header">
+                        <h2>${brand}</h2>
+                        <p>Товары бренда ${brand}</p>
+                    </div>
+                    <div class="products-grid">
+                        ${products.map(product => {
+                            storeProductImages(product);
+                            return createProductCard(product);
+                        }).join('')}
+                    </div>
+                `;
+            } catch (error) {
+                showError('Ошибка загрузки товаров бренда');
             }
         }
         
@@ -521,9 +923,93 @@
             `;
         }
         
-        // Show product details (placeholder)
-        function showProductDetails(productId) {
-            alert(`Детали товара #${productId}\n\nЗдесь будет подробная информация о товаре, характеристики, отзывы и возможность заказа.`);
+        // Show product details
+        async function showProductDetails(productId) {
+            try {
+                showLoading();
+                const response = await fetch(`${API_BASE}/products/${productId}`);
+                const product = await response.json();
+                
+                // Получить полное описание из характеристик
+                let fullDescription = product.description;
+                if (product.specifications && product.specifications.full_description) {
+                    fullDescription = product.specifications.full_description;
+                }
+                
+                // Создать HTML для детального просмотра
+                const detailsHtml = `
+                    <button class="back-button" onclick="loadProducts(${currentCategoryId || 1})">← Назад к товарам</button>
+                    <div class="product-details">
+                        <div class="product-details-header">
+                            <div class="product-details-image">
+                                ${product.images && product.images.length > 0 ? 
+                                    `<img src="${product.images[0]}" alt="${product.name}" class="details-img">` :
+                                    `<div class="details-placeholder">📱</div>`
+                                }
+                            </div>
+                            <div class="product-details-info">
+                                <h1 class="product-details-name">${product.name}</h1>
+                                <div class="product-details-brand">${product.brand} ${product.model}</div>
+                                <div class="product-details-price">
+                                    <span class="current-price">${Math.round(product.price).toLocaleString()} ₽</span>
+                                    ${product.old_price > product.price ? 
+                                        `<span class="old-price">${Math.round(product.old_price).toLocaleString()} ₽</span>` : ''
+                                    }
+                                    ${product.discount_percentage > 0 ? 
+                                        `<span class="discount">-${Math.round(product.discount_percentage)}%</span>` : ''
+                                    }
+                                </div>
+                                <div class="product-details-sku">SKU: ${product.sku}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="product-details-content">
+                            <div class="product-description-section">
+                                <h3>📝 Описание</h3>
+                                <div class="product-full-description">${fullDescription.replace(/\n/g, '<br>')}</div>
+                            </div>
+                            
+                            ${product.specifications ? `
+                                <div class="product-specifications-section">
+                                    <h3>⚙️ Характеристики</h3>
+                                    <div class="specifications-grid">
+                                        ${Object.entries(product.specifications)
+                                            .filter(([key, value]) => key !== 'full_description')
+                                            .map(([category, details]) => `
+                                                <div class="spec-category">
+                                                    <h4>${category.charAt(0).toUpperCase() + category.slice(1)}</h4>
+                                                    ${typeof details === 'object' ? 
+                                                        Object.entries(details).map(([key, value]) => 
+                                                            `<div class="spec-item">
+                                                                <span class="spec-key">${key.replace(/_/g, ' ')}:</span>
+                                                                <span class="spec-value">${Array.isArray(value) ? value.join(', ') : value}</span>
+                                                            </div>`
+                                                        ).join('') :
+                                                        `<div class="spec-item">${details}</div>`
+                                                    }
+                                                </div>
+                                            `).join('')}
+                                    </div>
+                                </div>
+                            ` : ''}
+                            
+                            <div class="product-actions">
+                                <button class="buy-button" onclick="alert('Функция покупки будет добавлена позже')">
+                                    🛒 Купить
+                                </button>
+                                <button class="favorite-button" onclick="alert('Функция избранного будет добавлена позже')">
+                                    ❤️ В избранное
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('content').innerHTML = detailsHtml;
+                
+            } catch (error) {
+                showError('Ошибка загрузки деталей товара');
+            }
         }
         
         // Управление каруселью изображений

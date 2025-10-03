@@ -14,8 +14,12 @@ class Category(Base):
     icon = Column(String(50))  # emoji or icon name
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+    parent_category_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
+    brand = Column(String(100), nullable=True)
+    is_subcategory = Column(Boolean, default=False)
     
     products = relationship("Product", back_populates="category")
+    parent = relationship("Category", remote_side=[id], backref="subcategories")
 
 class Product(Base):
     __tablename__ = "products"

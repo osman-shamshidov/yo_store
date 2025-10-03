@@ -58,6 +58,10 @@ class CategoryResponse(BaseModel):
     description: str
     icon: str
     product_count: int
+    parent_category_id: Optional[int] = None
+    brand: Optional[str] = None
+    is_subcategory: bool = False
+    subcategories: List['CategoryResponse'] = []
     
     class Config:
         from_attributes = True
@@ -90,21 +94,54 @@ async def root():
 
 @app.get("/categories", response_model=List[CategoryResponse])
 async def get_categories(db: Session = Depends(get_db)):
-    """Get all categories with product count"""
-    categories = db.query(Category).filter(Category.is_active == True).all()
+    """Get all main categories with product counts and subcategories"""
+    # Получить только основные категории (не подкатегории)
+    main_categories = db.query(Category).filter(
+        Category.is_active == True
+    ).filter(
+        Category.parent_category_id == None
+    ).all()
     
     result = []
-    for category in categories:
+    for category in main_categories:
+        # Подсчитать товары в основной категории
         product_count = db.query(Product).filter(
             and_(Product.category_id == category.id, Product.is_available == True)
         ).count()
+        
+        # Получить подкатегории
+        subcategories = db.query(Category).filter(
+            and_(Category.parent_category_id == category.id, Category.is_active == True)
+        ).all()
+        
+        subcategory_responses = []
+        for subcat in subcategories:
+            subcat_product_count = db.query(Product).filter(
+                and_(Product.category_id == subcat.id, Product.is_available == True)
+            ).count()
+            
+            subcategory_responses.append(CategoryResponse(
+                id=subcat.id,
+                name=subcat.name,
+                description=subcat.description,
+                icon=subcat.icon,
+                product_count=subcat_product_count,
+                parent_category_id=subcat.parent_category_id,
+                brand=subcat.brand,
+                is_subcategory=subcat.is_subcategory,
+                subcategories=[]
+            ))
         
         result.append(CategoryResponse(
             id=category.id,
             name=category.name,
             description=category.description,
             icon=category.icon,
-            product_count=product_count
+            product_count=product_count,
+            parent_category_id=category.parent_category_id,
+            brand=category.brand,
+            is_subcategory=category.is_subcategory,
+            subcategories=subcategory_responses
         ))
     
     return result
@@ -112,19 +149,44 @@ async def get_categories(db: Session = Depends(get_db)):
 @app.get("/products", response_model=List[ProductResponse])
 async def get_products(
     category_id: Optional[int] = None,
+    brand: Optional[str] = None,
     limit: int = 20,
     offset: int = 0,
     db: Session = Depends(get_db)
 ):
-    """Get products with optional category filter"""
+    """Get products with optional category and brand filters"""
     query = db.query(Product, CurrentPrice, Category).join(
         CurrentPrice, Product.id == CurrentPrice.product_id
     ).join(Category, Product.category_id == Category.id).filter(
         Product.is_available == True
     )
     
-    if category_id:
-        query = query.filter(Product.category_id == category_id)
+    if category_id and brand:
+        # Если указаны и категория, и бренд, ищем товары в подкатегориях этой категории с нужным брендом
+        subcategory_ids = db.query(Category.id).filter(
+            and_(
+                Category.parent_category_id == category_id,
+                Category.brand == brand,
+                Category.is_subcategory == True
+            )
+        ).all()
+        
+        if subcategory_ids:
+            subcategory_id_list = [subcat[0] for subcat in subcategory_ids]
+            query = query.filter(Product.category_id.in_(subcategory_id_list))
+        else:
+            # Если подкатегория не найдена, возвращаем пустой результат
+            query = query.filter(Product.id == -1)  # Невозможный ID
+    elif category_id:
+        # Если указана только категория, ищем товары в основной категории и всех подкатегориях
+        subcategory_ids = db.query(Category.id).filter(
+            Category.parent_category_id == category_id
+        ).all()
+        
+        category_ids = [category_id] + [subcat[0] for subcat in subcategory_ids]
+        query = query.filter(Product.category_id.in_(category_ids))
+    elif brand:
+        query = query.filter(Product.brand == brand)
     
     results = query.offset(offset).limit(limit).all()
     
