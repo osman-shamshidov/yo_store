@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yo Store - Магазин электроники</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .search-bar {
+            background: white;
+            border-radius: 25px;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .search-input {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 1.1rem;
+            background: transparent;
+        }
+        
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .category-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .category-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .category-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .category-count {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #999;
+        }
+        
+        .product-info {
+            padding: 20px;
+        }
+        
+        .product-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        .product-brand {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        
+        .product-price {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .current-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #e74c3c;
+        }
+        
+        .old-price {
+            font-size: 1rem;
+            color: #999;
+            text-decoration: line-through;
+        }
+        
+        .discount {
+            background: #e74c3c;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .product-description {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .error {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            background: rgba(231, 76, 60, 0.1);
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        
+        .no-products {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            font-size: 1.1rem;
+        }
+        
+        .back-button {
+            background: white;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .logo {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .categories {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <img src="/static/images/logo.jpg" alt="Yo Store" class="logo">
+                Yo Store
+            </h1>
+            <p>Лучшие цены на технику • Обновление каждые 10 минут</p>
+        </div>
+        
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="🔍 Поиск товаров..." id="searchInput">
+        </div>
+        
+        <div id="content">
+            <div class="loading">Загрузка...</div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+        let currentView = 'categories';
+        let currentCategoryId = null;
+        
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCategories();
+            setupSearch();
+        });
+        
+        // Setup search functionality
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            let searchTimeout;
+            
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    const query = this.value.trim();
+                    if (query.length > 2) {
+                        searchProducts(query);
+                    } else if (query.length === 0 && currentView === 'search') {
+                        loadCategories();
+                    }
+                }, 500);
+            });
+        }
+        
+        // Load categories
+        async function loadCategories() {
+            try {
+                showLoading();
+                const response = await fetch(`${API_BASE}/categories`);
+                const categories = await response.json();
+                
+                currentView = 'categories';
+                currentCategoryId = null;
+                
+                const content = document.getElementById('content');
+                content.innerHTML = `
+                    <div class="categories">
+                        ${categories.map(category => `
+                            <div class="category-card" onclick="loadProducts(${category.id})">
+                                <div class="category-icon">${category.icon}</div>
+                                <div class="category-name">${category.name}</div>
+                                <div class="category-count">${category.product_count} товаров</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } catch (error) {
+                showError('Ошибка загрузки категорий');
+            }
+        }
+        
+        // Load products for category
+        async function loadProducts(categoryId) {
+            try {
+                showLoading();
+                const response = await fetch(`${API_BASE}/products?category_id=${categoryId}&limit=20`);
+                const products = await response.json();
+                
+                currentView = 'products';
+                currentCategoryId = categoryId;
+                
+                const content = document.getElementById('content');
+                content.innerHTML = `
+                    <button class="back-button" onclick="loadCategories()">← Назад к категориям</button>
+                    <div class="products-grid">
+                        ${products.map(product => createProductCard(product)).join('')}
+                    </div>
+                `;
+            } catch (error) {
+                showError('Ошибка загрузки товаров');
+            }
+        }
+        
+        // Search products
+        async function searchProducts(query) {
+            try {
+                showLoading();
+                const response = await fetch(`${API_BASE}/search?q=${encodeURIComponent(query)}&limit=20`);
+                const products = await response.json();
+                
+                currentView = 'search';
+                currentCategoryId = null;
+                
+                const content = document.getElementById('content');
+                if (products.length === 0) {
+                    content.innerHTML = `
+                        <div class="no-products">
+                            По запросу "${query}" ничего не найдено
+                        </div>
+                    `;
+                } else {
+                    content.innerHTML = `
+                        <button class="back-button" onclick="loadCategories()">← Назад к категориям</button>
+                        <div class="products-grid">
+                            ${products.map(product => createProductCard(product)).join('')}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                showError('Ошибка поиска');
+            }
+        }
+        
+        // Create product card HTML
+        function createProductCard(product) {
+            const discountHtml = product.discount_percentage > 0 
+                ? `<span class="discount">-${Math.round(product.discount_percentage)}%</span>` 
+                : '';
+            
+            const oldPriceHtml = product.old_price > product.price 
+                ? `<span class="old-price">${Math.round(product.old_price).toLocaleString()} ₽</span>` 
+                : '';
+            
+            return `
+                <div class="product-card" onclick="showProductDetails(${product.id})">
+                    <div class="product-image">
+                        📱
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-brand">${product.brand} ${product.model}</div>
+                        <div class="product-price">
+                            <span class="current-price">${Math.round(product.price).toLocaleString()} ₽</span>
+                            ${oldPriceHtml}
+                            ${discountHtml}
+                        </div>
+                        <div class="product-description">${product.description}</div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Show product details (placeholder)
+        function showProductDetails(productId) {
+            alert(`Детали товара #${productId}\n\nЗдесь будет подробная информация о товаре, характеристики, отзывы и возможность заказа.`);
+        }
+        
+        // Show loading state
+        function showLoading() {
+            document.getElementById('content').innerHTML = '<div class="loading">Загрузка...</div>';
+        }
+        
+        // Show error state
+        function showError(message) {
+            document.getElementById('content').innerHTML = `<div class="error">${message}</div>`;
+        }
+        
+        // Telegram WebApp integration
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.ready();
+            window.Telegram.WebApp.expand();
+        }
+    </script>
+</body>
+</html>
+

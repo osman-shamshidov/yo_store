@@ -1,0 +1,33 @@
+[
+    {
+        "product_id": 1,
+        "price": 94990.0,
+        "comment": "iPhone 15 Pro - снижение цены"
+    },
+    {
+        "product_id": 2,
+        "price": 114990.0,
+        "comment": "MacBook Air M2 - снижение цены"
+    },
+    {
+        "product_id": 3,
+        "price": 57990.0,
+        "comment": "PlayStation 5 - снижение цены"
+    },
+    {
+        "product_id": 4,
+        "price": 23990.0,
+        "comment": "AirPods Pro 2 - снижение цены"
+    },
+    {
+        "product_id": 5,
+        "price": 56990.0,
+        "comment": "iPad Air - снижение цены"
+    },
+    {
+        "product_id": 6,
+        "price": 9490.0,
+        "comment": "HomePod mini - снижение цены"
+    }
+]
+
