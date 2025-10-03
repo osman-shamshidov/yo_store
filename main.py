@@ -36,10 +36,11 @@ class ElectronicsStoreApp:
     def start_api_server(self):
         """Start the FastAPI server"""
         port = int(os.environ.get('PORT', Config.PORT))
-        print(f"Starting API server on {Config.HOST}:{port}")
+        host = os.environ.get('HOST', Config.HOST)
+        print(f"Starting API server on {host}:{port}")
         config = uvicorn.Config(
             app=app,
-            host=Config.HOST,
+            host=host,
             port=port,
             log_level="info"
         )
