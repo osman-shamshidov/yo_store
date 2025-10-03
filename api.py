@@ -1,6 +1,6 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, UploadFile, File
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.responses import HTMLResponse, FileResponse, StreamingResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
 from database import get_db
@@ -9,6 +9,8 @@ from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
 import json
+import io
+from excel_handler import ExcelHandler
 
 app = FastAPI(title="Yo Store API", version="1.0.0")
 
@@ -225,6 +227,218 @@ async def webapp():
 async def health_check():
     """Health check endpoint"""
     return {"status": "healthy", "timestamp": datetime.utcnow().isoformat()}
+
+# Excel Management API
+@app.get("/api/excel/template/products")
+async def download_products_template():
+    """Скачать шаблон Excel файла для добавления товаров"""
+    excel_handler = ExcelHandler()
+    template_data = excel_handler.create_products_template()
+    
+    return StreamingResponse(
+        io.BytesIO(template_data),
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": "attachment; filename=products_template.xlsx"}
+    )
+
+@app.get("/api/excel/template/prices")
+async def download_prices_template():
+    """Скачать шаблон Excel файла для обновления цен"""
+    excel_handler = ExcelHandler()
+    template_data = excel_handler.create_prices_template()
+    
+    return StreamingResponse(
+        io.BytesIO(template_data),
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": "attachment; filename=prices_template.xlsx"}
+    )
+
+@app.post("/api/excel/import/products")
+async def import_products_from_excel(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    """Импортировать товары из Excel файла"""
+    if not file.filename.endswith(('.xlsx', '.xls')):
+        raise HTTPException(status_code=400, detail="Файл должен быть в формате Excel (.xlsx или .xls)")
+    
+    try:
+        # Читаем содержимое файла
+        file_content = await file.read()
+        
+        # Парсим Excel файл
+        excel_handler = ExcelHandler()
+        products_data = excel_handler.parse_products_excel(file_content)
+        
+        # Добавляем товары в базу данных
+        added_count = 0
+        errors = []
+        
+        for i, product_data in enumerate(products_data):
+            try:
+                # Проверить существование категории
+                category = db.query(Category).filter(Category.id == product_data['category_id']).first()
+                if not category:
+                    errors.append(f"Товар {i+1}: Категория с ID {product_data['category_id']} не найдена")
+                    continue
+                
+                # Создать товар
+                db_product = Product(
+                    name=product_data['name'],
+                    category_id=product_data['category_id'],
+                    description=product_data['description'],
+                    brand=product_data['brand'],
+                    model=product_data['model'],
+                    image_url=product_data['image_url'],
+                    specifications=json.dumps(product_data['specifications']),
+                    stock=product_data['stock'],
+                    is_available=True
+                )
+                
+                db.add(db_product)
+                db.flush()  # Получить ID
+                
+                # Создать начальную цену
+                db_price = CurrentPrice(
+                    product_id=db_product.id,
+                    price=product_data['price'],
+                    old_price=product_data['price'],
+                    discount_percentage=0.0,
+                    currency=product_data['currency'],
+                    updated_at=datetime.utcnow()
+                )
+                
+                db.add(db_price)
+                added_count += 1
+                
+            except Exception as e:
+                errors.append(f"Товар {i+1}: {str(e)}")
+        
+        db.commit()
+        
+        return {
+            "message": "Импорт завершен",
+            "added": added_count,
+            "errors": errors,
+            "total_processed": len(products_data)
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Ошибка при импорте: {str(e)}")
+
+@app.post("/api/excel/import/prices")
+async def import_prices_from_excel(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    """Обновить цены из Excel файла"""
+    if not file.filename.endswith(('.xlsx', '.xls')):
+        raise HTTPException(status_code=400, detail="Файл должен быть в формате Excel (.xlsx или .xls)")
+    
+    try:
+        # Читаем содержимое файла
+        file_content = await file.read()
+        
+        # Парсим Excel файл
+        excel_handler = ExcelHandler()
+        prices_data = excel_handler.parse_prices_excel(file_content)
+        
+        # Обновляем цены в базе данных
+        updated_count = 0
+        errors = []
+        
+        for i, price_data in enumerate(prices_data):
+            try:
+                # Найти товар
+                product = db.query(Product).filter(Product.id == price_data['product_id']).first()
+                if not product:
+                    errors.append(f"Строка {i+1}: Товар с ID {price_data['product_id']} не найден")
+                    continue
+                
+                # Найти текущую цену
+                current_price = db.query(CurrentPrice).filter(
+                    CurrentPrice.product_id == price_data['product_id']
+                ).first()
+                
+                if current_price:
+                    # Обновить существующую цену
+                    current_price.old_price = current_price.price
+                    current_price.price = price_data['price']
+                    current_price.currency = price_data['currency']
+                    current_price.updated_at = datetime.utcnow()
+                    
+                    # Рассчитать скидку
+                    if current_price.old_price > current_price.price:
+                        current_price.discount_percentage = round(
+                            ((current_price.old_price - current_price.price) / current_price.old_price) * 100, 2
+                        )
+                    else:
+                        current_price.discount_percentage = 0.0
+                else:
+                    # Создать новую цену
+                    new_price = CurrentPrice(
+                        product_id=price_data['product_id'],
+                        price=price_data['price'],
+                        old_price=price_data['old_price'],
+                        discount_percentage=0.0,
+                        currency=price_data['currency'],
+                        updated_at=datetime.utcnow()
+                    )
+                    db.add(new_price)
+                
+                updated_count += 1
+                
+            except Exception as e:
+                errors.append(f"Строка {i+1}: {str(e)}")
+        
+        db.commit()
+        
+        return {
+            "message": "Обновление цен завершено",
+            "updated": updated_count,
+            "errors": errors,
+            "total_processed": len(prices_data)
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Ошибка при обновлении цен: {str(e)}")
+
+@app.get("/api/excel/export/products")
+async def export_products_to_excel(db: Session = Depends(get_db)):
+    """Экспортировать все товары в Excel файл"""
+    try:
+        # Получить все товары с ценами и категориями
+        results = db.query(Product, CurrentPrice, Category).join(
+            CurrentPrice, Product.id == CurrentPrice.product_id
+        ).join(Category, Product.category_id == Category.id).all()
+        
+        products_data = []
+        for product, price, category in results:
+            try:
+                specifications = json.loads(product.specifications) if product.specifications else {}
+            except json.JSONDecodeError:
+                specifications = {}
+            
+            products_data.append({
+                'id': product.id,
+                'name': product.name,
+                'category_name': category.name,
+                'description': product.description,
+                'brand': product.brand,
+                'model': product.model,
+                'price': price.price,
+                'currency': price.currency,
+                'stock': product.stock,
+                'image_url': product.image_url,
+                'created_at': product.created_at.strftime('%Y-%m-%d %H:%M:%S') if product.created_at else ''
+            })
+        
+        # Создать Excel файл
+        excel_handler = ExcelHandler()
+        excel_data = excel_handler.export_products_to_excel(products_data)
+        
+        return StreamingResponse(
+            io.BytesIO(excel_data),
+            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            headers={"Content-Disposition": "attachment; filename=products_export.xlsx"}
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ошибка при экспорте: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn

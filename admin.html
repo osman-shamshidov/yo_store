@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yo Store - Админ-панель</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 15px 30px;
+            background: none;
+            border: none;
+            font-size: 1.1em;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .tab.active {
+            border-bottom-color: #667eea;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .upload-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 2px dashed #dee2e6;
+            text-align: center;
+        }
+
+        .upload-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            margin: 20px 0;
+        }
+
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: transform 0.3s ease;
+            display: inline-block;
+        }
+
+        .file-input-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+        }
+
+        .template-section {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .template-section h4 {
+            color: #1976d2;
+            margin-bottom: 15px;
+        }
+
+        .template-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .instructions {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .instructions h4 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .instructions ol {
+            color: #856404;
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+        }
+
+        .file-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        .file-info h5 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .file-info p {
+            color: #666;
+            margin: 5px 0;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                text-align: center;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            
+            .template-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛍️ Yo Store</h1>
+            <p>Админ-панель управления товарами через Excel</p>
+        </div>
+
+        <div class="content">
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('import-products')">📥 Импорт товаров</button>
+                <button class="tab" onclick="showTab('update-prices')">💰 Обновление цен</button>
+                <button class="tab" onclick="showTab('export-data')">📤 Экспорт данных</button>
+                <button class="tab" onclick="showTab('templates')">📋 Шаблоны</button>
+            </div>
+
+            <!-- Импорт товаров -->
+            <div id="import-products" class="tab-content active">
+                <h2>📥 Импорт товаров из Excel</h2>
+                
+                <div class="instructions">
+                    <h4>📋 Инструкция по импорту товаров:</h4>
+                    <ol>
+                        <li>Скачайте шаблон Excel файла для товаров</li>
+                        <li>Заполните данные товаров согласно шаблону</li>
+                        <li>Обязательно укажите: название, ID категории, цену</li>
+                        <li>Загрузите заполненный файл через форму ниже</li>
+                        <li>Проверьте результат импорта</li>
+                    </ol>
+                </div>
+
+                <div class="upload-section">
+                    <h3>📁 Загрузить Excel файл с товарами</h3>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="productsFile" class="file-input" accept=".xlsx,.xls">
+                        <label for="productsFile" class="file-input-button">
+                            📁 Выбрать файл Excel
+                        </label>
+                    </div>
+                    <div class="file-info" id="productsFileInfo"></div>
+                    <button onclick="importProducts()" class="btn" id="importProductsBtn" disabled>
+                        📥 Импортировать товары
+                    </button>
+                </div>
+
+                <div class="progress-bar" id="productsProgress">
+                    <div class="progress-fill" id="productsProgressFill"></div>
+                </div>
+            </div>
+
+            <!-- Обновление цен -->
+            <div id="update-prices" class="tab-content">
+                <h2>💰 Обновление цен из Excel</h2>
+                
+                <div class="instructions">
+                    <h4>📋 Инструкция по обновлению цен:</h4>
+                    <ol>
+                        <li>Скачайте шаблон Excel файла для цен</li>
+                        <li>Укажите ID товара и новую цену</li>
+                        <li>Можно указать старую цену для расчета скидки</li>
+                        <li>Загрузите файл через форму ниже</li>
+                        <li>Проверьте результат обновления</li>
+                    </ol>
+                </div>
+
+                <div class="upload-section">
+                    <h3>📁 Загрузить Excel файл с ценами</h3>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="pricesFile" class="file-input" accept=".xlsx,.xls">
+                        <label for="pricesFile" class="file-input-button">
+                            📁 Выбрать файл Excel
+                        </label>
+                    </div>
+                    <div class="file-info" id="pricesFileInfo"></div>
+                    <button onclick="updatePrices()" class="btn" id="updatePricesBtn" disabled>
+                        💰 Обновить цены
+                    </button>
+                </div>
+
+                <div class="progress-bar" id="pricesProgress">
+                    <div class="progress-fill" id="pricesProgressFill"></div>
+                </div>
+            </div>
+
+            <!-- Экспорт данных -->
+            <div id="export-data" class="tab-content">
+                <h2>📤 Экспорт данных в Excel</h2>
+                
+                <div class="template-section">
+                    <h4>📊 Экспорт всех товаров</h4>
+                    <p>Скачайте полный список товаров с ценами и характеристиками в формате Excel</p>
+                    <button onclick="exportProducts()" class="btn btn-info">
+                        📤 Экспортировать товары
+                    </button>
+                </div>
+            </div>
+
+            <!-- Шаблоны -->
+            <div id="templates" class="tab-content">
+                <h2>📋 Шаблоны Excel файлов</h2>
+                
+                <div class="template-section">
+                    <h4>📥 Шаблон для импорта товаров</h4>
+                    <p>Скачайте шаблон с примерами для добавления новых товаров</p>
+                    <div class="template-buttons">
+                        <a href="/api/excel/template/products" class="btn btn-success" download>
+                            📥 Скачать шаблон товаров
+                        </a>
+                    </div>
+                </div>
+
+                <div class="template-section">
+                    <h4>💰 Шаблон для обновления цен</h4>
+                    <p>Скачайте шаблон для массового обновления цен товаров</p>
+                    <div class="template-buttons">
+                        <a href="/api/excel/template/prices" class="btn btn-success" download>
+                            💰 Скачать шаблон цен
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Переключение табов
+        function showTab(tabName) {
+            // Скрыть все табы
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Показать выбранный таб
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Обработка выбора файла для товаров
+        document.getElementById('productsFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                showFileInfo('productsFileInfo', file);
+                document.getElementById('importProductsBtn').disabled = false;
+            }
+        });
+
+        // Обработка выбора файла для цен
+        document.getElementById('pricesFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                showFileInfo('pricesFileInfo', file);
+                document.getElementById('updatePricesBtn').disabled = false;
+            }
+        });
+
+        // Показать информацию о файле
+        function showFileInfo(elementId, file) {
+            const fileInfo = document.getElementById(elementId);
+            fileInfo.innerHTML = `
+                <h5>📁 Выбранный файл:</h5>
+                <p><strong>Название:</strong> ${file.name}</p>
+                <p><strong>Размер:</strong> ${(file.size / 1024).toFixed(2)} KB</p>
+                <p><strong>Тип:</strong> ${file.type || 'Excel файл'}</p>
+            `;
+            fileInfo.style.display = 'block';
+        }
+
+        // Импорт товаров
+        async function importProducts() {
+            const fileInput = document.getElementById('productsFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showAlert('Выберите файл для импорта', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            showProgress('productsProgress', 'productsProgressFill');
+            
+            try {
+                const response = await fetch('/api/excel/import/products', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showAlert(`✅ Импорт завершен! Добавлено: ${result.added} товаров`, 'success');
+                    if (result.errors && result.errors.length > 0) {
+                        showAlert(`⚠️ Ошибки: ${result.errors.join('; ')}`, 'error');
+                    }
+                } else {
+                    showAlert(`❌ Ошибка импорта: ${result.detail}`, 'error');
+                }
+            } catch (error) {
+                showAlert(`❌ Ошибка соединения: ${error.message}`, 'error');
+            } finally {
+                hideProgress('productsProgress');
+            }
+        }
+
+        // Обновление цен
+        async function updatePrices() {
+            const fileInput = document.getElementById('pricesFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showAlert('Выберите файл для обновления цен', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            showProgress('pricesProgress', 'pricesProgressFill');
+            
+            try {
+                const response = await fetch('/api/excel/import/prices', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showAlert(`✅ Обновление завершено! Обновлено: ${result.updated} цен`, 'success');
+                    if (result.errors && result.errors.length > 0) {
+                        showAlert(`⚠️ Ошибки: ${result.errors.join('; ')}`, 'error');
+                    }
+                } else {
+                    showAlert(`❌ Ошибка обновления: ${result.detail}`, 'error');
+                }
+            } catch (error) {
+                showAlert(`❌ Ошибка соединения: ${error.message}`, 'error');
+            } finally {
+                hideProgress('pricesProgress');
+            }
+        }
+
+        // Экспорт товаров
+        async function exportProducts() {
+            try {
+                const response = await fetch('/api/excel/export/products');
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'products_export.xlsx';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                    
+                    showAlert('✅ Экспорт завершен! Файл скачан', 'success');
+                } else {
+                    const error = await response.json();
+                    showAlert(`❌ Ошибка экспорта: ${error.detail}`, 'error');
+                }
+            } catch (error) {
+                showAlert(`❌ Ошибка соединения: ${error.message}`, 'error');
+            }
+        }
+
+        // Показать прогресс
+        function showProgress(progressId, fillId) {
+            const progress = document.getElementById(progressId);
+            const fill = document.getElementById(fillId);
+            progress.style.display = 'block';
+            
+            let width = 0;
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                } else {
+                    width += 10;
+                    fill.style.width = width + '%';
+                }
+            }, 100);
+        }
+
+        // Скрыть прогресс
+        function hideProgress(progressId) {
+            setTimeout(() => {
+                document.getElementById(progressId).style.display = 'none';
+                document.getElementById(progressId + 'Fill').style.width = '0%';
+            }, 1000);
+        }
+
+        // Показать уведомление
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            
+            const content = document.querySelector('.content');
+            content.insertBefore(alertDiv, content.firstChild);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
