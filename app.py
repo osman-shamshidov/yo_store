@@ -12,6 +12,7 @@ import os
 import time
 from config import Config
 from database import init_database
+from init_db_for_production import create_full_product_catalog
 # from telegram_bot import ElectronicsStoreBot  # Отключено для тестирования
 import uvicorn
 from api import app
@@ -121,6 +122,10 @@ class ElectronicsStoreApp:
         # Initialize database
         print("Initializing database...")
         init_database()
+        
+        # Create full product catalog for production
+        print("Creating full product catalog...")
+        create_full_product_catalog()
         
         # Start components
         api_thread = self.start_api_server()
