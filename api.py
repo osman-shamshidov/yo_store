@@ -826,13 +826,14 @@ async def get_product_images_by_color(model_key: str, color: str):
     }
     actual_model_key = model_key_mapping.get(model_key, model_key.upper())
     
+    # Debug: возвращаем информацию о поиске
     try:
         # Определяем папку с изображениями на основе model_key и цвета
         image_folder = f"static/images/products/{actual_model_key}/{color}"
         
         # Проверяем существование папки
         if not os.path.exists(image_folder):
-            raise HTTPException(status_code=404, detail=f"Папка изображений не найдена: {image_folder}")
+            raise HTTPException(status_code=404, detail=f"Изображения не найдены: . model_key='{model_key}', actual_model_key='{actual_model_key}', color='{color}', path='{image_folder}'")
         
         # Формируем пути к реальным файлам
         image_paths = []
