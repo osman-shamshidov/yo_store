@@ -1207,6 +1207,38 @@ async def get_skus_with_info(
     
     return skus_info
 
+@app.get("/debug/db-status")
+async def debug_db_status(db: Session = Depends(get_db)):
+    """Debug endpoint to check database status"""
+    try:
+        product_count = db.query(Product).count()
+        category_count = db.query(Category).count()
+        price_count = db.query(CurrentPrice).count()
+        
+        # Get sample products
+        sample_products = db.query(Product).limit(5).all()
+        
+        return {
+            "product_count": product_count,
+            "category_count": category_count, 
+            "price_count": price_count,
+            "sample_products": [
+                {
+                    "id": p.id,
+                    "name": p.name,
+                    "model": p.model,
+                    "sku": p.sku
+                } for p in sample_products
+            ],
+            "database_url": Config.DATABASE_URL,
+            "status": "ok"
+        }
+    except Exception as e:
+        return {
+            "error": str(e),
+            "status": "error"
+        }
+
 if __name__ == "__main__":
     import uvicorn
     from config import Config
