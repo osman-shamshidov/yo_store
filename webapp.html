@@ -700,6 +700,7 @@
             margin: 0;
             object-fit: contain;
             border-radius: 10px;
+            transition: opacity 0.2s ease-in-out;
         }
         
         .product-img {
@@ -1237,8 +1238,9 @@
                 `;
                 
                 // Инициализировать цвета по умолчанию после рендеринга
-                setTimeout(() => {
-                    initializeDefaultColors();
+                setTimeout(async () => {
+                    await initializeDefaultColors();
+                    await loadDefaultImages();
                 }, 100);
             } catch (error) {
                 showError('Ошибка загрузки товаров');
@@ -1301,8 +1303,9 @@
                 await createHierarchyFilters(brand, products);
                 
                 // Инициализировать цвета по умолчанию после рендеринга
-                setTimeout(() => {
-                    initializeDefaultColors();
+                setTimeout(async () => {
+                    await initializeDefaultColors();
+                    await loadDefaultImages();
                 }, 100);
             } catch (error) {
                 showError('Ошибка загрузки товаров бренда');
@@ -1338,8 +1341,9 @@
                     `;
                     
                     // Инициализировать цвета по умолчанию после рендеринга
-                    setTimeout(() => {
-                        initializeDefaultColors();
+                    setTimeout(async () => {
+                        await initializeDefaultColors();
+                        await loadDefaultImages();
                     }, 100);
                 }
             } catch (error) {
@@ -1505,9 +1509,10 @@
                     return createProductCard(product);
                 }).join('');
                 
-                // Инициализировать цвета по умолчанию
-                setTimeout(() => {
-                    initializeDefaultColors();
+                // Инициализировать цвета по умолчанию и загрузить изображения
+                setTimeout(async () => {
+                    await initializeDefaultColors();
+                    // Изображения уже загружаются сразу при создании карточек через loadFirstColorImage
                 }, 100);
                 
             } catch (error) {
@@ -1554,16 +1559,16 @@
                 </div>
             `;
             
-            // Обработка изображений
-            let imageHtml = '📱'; // Эмодзи по умолчанию
+            // Обработка изображений - показываем изображение из базы данных сразу
+            let imageHtml = '';
             
             if (product.images && product.images.length > 0) {
-                // Если есть множественные изображения
+                // Если есть множественные изображения из базы данных
                 if (product.images.length > 1) {
                     imageHtml = `
                         <div class="product-image-carousel" data-product-id="${product.id}">
-                            <img src="${product.images[0]}" alt="${product.name}" class="product-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                            <div class="image-placeholder" style="display: none;">📱</div>
+                            <img src="${product.images[0]}" alt="${product.name}" class="product-img" style="opacity: 0;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <div class="image-placeholder loading-placeholder">📱</div>
                             <div class="image-indicators">
                                 ${product.images.map((_, index) => 
                                     `<span class="indicator ${index === 0 ? 'active' : ''}" data-index="${index}"></span>`
@@ -1574,17 +1579,37 @@
                         </div>
                     `;
                 } else {
-                    // Одно изображение
+                    // Одно изображение из базы данных
                     imageHtml = `
-                        <img src="${product.images[0]}" alt="${product.name}" class="product-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                        <div class="image-placeholder" style="display: none;">📱</div>
+                        <div class="product-image-carousel" data-product-id="${product.id}">
+                            <img src="${product.images[0]}" alt="${product.name}" class="product-img" style="opacity: 0;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <div class="image-placeholder loading-placeholder">📱</div>
+                            <div class="image-indicators"></div>
+                            <div class="image-nav prev" onclick="event.stopPropagation(); changeImage(${product.id}, -1)" style="display:none;">‹</div>
+                            <div class="image-nav next" onclick="event.stopPropagation(); changeImage(${product.id}, 1)" style="display:none;">›</div>
+                        </div>
                     `;
                 }
             } else if (product.image_url) {
                 // Старое поле image_url
                 imageHtml = `
-                    <img src="${product.image_url}" alt="${product.name}" class="product-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                    <div class="image-placeholder" style="display: none;">📱</div>
+                    <div class="product-image-carousel" data-product-id="${product.id}">
+                            <img src="${product.image_url}" alt="${product.name}" class="product-img" style="opacity: 0;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <div class="image-placeholder loading-placeholder">📱</div>
+                        <div class="image-indicators"></div>
+                        <div class="image-nav prev" onclick="event.stopPropagation(); changeImage(${product.id}, -1)" style="display:none;">‹</div>
+                        <div class="image-nav next" onclick="event.stopPropagation(); changeImage(${product.id}, 1)" style="display:none;">›</div>
+                    </div>
+                `;
+            } else {
+                // Если нет изображений в базе данных - показываем placeholder
+                imageHtml = `
+                    <div class="product-image-carousel" data-product-id="${product.id}">
+                        <div class="image-placeholder loading-placeholder">📱</div>
+                        <div class="image-indicators"></div>
+                        <div class="image-nav prev" onclick="event.stopPropagation(); changeImage(${product.id}, -1)" style="display:none;">‹</div>
+                        <div class="image-nav next" onclick="event.stopPropagation(); changeImage(${product.id}, 1)" style="display:none;">›</div>
+                    </div>
                 `;
             }
             
@@ -1819,26 +1844,47 @@
                 // Обновить изображения в карусели
                 const carousel = productCard.querySelector('.product-image-carousel');
                 if (carousel) {
-                    // Главное изображение
+                    // Скрыть loading placeholder
+                    const loadingPlaceholder = carousel.querySelector('.loading-placeholder');
+                    if (loadingPlaceholder) {
+                        loadingPlaceholder.style.display = 'none';
+                    }
+
+                    // Обновить главное изображение с плавной заменой
                     const mainImg = carousel.querySelector('.product-img');
                     if (mainImg && timestampedPaths[0]) {
+                        // Устанавливаем новое изображение и сразу показываем его
                         mainImg.src = timestampedPaths[0];
+                        mainImg.style.opacity = '1';
                     }
                     
                     // Индикаторы карусели
                     const indicatorsContainer = carousel.querySelector('.image-indicators');
-                    indicatorsContainer.innerHTML = timestampedPaths.map((_, index) => 
-                        `<span class="indicator ${index === 0 ? 'active' : ''}" data-index="${index}"></span>`
-                    ).join('');
+                    if (timestampedPaths.length > 1) {
+                        indicatorsContainer.innerHTML = timestampedPaths.map((_, index) => 
+                            `<span class="indicator ${index === 0 ? 'active' : ''}" data-index="${index}"></span>`
+                        ).join('');
+                        
+                        // Показать навигацию если есть несколько изображений
+                        const prevNav = carousel.querySelector('.image-nav.prev');
+                        const nextNav = carousel.querySelector('.image-nav.next');
+                        if (prevNav && nextNav) {
+                            prevNav.style.display = 'block';
+                            nextNav.style.display = 'block';
+                        }
+                    } else {
+                        indicatorsContainer.innerHTML = '';
+                        // Скрыть навигацию если изображение одно
+                        const prevNav = carousel.querySelector('.image-nav.prev');
+                        const nextNav = carousel.querySelector('.image-nav.next');
+                        if (prevNav && nextNav) {
+                            prevNav.style.display = 'none';
+                            nextNav.style.display = 'none';
+                        }
+                    }
                     
                     // Сохранить пути для changeImage функции
                     window[`${productId}-${selectedColor}`] = timestampedPaths;
-                } else {
-                    // Одиночное изображение
-                    const singleImage = productCard.querySelector('img.product-img');
-                    if (singleImage && timestampedPaths[0]) {
-                        singleImage.src = timestampedPaths[0];
-                    }
                 }
                 
                 console.log(`✅ Обновлены изображения для ${brandModel} цвета ${selectedColor} (${imageData.image_count} фото из ${imageData.folder_name})`);
@@ -1848,12 +1894,25 @@
                 
                 // Fallback - используем изображение из product.image_url если есть
                 console.log('📸 Устанавливаем fallback изображение из product.image_url:', product.image_url);
-                const fallbackImage = product.image_url || `/static/images/products/placeholder.jpg?v=${Date.now()}`;
                 const carousel = productCard.querySelector('.product-image-carousel');
                 if (carousel) {
+                    // Скрыть loading placeholder
+                    const placeholder = carousel.querySelector('.loading-placeholder');
+                    if (placeholder) {
+                        placeholder.style.display = 'none';
+                    }
+                    
+                    // Добавить fallback изображение (просто placeholder)
                     const mainImg = carousel.querySelector('.product-img');
                     if (mainImg) {
-                        mainImg.src = fallbackImage;
+                        mainImg.src = `/static/images/products/placeholder.jpg?v=${Date.now()}`;
+                    } else {
+                        // Показать placeholder если нет изображения
+                        const placeholder = carousel.querySelector('.loading-placeholder');
+                        if (placeholder) {
+                            placeholder.style.display = 'block';
+                            placeholder.textContent = '📱 Нет фото';
+                        }
                     }
                 }
             }
@@ -1967,6 +2026,128 @@
         }
         
         // Initialize variants and colors for all cards
+        // Функция для загрузки изображения первого цвета сразу при создании карточки
+        async function loadFirstColorImage(productId, brand, model) {
+            try {
+                console.log(`🖼️ Загружаем изображение первого цвета для ${brand} ${model}...`);
+                
+                // Определяем model_key
+                const modelKey = getModelKey(`${brand} ${model}`);
+                if (!modelKey) {
+                    console.warn(`Не удалось определить model_key для ${brand} ${model}`);
+                    return;
+                }
+                
+                // Определяем цвет по умолчанию (обычно Black или первый доступный)
+                const defaultColors = ['Black', 'black', 'White', 'white', 'Space Black', 'space-black'];
+                
+                for (const colorName of defaultColors) {
+                    const colorMapping = {
+                        'Cosmic Orange': 'cosmic-orange',
+                        'Deep Blue': 'deep-blue',
+                        'Space Black': 'space-black',
+                        'Titanium Desert': 'titanium-desert',
+                        'Titanium Natural': 'titanium-natural',
+                        'Titanium Black': 'titanium-black',
+                        'Titanium White': 'titanium-white',
+                        'Teal': 'teal',
+                        'Pink': 'pink',
+                        'White': 'white',
+                        'Black': 'black',
+                        'Silver': 'silver'
+                    };
+                    
+                    const colorFolder = colorMapping[colorName] || colorName.toLowerCase().replace(/\s+/g, '-');
+                    
+                    try {
+                        // Пытаемся загрузить изображение для этого цвета
+                        const response = await fetch(`/product-images/${modelKey}/${colorFolder}`);
+                        
+                        if (response.ok) {
+                            const imageData = await response.json();
+                            const timestampedPaths = imageData.image_paths.map(img => `${img}?v=${Date.now()}`);
+                            
+                            // Обновляем изображение в карточке
+                            const carousel = document.querySelector(`[data-product-id="${productId}"]`);
+                            if (carousel) {
+                                const placeholder = carousel.querySelector('.loading-placeholder');
+                                if (placeholder) {
+                                    placeholder.style.display = 'none';
+                                }
+                                
+                                // Создаем изображение
+                                const mainImg = document.createElement('img');
+                                mainImg.className = 'product-img';
+                                mainImg.alt = `${brand} ${model}`;
+                                mainImg.src = timestampedPaths[0];
+                                mainImg.style.opacity = '0';
+                                mainImg.onerror = 'this.style.display="none"; this.nextElementSibling.style.display="block";';
+                                
+                                carousel.insertBefore(mainImg, carousel.querySelector('.image-indicators'));
+                                
+                                // Плавное появление
+                                setTimeout(() => {
+                                    mainImg.style.opacity = '1';
+                                }, 100);
+                                
+                                // Настройка карусели если есть несколько изображений
+                                if (timestampedPaths.length > 1) {
+                                    const indicatorsContainer = carousel.querySelector('.image-indicators');
+                                    indicatorsContainer.innerHTML = timestampedPaths.map((_, index) => 
+                                        `<span class="indicator ${index === 0 ? 'active' : ''}" data-index="${index}"></span>`
+                                    ).join('');
+                                    
+                                    const prevNav = carousel.querySelector('.image-nav.prev');
+                                    const nextNav = carousel.querySelector('.image-nav.next');
+                                    if (prevNav && nextNav) {
+                                        prevNav.style.display = 'block';
+                                        nextNav.style.display = 'block';
+                                    }
+                                    
+                                    // Сохранить для функции changeImage
+                                    window[`${productId}-${colorName}`] = timestampedPaths;
+                                }
+                            }
+                            
+                            console.log(`✅ Загружено изображение для ${brand} ${model} цвета ${colorName}`);
+                            break; // Успешно загрузили, выходим из цикла
+                            
+                        }
+                    } catch (error) {
+                        // Цвет не найден, пробуем следующий
+                        continue;
+                    }
+                }
+                
+            } catch (error) {
+                console.warn(`❌ Ошибка загрузки первого изображения для товара ${productId}:`, error);
+            }
+        }
+
+        // Функция для загрузки изображений по умолчанию для первого цвета
+        async function loadDefaultImages() {
+            console.log('🖼️ Загружаем изображения по умолчанию для всех товаров...');
+            
+            for (const card of document.querySelectorAll('.product-card')) {
+                const colorButton = card.querySelector('.variant-btn.color-btn.active');
+                if (colorButton) {
+                    const productId = card.querySelector('.product-variants')?.dataset.productId || 
+                                     card.querySelector('[data-product-id]')?.dataset.productId;
+                    const selectedColor = colorButton.dataset.color || colorButton.dataset.value;
+                    
+                    if (productId && selectedColor) {
+                        try {
+                            await updateProductImage(productId, selectedColor);
+                        } catch (error) {
+                            console.warn(`Ошибка загрузки изображения для товара ${productId} цвета ${selectedColor}:`, error);
+                        }
+                    }
+                }
+            }
+            
+            console.log('✅ Завершена загрузка изображений по умолчанию');
+        }
+
         async function initializeDefaultColors() {
             // Загрузить варианты для всех товаров через новый API
             for (const card of document.querySelectorAll('.product-card')) {
