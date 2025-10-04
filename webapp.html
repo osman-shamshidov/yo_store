@@ -1786,6 +1786,7 @@
         
         // Update product image based on selected color - БЕЗ ХАРДКОДА!
         async function updateProductImage(productId, selectedColor) {
+            
             // Валидация входных параметров
             if (!selectedColor || selectedColor === 'undefined' || selectedColor === 'null') {
                 console.warn(`❌ Неверный цвет для товара ID ${productId}:`, selectedColor);
@@ -2154,6 +2155,7 @@
                 if (colorButton) {
                     const productId = card.querySelector('.product-variants')?.dataset.productId || 
                                      card.querySelector('[data-product-id]')?.dataset.productId;
+                    
                     const selectedColor = colorButton.dataset.color || colorButton.dataset.value;
                     
                     if (productId && selectedColor) {
