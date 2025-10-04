@@ -314,6 +314,9 @@ async def get_products(
 @app.get("/products/{model}/variants")
 async def get_model_variants(model: str, db: Session = Depends(get_db)):
     """Get all variants and their prices for a specific model"""
+    import urllib.parse
+    # Декодируем URL параметр
+    model = urllib.parse.unquote(model)
     
     # Сначала попробуем найти основной продукт с полными спецификациями
     main_product = db.query(Product).filter(
