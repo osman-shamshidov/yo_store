@@ -1519,7 +1519,7 @@
                 // Инициализировать цвета по умолчанию и загрузить изображения
                 setTimeout(async () => {
                     await initializeDefaultColors();
-                    // Изображения уже загружаются сразу при создании карточек через loadFirstColorImage
+                    await loadDefaultImages();
                 }, 100);
                 
             } catch (error) {
