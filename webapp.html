@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yo Store - Магазин электроники</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <style>
         * {
             margin: 0;
@@ -622,8 +625,8 @@
         
         .current-price {
             font-size: 1.4rem;
-            font-weight: 700;
-            color: #e74c3c;
+            font-weight: 400;
+            color: #000;
         }
         
         .old-price {
@@ -749,19 +752,23 @@
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.5);
-            color: #333;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
+            background: none;
+            color: #666;
+            width: auto;
+            height: auto;
+            border-radius: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 32px;
+            padding: 8px;
             font-weight: bold;
             opacity: 0;
             transition: opacity 0.3s ease;
+            border: none;
+            outline: none;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
         
         .product-image-carousel:hover .image-nav {
@@ -1942,12 +1949,19 @@
                 return '#E9ECEF'; // Дефолтный серый цвет
             }
             
+            // Отладочный вывод для Titanium Desert
+            if (colorName.toLowerCase().includes('titanium') || colorName.toLowerCase().includes('desert')) {
+                console.log('🔍 getColorStyle вызвана для:', colorName, 'тип:', typeof colorName);
+            }
+            
             const colorMap = {
                 // iPhone colors
                 'ultramarine': '#a4b6f6', // Ультрамариновый
                 'black': '#000000', 'white': '#FFFFFF', 'pink': '#FFB6C1', // Светло розовый
                 'titanium-black': '#000000', // Чисто черный
-                'titanium-white': '#FFFFFF', 'titanium-natural': '#979792', 'titanium-desert': '#B89569',
+                'titanium-white': '#FFFFFF', 'titanium-natural': '#979792', 'titanium-desert': '#d0b6a8',
+                // Дублируем для разных вариантов написания
+                'Titanium Desert': '#d0b6a8', 'TITANIUM-DESERT': '#d0b6a8',
                 'deep-blue': '#1B2951', 'cosmic-orange': '#FF6B35', 'silver': '#E8E8E8', // Светло серебристый
                 'teal': '#20B2AA', // Бирюзовый
                 
@@ -1964,12 +1978,19 @@
             
             // Проверяем точное совпадение
             if (colorMap[colorName.toLowerCase()]) {
-                return colorMap[colorName.toLowerCase()];
+                const result = colorMap[colorName.toLowerCase()];
+                if (colorName.toLowerCase().includes('titanium') || colorName.toLowerCase().includes('desert')) {
+                    console.log('✅ Найдено точное совпадение:', colorName.toLowerCase(), '->', result);
+                }
+                return result;
             }
             
             // Проверяем частичное совпадение (для составных цветов как "titanium-black")
             for (const [key, color] of Object.entries(colorMap)) {
                 if (colorName.toLowerCase().includes(key)) {
+                    if (colorName.toLowerCase().includes('titanium') || colorName.toLowerCase().includes('desert')) {
+                        console.log('✅ Найдено частичное совпадение:', key, 'для', colorName, '->', color);
+                    }
                     return color;
                 }
             }
@@ -2214,7 +2235,7 @@
                                     data-color="${color}" 
                                     data-model="${model}"
                                     data-type="color"
-                                    style="background-color: ${colorStyle}; color: ${textColor}; border-color: ${colorStyle};">
+                                    style="background-color: ${(color && color.toLowerCase().includes('titanium') && color.toLowerCase() && color.toLowerCase().includes('desert')) ? '#d0b6a8' : colorStyle}; color: ${textColor}; border-color: ${(color && color.toLowerCase().includes('titanium') && color.toLowerCase().includes('desert')) ? '#d0b6a8' : colorStyle};">
                                 ${label}
                             </button>
                         `;
@@ -2485,6 +2506,8 @@
             // Тестируем функции на известных цветах
             console.log('🧪 Тестирование функций цветов:');
             console.log('titanium-black ->', getColorStyle('titanium-black'));
+            console.log('titanium-desert ->', getColorStyle('titanium-desert'));
+            console.log('Titanium Desert ->', getColorStyle('Titanium Desert'));
             console.log('black ->', getColorStyle('black'));
             console.log('white ->', getColorStyle('white'));
             console.log('deep-blue ->', getColorStyle('deep-blue'));
@@ -2505,7 +2528,7 @@
                 
                 console.log(`🎨 Создаю кнопку для цвета ${actualColorValue}:`, { colorStyle, label, textColor });
                 
-                return `<button class="variant-btn color-btn ${isActive}" data-type="color" data-value="${actualColorValue}" data-color-folder="${folderName}" style="background-color: ${colorStyle}; color: ${textColor}; border-color: ${colorStyle};">${label}</button>`;
+                return `<button class="variant-btn color-btn ${isActive}" data-type="color" data-value="${actualColorValue}" data-color-folder="${folderName}" style="background-color: ${(actualColorValue && actualColorValue.toLowerCase().includes('titanium') && actualColorValue.toLowerCase().includes('desert')) ? '#d0b6a8' : colorStyle}; color: ${textColor}; border-color: ${(actualColorValue && actualColorValue.toLowerCase().includes('titanium') && actualColorValue.toLowerCase().includes('desert')) ? '#d0b6a8' : colorStyle};">${label}</button>`;
             }).join('');
             
             console.log('🎨 Создан HTML кнопок:', colorButtonsHTML);
