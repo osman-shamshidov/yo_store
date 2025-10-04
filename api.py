@@ -10,6 +10,9 @@ from typing import List, Optional
 from datetime import datetime
 import json
 import io
+import pandas as pd
+import openpyxl
+from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from excel_handler import ExcelHandler
 from manual_price_manager import manual_price_manager
 from config import Config
@@ -492,30 +495,60 @@ async def search_products(
     limit: int = 20,
     db: Session = Depends(get_db)
 ):
-    """Search products by name, brand, or model"""
+    """Search products by name, brand, or model - returns unique models only"""
     search_term = f"%{q}%"
     
-    results = db.query(Product, CurrentPrice, Category).join(
-        CurrentPrice, Product.id == CurrentPrice.product_id
-    ).join(Category, Product.category_id == Category.id).filter(
-        and_(
-            Product.is_available == True,
-            (
-                Product.name.ilike(search_term) |
-                Product.brand.ilike(search_term) |
-                Product.model.ilike(search_term)
-            )
+    # Создаем фильтры для поиска
+    search_filters = [
+        Product.is_available == True,
+        (
+            Product.name.ilike(search_term) |
+            Product.brand.ilike(search_term) |
+            Product.model.ilike(search_term)
         )
-    ).order_by(Product.name.desc()).limit(limit).all()
+    ]
+    
+    # Используем точно такую же логику как в get_products - получаем уникальные модели
+    subquery = db.query(
+        func.min(Product.id).label('id')
+    ).filter(*search_filters).group_by(Product.model, Product.brand).subquery()
+    
+    # Теперь получаем только те товары, которые являются представителями групп
+    final_query = db.query(Product, CurrentPrice).outerjoin(
+        CurrentPrice, Product.id == CurrentPrice.product_id
+    ).filter(
+        Product.id == subquery.c.id
+    ).order_by(Product.model, Product.id)
+    
+    # Применяем лимит
+    results = final_query.limit(limit).all()
     
     products = []
-    for product, price, category in results:
+    for product, price in results:
         try:
             specifications = json.loads(product.specifications) if product.specifications else {}
         except json.JSONDecodeError:
             specifications = {}
         
         images = get_product_images(product)
+        
+        # Получаем название категории из level полей или используем старое поле (аналогично get_products)
+        category_name = product.level0 or "Без категории"
+        if product.level1:
+            category_name += f" / {product.level1}"
+        if product.level2:
+            category_name += f" / {product.level2}"
+        
+        # Если цена отсутствует, используем значения по умолчанию (аналогично get_products)
+        if price is None:
+            price_obj = type('Price', (), {
+                'price': 0.0,
+                'old_price': 0.0,
+                'discount_percentage': 0.0,
+                'currency': 'RUB'
+            })()
+        else:
+            price_obj = price
         
         products.append(ProductResponse(
             id=product.id,
@@ -524,14 +557,16 @@ async def search_products(
             description=product.description,
             brand=product.brand,
             model=product.model,
-            category_name=category.name,
+            category_name=category_name,
             image_url=images[0] if images else (product.image_url or ''),
             images=images,
             specifications=specifications,
-            price=price.price,
-            old_price=price.old_price,
-            discount_percentage=price.discount_percentage,
-            currency=price.currency,
+            price=price_obj.price,
+            old_price=price_obj.old_price,
+            discount_percentage=price_obj.discount_percentage,
+            currency=price_obj.currency,
+            is_available=product.is_available,
+            created_at=product.created_at.isoformat()
         ))
     
     return products
@@ -685,6 +720,153 @@ async def import_prices_from_excel(file: UploadFile = File(...), db: Session = D
             "updated": updated_count,
             "errors": errors,
             "total_processed": len(prices_data)
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Ошибка при обновлении цен: {str(e)}")
+
+@app.get("/download-price-template")
+async def download_price_template(db: Session = Depends(get_db)):
+    """Скачать простой шаблон Excel для обновления цен: SKU - новая цена - старая цена"""
+    try:
+        from io import BytesIO
+        
+        # Получаем существующие товары с их SKU и текущими ценами
+        products = db.query(Product, CurrentPrice).outerjoin(
+            CurrentPrice, Product.id == CurrentPrice.product_id
+        ).filter(Product.is_available == True).limit(50).all()
+        
+        # Создаем DataFrame с примерами
+        data = []
+        if products:
+            for product, price in products:
+                data.append({
+                    'SKU': product.sku,
+                    'Новая цена': price.price if price else 0.0,
+                    'Старая цена': price.old_price if price and price.old_price else (price.price if price else 0.0)
+                })
+        else:
+            # Примеры если нет товаров
+            data = [
+                {'SKU': 'APPIP16', 'Новая цена': 59990, 'Старая цена': 69990},
+                {'SKU': 'APPIP16PRO', 'Новая цена': 89990, 'Старая цена': 99990},
+                {'SKU': 'SAM-GALAXY-S24', 'Новая цена': 79990, 'Старая цена': 89990}
+            ]
+        
+        df = pd.DataFrame(data)
+        
+        # Создаем Excel файл
+        output = BytesIO()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            df.to_excel(writer, index=False, sheet_name='Цены')
+            
+            # Стилизация
+            workbook = writer.book
+            worksheet = writer.sheets['Цены']
+            
+            # Стили для заголовков
+            header_font = openpyxl.styles.Font(bold=True, color="FFFFFF")
+            header_fill = openpyxl.styles.PatternFill(start_color="366092", end_color="366092", fill_type="solid")
+            
+            for cell in worksheet[1]:
+                cell.font = header_font
+                cell.fill = header_fill
+                cell.alignment = openpyxl.styles.Alignment(horizontal="center", vertical="center")
+        
+        output.seek(0)
+        
+        return StreamingResponse(
+            BytesIO(output.read()),
+            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            headers={"Content-Disposition": "attachment; filename=prices_template.xlsx"}
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Ошибка создания шаблона: {str(e)}")
+
+@app.post("/import-prices")
+async def import_prices_simple(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    """Простое обновление цен из Excel: SKU - новая цена - старая цена"""
+    if not file.filename.endswith(('.xlsx', '.xls')):
+        raise HTTPException(status_code=400, detail="Файл должен быть в формате Excel (.xlsx или .xls)")
+    
+    try:
+        # Читаем содержимое файла
+        file_content = await file.read()
+        
+        # Парсим как DataFrame
+        df = pd.read_excel(io.BytesIO(file_content))
+        
+        # Проверяем наличие нужных колонок
+        if len(df.columns) < 3:
+            raise HTTPException(status_code=400, detail="Файл должен содержать минимум 3 колонки: SKU, Новая цена, Старая цена")
+        
+        # Используем первые 3 колонки
+        sku_col = df.columns[0]
+        new_price_col = df.columns[1] 
+        old_price_col = df.columns[2]
+        
+        updated_count = 0
+        errors = []
+        not_found = []
+        
+        for index, row in df.iterrows():
+            try:
+                # Пропускаем пустые строки
+                if pd.isna(row[sku_col]) or pd.isna(row[new_price_col]):
+                    continue
+                
+                sku = str(row[sku_col]).strip()
+                try:
+                    new_price = float(row[new_price_col])
+                except:
+                    errors.append(f"Строка {index + 2}: Неверный формат новой цены")
+                    continue
+                
+                try:
+                    old_price = float(row[old_price_col]) if not pd.isna(row[old_price_col]) else new_price
+                except:
+                    old_price = new_price
+                
+                # Найти товар по SKU
+                product = db.query(Product).filter(Product.sku == sku).first()
+                
+                if not product:
+                    not_found.append(f"Строка {index + 2}: Товар с SKU '{sku}' не найден")
+                    continue
+                
+                # Обновить или создать цену
+                current_price = db.query(CurrentPrice).filter(CurrentPrice.product_id == product.id).first()
+                
+                if current_price:
+                    # Обновить существующую цену
+                    current_price.price = new_price
+                    current_price.old_price = old_price
+                    current_price.discount_percentage = ((old_price - new_price) / old_price * 100) if old_price > new_price else 0
+                else:
+                    # Создать новую цену
+                    new_price_obj = CurrentPrice(
+                        product_id=product.id,
+                        price=new_price,
+                        old_price=old_price,
+                        discount_percentage=((old_price - new_price) / old_price * 100) if old_price > new_price else 0,
+                        currency='RUB'
+                    )
+                    db.add(new_price_obj)
+                
+                updated_count += 1
+                
+            except Exception as e:
+                errors.append(f"Строка {index + 2}: {str(e)}")
+        
+        db.commit()
+        
+        return {
+            "message": "Обновление цен завершено",
+            "updated": updated_count,
+            "errors": errors,
+            "not_found": not_found,
+            "total_processed": len(df)
         }
         
     except Exception as e:
@@ -1254,6 +1436,201 @@ async def debug_db_status(db: Session = Depends(get_db)):
             "error": str(e),
             "status": "error"
         }
+
+@app.post("/import-single-product")
+async def import_single_product(product_data: dict, db: Session = Depends(get_db)):
+    """Добавить один товар через API"""
+    try:
+        # Валидация обязательных полей
+        required_fields = ['name', 'brand', 'model', 'sku']
+        for field in required_fields:
+            if not product_data.get(field):
+                raise HTTPException(status_code=400, detail=f"Поле '{field}' обязательно для заполнения")
+        
+        # Проверяем что SKU уникален
+        existing_product = db.query(Product).filter(Product.sku == product_data['sku']).first()
+        if existing_product:
+            raise HTTPException(status_code=400, detail=f"Товар с SKU '{product_data['sku']}' уже существует")
+        
+        # Создаем новый товар
+        new_product = Product(
+            name=product_data['name'],
+            sku=product_data['sku'],
+            brand=product_data['brand'],
+            model=product_data['model'],
+            description=product_data.get('description', ''),
+            stock=product_data.get('stock', 0),
+            is_available=product_data.get('is_available', True),
+            specifications=json.dumps(product_data.get('specifications', {}))
+        )
+        
+        db.add(new_product)
+        db.commit()
+        db.refresh(new_product)
+        
+        # Добавляем цену, если она указана
+        if 'price' in product_data and product_data['price']:
+            price_obj = CurrentPrice(
+                product_id=new_product.id,
+                price=float(product_data['price']),
+                old_price=float(product_data.get('old_price', product_data['price'])),
+                currency='RUB',
+                discount_percentage=0.0
+            )
+            db.add(price_obj)
+            db.commit()
+        
+        return {
+            "success": True,
+            "message": f"Товар '{product_data['name']}' успешно добавлен",
+            "product_id": new_product.id,
+            "sku": new_product.sku
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Ошибка добавления товара: {str(e)}")
+
+@app.get("/export-products")
+async def export_all_products(db: Session = Depends(get_db)):
+    """Скачать полный ассортимент в Excel с всеми столбцами"""
+    try:
+        # Получить все товары с ценами и категориями
+        results = db.query(Product, CurrentPrice, Category).outerjoin(
+            CurrentPrice, Product.id == CurrentPrice.product_id
+        ).outerjoin(Category, Product.category_id == Category.id).all()
+        
+        products_data = []
+        for product, price, category in results:
+            try:
+                specifications = json.loads(product.specifications) if product.specifications else {}
+            except json.JSONDecodeError:
+                specifications = {}
+            
+            # Получить массив изображений
+            images = get_product_images(product)
+            
+            products_data.append({
+                'ID': product.id,
+                'SKU': product.sku,
+                'Название': product.name,
+                'Описание': product.description or '',
+                'Бренд': product.brand,
+                'Модель': product.model or '',
+                'Категория ID': product.category_id or '',
+                'Категория': category.name if category else '',
+                'Уровень 0': product.level0 or '',
+                'Уровень 1': product.level1 or '',
+                'Уровень 2': product.level2 or '',
+                'Цена': price.price if price else 0.0,
+                'Старая цена': price.old_price if price else (price.price if price else 0.0),
+                'Валюта': price.currency if price else 'RUB',
+                'Скидка %': price.discount_percentage if price else 0.0,
+                'Склад': product.stock,
+                'В наличии': 'Да' if product.is_available else 'Нет',
+                'Изображения': ' | '.join(images) if images else product.image_url or '',
+                'Кол-во изображений': len(images),
+                'Создано': product.created_at.strftime('%Y-%m-%d %H:%M:%S') if product.created_at else '',
+                'Обновлено': product.updated_at.strftime('%Y-%m-%d %H:%M:%S') if product.updated_at else ''
+            })
+        
+        # Создать DataFrame и Excel файл
+        from io import BytesIO
+        
+        df = pd.DataFrame(products_data)
+        
+        output = BytesIO()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            df.to_excel(writer, index=False, sheet_name='Ассортимент')
+            
+            # Стилизация
+            workbook = writer.book
+            worksheet = writer.sheets['Ассортимент']
+            
+            # Стили для заголовков
+            header_font = openpyxl.styles.Font(bold=True, color="FFFFFF")
+            header_fill = openpyxl.styles.PatternFill(start_color="366092", end_color="366092", fill_type="solid")
+            
+            for cell in worksheet[1]:
+                cell.font = header_font
+                cell.fill = header_fill
+                cell.alignment = openpyxl.styles.Alignment(horizontal="center", vertical="center")
+        
+        output.seek(0)
+        
+        return StreamingResponse(
+            BytesIO(output.read()),
+            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            headers={"Content-Disposition": "attachment; filename=assortment_full.xlsx"}
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Ошибка экспорта: {str(e)}")
+
+@app.get("/export-prices")
+async def export_all_prices(db: Session = Depends(get_db)):
+    """Скачать все цены в Excel"""
+    try:
+        # Получить все товары с ценами
+        results = db.query(Product, CurrentPrice).outerjoin(
+            CurrentPrice, Product.id == CurrentPrice.product_id
+        ).filter(Product.is_available == True).all()
+        
+        prices_data = []
+        for product, price in results:
+            if price:  # Только товары с ценами
+                prices_data.append({
+                    'SKU': product.sku,
+                    'Название товара': product.name,
+                    'Бренд': product.brand,
+                    'Модель': product.model,
+                    'Текущая цена': price.price,
+                    'Старая цена': price.old_price,
+                    'Валюта': price.currency,
+                    'Скидка %': f"{price.discount_percentage:.1f}%" if price.discount_percentage else "0%",
+                    'Разница': f"{price.old_price - price.price:.0f}" if price.old_price and price.old_price > price.price else "0",
+                    'Категория': product.level0 or 'Без категории',
+                    'В наличии': product.stock,
+                    'Обновлено': price.last_updated.strftime('%Y-%m-%d %H:%M:%S') if hasattr(price, 'last_updated') and price.last_updated else 'Неизвестно'
+                })
+        
+        if not prices_data:
+            raise HTTPException(status_code=400, detail="Цены не найдены")
+        
+        # Создать DataFrame и Excel файл
+        from io import BytesIO
+        
+        df = pd.DataFrame(prices_data)
+        
+        output = BytesIO()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            df.to_excel(writer, index=False, sheet_name='Цены')
+            
+            # Стилизация
+            workbook = writer.book
+            worksheet = writer.sheets['Цены']
+            
+            # Стили для заголовков
+            header_font = openpyxl.styles.Font(bold=True, color="FFFFFF")
+            header_fill = openpyxl.styles.PatternFill(start_color="27ae60", end_color="27ae60", fill_type="solid")
+            
+            for cell in worksheet[1]:
+                cell.font = header_font
+                cell.fill = header_fill
+                cell.alignment = openpyxl.styles.Alignment(horizontal="center", vertical="center")
+        
+        output.seek(0)
+        
+        return StreamingResponse(
+            BytesIO(output.read()),
+            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            headers={"Content-Disposition": "attachment; filename=prices_full.xlsx"}
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Ошибка экспорта цен: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn
