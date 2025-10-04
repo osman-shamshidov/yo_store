@@ -12,6 +12,7 @@ import json
 import io
 from excel_handler import ExcelHandler
 from manual_price_manager import manual_price_manager
+from config import Config
 
 def get_product_images(product):
     """Получить массив изображений товара"""
@@ -1241,5 +1242,4 @@ async def debug_db_status(db: Session = Depends(get_db)):
 
 if __name__ == "__main__":
     import uvicorn
-    from config import Config
     uvicorn.run(app, host=Config.HOST, port=Config.PORT)
