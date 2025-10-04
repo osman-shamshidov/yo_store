@@ -824,7 +824,18 @@ async def get_product_images_by_color(model_key: str, color: str):
         'lenovo': 'LEN',
         'asus': 'ASU'
     }
-    actual_model_key = model_key_mapping.get(model_key, model_key.upper())
+    # Сначала проверяем точное соответствие, если не найдено - получаем из маппинга
+    actual_model_key = model_key_mapping.get(model_key)
+    if not actual_model_key:
+        # Добавляем прямые соответствия для уже корректных ключей  
+        direct_mappings = {
+            'IPHONE16': 'IPHONE16',
+            'IPHONE16Pro': 'IPHONE16Pro', 
+            'IPHONE16ProMax': 'IPHONE16ProMax',
+            'IPHONE17Pro': 'IPHONE17Pro',
+            'IPHONE17ProMax': 'IPHONE17ProMax'
+        }
+        actual_model_key = direct_mappings.get(model_key, model_key.upper())
     
     # Debug: возвращаем информацию о поиске
     try:
