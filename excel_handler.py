@@ -17,12 +17,12 @@ class ExcelHandler:
     
     def __init__(self):
         self.product_columns = [
-            'name', 'category_id', 'description', 'brand', 'model', 
+            'sku', 'name', 'category_id', 'level0', 'level1', 'level2', 'brand', 'model', 
             'price', 'currency', 'stock', 'image_url', 'specifications'
         ]
         
         self.price_columns = [
-            'product_id', 'name', 'price', 'old_price', 'currency'
+            'sku', 'name', 'price', 'old_price', 'currency'
         ]
     
     def create_products_template(self) -> bytes:
@@ -33,8 +33,8 @@ class ExcelHandler:
         
         # Заголовки
         headers = [
-            'Название товара*', 'ID категории*', 'Описание', 'Бренд', 'Модель',
-            'Цена*', 'Валюта', 'Количество на складе', 'URL изображения', 'Характеристики (JSON)'
+            'SKU товара', 'Описание', 'Название товара*', 'ID категории*', 'Основная категория (level0)', 'Подкатегория (level1)', 'Детальная категория (level2)', 'Бренд', 'Модель',
+            'Цена*', 'Валюта', 'Количество на складе', 'URL изображения (через запятую)', 'Характеристики (JSON)'
         ]
         
         # Добавить заголовки
@@ -46,10 +46,10 @@ class ExcelHandler:
         
         # Добавить примеры данных
         examples = [
-            ['iPhone 15 Pro', 1, 'Новейший iPhone с титановым корпусом', 'Apple', 'iPhone 15 Pro', 
-             89990, 'RUB', 10, 'https://example.com/iphone.jpg', '{"color": "Titanium", "storage": "256GB"}'],
-            ['MacBook Pro M3', 2, 'Мощный ноутбук для профессионалов', 'Apple', 'MacBook Pro M3', 
-             199990, 'RUB', 5, 'https://example.com/macbook.jpg', '{"screen": "14 inch", "ram": "16GB"}']
+            ['APP-001-IPHONE15P', 'Новейший iPhone с титановым корпусом', 'iPhone 15 Pro', 1, 'Смартфоны', '15 Series', '15 Pro', 'Apple', 'iPhone 15 Pro', 
+             89990, 'RUB', 10, '/static/images/products/IPHONE15Pro/titanium/1.jpg, /static/images/products/IPHONE15Pro/titanium/2.jpg', '{"color": "Titanium", "storage": "256GB"}'],
+            ['APP-002-MACBOOKPROM3', 'Мощный ноутбук для профессионалов', 'MacBook Pro M3', 2, 'Ноутбуки', 'Pro Series', 'M3', 'Apple', 'MacBook Pro M3', 
+             199990, 'RUB', 5, '/static/images/products/MACBOOKProM3/silver/1.jpg, /static/images/products/MACBOOKProM3/silver/2.jpg', '{"screen": "14 inch", "ram": "16GB"}']
         ]
         
         for row, example in enumerate(examples, 2):
@@ -108,7 +108,7 @@ class ExcelHandler:
         
         # Заголовки
         headers = [
-            'ID товара*', 'Название товара', 'Новая цена*', 'Старая цена', 'Валюта'
+            'SKU товара*', 'Название товара', 'Новая цена*', 'Старая цена', 'Валюта'
         ]
         
         # Добавить заголовки
@@ -120,8 +120,8 @@ class ExcelHandler:
         
         # Добавить примеры данных
         examples = [
-            [1, 'iPhone 15 Pro', 89990, 99990, 'RUB'],
-            [2, 'MacBook Pro M3', 199990, 219990, 'RUB']
+            ['IPHONE16Pro-256GB-TitaniumNatural', 'iPhone 16 Pro 256GB Titanium Natural', 89990, 99990, 'RUB'],
+            ['MACBOOKProM3-512GB-Silver', 'MacBook Pro M3 512GB Silver', 199990, 219990, 'RUB']
         ]
         
         for row, example in enumerate(examples, 2):
@@ -177,9 +177,13 @@ class ExcelHandler:
                             specifications = {}
                     
                     product = {
+                        'sku': str(row.get('SKU товара', '')).strip(),
                         'name': str(row['Название товара*']).strip(),
                         'category_id': int(row['ID категории*']),
                         'description': str(row.get('Описание', '')).strip(),
+                        'level0': str(row.get('Основная категория (level0)', '')).strip(),
+                        'level1': str(row.get('Подкатегория (level1)', '')).strip(),
+                        'level2': str(row.get('Модель_деталь (level2)', '')).strip(),
                         'brand': str(row.get('Бренд', '')).strip(),
                         'model': str(row.get('Модель', '')).strip(),
                         'price': float(row['Цена*']),
@@ -209,7 +213,7 @@ class ExcelHandler:
             df = pd.read_excel(io.BytesIO(file_content), sheet_name='Цены')
             
             # Проверяем обязательные колонки
-            required_columns = ['ID товара*', 'Новая цена*']
+            required_columns = ['SKU товара*', 'Новая цена*']
             missing_columns = [col for col in required_columns if col not in df.columns]
             if missing_columns:
                 raise ValueError(f"Отсутствуют обязательные колонки: {', '.join(missing_columns)}")
@@ -220,11 +224,11 @@ class ExcelHandler:
             for index, row in df.iterrows():
                 try:
                     # Пропускаем пустые строки
-                    if pd.isna(row['ID товара*']) or pd.isna(row['Новая цена*']):
+                    if pd.isna(row['SKU товара*']) or pd.isna(row['Новая цена*']):
                         continue
                     
                     price_data = {
-                        'product_id': int(row['ID товара*']),
+                        'sku': str(row['SKU товара*']).strip(),
                         'name': str(row.get('Название товара', '')).strip(),
                         'price': float(row['Новая цена*']),
                         'old_price': float(row.get('Старая цена', row['Новая цена*'])),
@@ -252,8 +256,8 @@ class ExcelHandler:
         
         # Заголовки
         headers = [
-            'ID', 'Название', 'Категория', 'Описание', 'Бренд', 'Модель',
-            'Цена', 'Валюта', 'На складе', 'URL изображения', 'Дата создания'
+            'ID', 'SKU', 'Название', 'Категория', 'Уровень 0', 'Уровень 1', 'Уровень 2', 'Бренд', 'Модель',
+            'Цена', 'Старая цена', 'Валюта', 'Скидка %', 'На складе', 'Доступен', 'Изображения', 'Кол-во изображений', 'Дата создания'
         ]
         
         # Добавить заголовки
@@ -265,17 +269,24 @@ class ExcelHandler:
         
         # Добавить данные
         for row, product in enumerate(products, 2):
-            ws.cell(row=row, column=1, value=product.get('id', ''))
-            ws.cell(row=row, column=2, value=product.get('name', ''))
-            ws.cell(row=row, column=3, value=product.get('category_name', ''))
-            ws.cell(row=row, column=4, value=product.get('description', ''))
-            ws.cell(row=row, column=5, value=product.get('brand', ''))
-            ws.cell(row=row, column=6, value=product.get('model', ''))
-            ws.cell(row=row, column=7, value=product.get('price', ''))
-            ws.cell(row=row, column=8, value=product.get('currency', ''))
-            ws.cell(row=row, column=9, value=product.get('stock', ''))
-            ws.cell(row=row, column=10, value=product.get('image_url', ''))
-            ws.cell(row=row, column=11, value=product.get('created_at', ''))
+            ws.cell(row=row, column=1, value=product.get('id'))
+            ws.cell(row=row, column=2, value=product.get('sku'))
+            ws.cell(row=row, column=3, value=product.get('name'))
+            ws.cell(row=row, column=4, value=product.get('category_name'))
+            ws.cell(row=row, column=5, value=product.get('level0'))
+            ws.cell(row=row, column=6, value=product.get('level1'))
+            ws.cell(row=row, column=7, value=product.get('level2'))
+            ws.cell(row=row, column=8, value=product.get('brand'))
+            ws.cell(row=row, column=9, value=product.get('model'))
+            ws.cell(row=row, column=10, value=product.get('price'))
+            ws.cell(row=row, column=11, value=product.get('old_price'))
+            ws.cell(row=row, column=12, value=product.get('currency'))
+            ws.cell(row=row, column=13, value=product.get('discount_percentage'))
+            ws.cell(row=row, column=14, value=product.get('stock'))
+            ws.cell(row=row, column=15, value=product.get('is_available'))
+            ws.cell(row=row, column=16, value=product.get('image_text'))
+            ws.cell(row=row, column=17, value=product.get('images_count'))
+            ws.cell(row=row, column=18, value=product.get('created_at'))
         
         # Автоподбор ширины колонок
         for column in ws.columns:

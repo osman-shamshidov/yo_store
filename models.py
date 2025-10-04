@@ -14,16 +14,21 @@ class Product(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(200), nullable=False)
+    sku = Column(String(50), unique=True, index=True)
     brand = Column(String(100), nullable=False)
     model = Column(String(100), nullable=False)
     description = Column(Text)
+    # Иерархические уровни категорий
+    level0 = Column(String(100), nullable=True, index=True)  # Основная категория (смартфоны)
+    level1 = Column(String(100), nullable=True, index=True)  # Подкатегория (16 series)
+    level2 = Column(String(100), nullable=True, index=True)  # Детальная категория (16 pro max)
     specifications = Column(Text)  # JSON string
     image_url = Column(String(500))  # Legacy field
     images = Column(Text)  # JSON array of image URLs
-    sku = Column(String(50), unique=True, index=True)
-    category_id = Column(Integer, ForeignKey("categories.id"))
     stock = Column(Integer, default=0)  # Количество на складе
     is_available = Column(Boolean, default=True)  # Доступность товара
+    # Legacy поле для совместимости
+    category_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
     
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -45,7 +50,7 @@ class Category(Base):
     is_subcategory = Column(Boolean, default=False)
     
     created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=True)
     
     # Relationships
     parent = relationship("Category", remote_side=[id], backref="subcategories")

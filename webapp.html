@@ -132,23 +132,61 @@
             border-radius: 10px;
         }
         
-        .brand-header {
-            text-align: center;
-            margin: 20px 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
-            color: #333;
-            border-radius: 15px;
+        /* Стили для хлебных крошек */
+        .breadcrumbs {
+            margin: 8px 0 12px 0;
+            padding: 6px 12px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.03);
         }
         
-        .brand-header h2 {
-            margin: 0 0 5px 0;
-            font-size: 2em;
+        .breadcrumb-trail {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 4px;
+            font-size: 11px;
+            color: #6c757d;
+            opacity: 0.8;
         }
         
-        .brand-header p {
-            margin: 0;
-            opacity: 0.9;
+        .breadcrumb-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .breadcrumb-link {
+            color: #667eea;
+            text-decoration: none;
+            padding: 2px 4px;
+            border-radius: 2px;
+            transition: all 0.2s ease;
+            font-size: 11px;
+        }
+        
+        .breadcrumb-link:hover {
+            background: #667eea;
+            color: white;
+            opacity: 1;
+        }
+        
+        .breadcrumb-current {
+            color: #495057;
+            font-weight: 400;
+            padding: 2px 4px;
+            background: transparent;
+            border-radius: 2px;
+            font-size: 11px;
+        }
+        
+        .breadcrumb-separator {
+            color: #adb5bd;
+            margin: 0 2px;
+            font-size: 10px;
+            opacity: 0.6;
         }
         
         .category-header {
@@ -378,13 +416,37 @@
             filter: brightness(1.2);
         }
         
-        .variant-price {
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid #e0e0e0;
-            font-weight: 600;
+        
+        /* Стили для групп вариантов */
+        .variant-group {
+            margin: 15px 0;
+        }
+        
+        .variant-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
             color: #333;
-            font-size: 1rem;
+        }
+        
+        /* Стили для кнопок памяти и SIM */
+        .memory-btn, .sim-btn {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            color: #495057;
+        }
+        
+        .memory-btn:hover, .sim-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .memory-btn.active, .sim-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            font-weight: 600;
         }
         
         .category-icon {
@@ -407,6 +469,107 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 20px;
+        }
+        
+        /* Стили для иерархических фильтров */
+        .hierarchy-filters {
+            margin: 15px 0;
+            padding: 12px 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .hierarchy-filter-section {
+            margin-bottom: 6px;
+        }
+        
+        .filter-group {
+            margin-bottom: 8px;
+        }
+        
+        .filter-group h4 {
+            margin: 0 0 6px 0;
+            font-size: 13px;
+            font-weight: 600;
+            color: #495057;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            background: #ffffff;
+            border: 2px solid #dee2e6;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .filter-btn:hover {
+            background: #007bff;
+            border-color: #007bff;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+        }
+        
+        .filter-btn.active {
+            background: #007bff;
+            border-color: #007bff;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0,123,255,0.4);
+        }
+        
+        .filter-reset {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .reset-btn {
+            padding: 6px 12px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 400;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .reset-btn:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(220,53,69,0.2);
+        }
+        
+        /* Стили для индикатора загрузки товаров */
+        .loading-products {
+            text-align: center;
+            padding: 40px 20px;
+            color: #007bff;
+            font-size: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px dashed #dee2e6;
+            animation: pulse 1.5s ease-in-out infinite alternate;
+        }
+        
+        @keyframes pulse {
+            from { opacity: 0.6; }
+            to { opacity: 1; }
         }
         
         .product-card {
@@ -510,12 +673,13 @@
         .back-button {
             background: white;
             border: none;
-            border-radius: 25px;
-            padding: 10px 20px;
-            margin-bottom: 20px;
+            border-radius: 20px;
+            padding: 6px 12px;
+            margin-bottom: 12px;
             cursor: pointer;
-            font-weight: 600;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            font-weight: 400;
+            font-size: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
         
         /* Стили для карусели изображений */
@@ -867,7 +1031,7 @@
                 <img src="/static/images/logo.jpg" alt="Yo Store" class="logo">
                 Yo Store
             </h1>
-            <p>Лучшие цены на технику • Обновление каждые 10 минут</p>
+            <p>Лучшие цены на технику • Доставка по всей России</p>
         </div>
         
         <div class="search-bar">
@@ -882,7 +1046,14 @@
     <script>
         const API_BASE = window.location.origin;
         let currentView = 'categories';
-        let currentCategoryId = null;
+        
+        // Глобальные переменные для фильтрации
+        let currentBrandFilter = null;
+        let currentLevel0Filter = null;
+        let currentLevel1Filter = null;
+        let currentLevel2Filter = null;
+        let currentCategoryId = null; // Сохраняем ID текущей категории
+        let currentCategoryName = null; // Сохраняем название текущей категории
         
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
@@ -978,7 +1149,7 @@
                         for (let j = 0; j < category.subcategories.length; j++) {
                             const subcat = category.subcategories[j];
                             categoriesHtml += `
-                                <div class="subcategory-item" onclick="event.stopPropagation(); loadProductsByBrand('${subcat.brand}', ${category.id})">
+                                <div class="subcategory-item" onclick="event.stopPropagation(); loadProductsByBrandWithCategory('${subcat.brand}', ${category.id}, '${category.name}')">
                                     <span class="subcategory-icon">${subcat.icon}</span>
                                     <span class="subcategory-name">${subcat.brand}</span>
                                     <span class="subcategory-count">${subcat.product_count}</span>
@@ -1031,7 +1202,7 @@
                     </div>
                     <div class="subcategories-grid">
                         ${category.subcategories.map(subcat => `
-                            <div class="subcategory-card" onclick="loadProductsByBrand('${subcat.brand}', ${categoryId})">
+                            <div class="subcategory-card" onclick="loadProductsByBrandWithCategory('${subcat.brand}', ${categoryId}, '${category.name}')">
                                 <div class="subcategory-icon">${subcat.icon}</div>
                                 <div class="subcategory-name">${subcat.brand}</div>
                                 <div class="subcategory-count">${subcat.product_count} товаров</div>
@@ -1074,22 +1245,49 @@
             }
         }
         
-        // Load products by brand
+        // Load products by brand with hierarchical filters
         async function loadProductsByBrand(brand, categoryId) {
             try {
                 showLoading();
-                const response = await fetch(`${API_BASE}/products?category_id=${categoryId}&brand=${encodeURIComponent(brand)}&limit=20`);
-                const products = await response.json();
                 
-                currentView = 'products';
+                // Сохраняем текущий фильтр бренда
+                currentBrandFilter = brand;
+                // Не сбрасываем currentLevel0Filter - он уже определен из категории
+                currentLevel1Filter = null;
+                currentLevel2Filter = null;
+                
+                // Получаем товары с учетом уровня категории (level0) если он уже определен
+                let url = `${API_BASE}/products?brand=${encodeURIComponent(brand)}&limit=50`;
+                if (currentLevel0Filter) {
+                    url += `&level0=${encodeURIComponent(currentLevel0Filter)}`;
+                    console.log(`🔗 Запрашиваем товары с URL: ${url}`);
+                } else {
+                    console.log(`🔗 Запрашиваем товары без level0 фильтра: ${url}`);
+                }
+                
+                const response = await fetch(url);
+                const products = await response.json();
+                console.log(`📦 Получено товаров: ${products.length}`);
+                if (products.length > 0) {
+                    console.log(`📋 Первый товар: ${products[0].name} (level0: ${products[0].level0})`);
+                }
+                
+                // Определяем level0 из контекста категории или первого товара ТОЛЬКО если еще не определен
+                if (!currentLevel0Filter && products.length > 0) {
+                    currentLevel0Filter = products[0].level0 || products[0].category_name.split(' / ')[0];
+                }
+                
+                currentView = 'brand_products';
                 currentCategoryId = categoryId;
                 
                 const content = document.getElementById('content');
                 content.innerHTML = `
                     <button class="back-button" onclick="loadCategories()">← Назад к категориям</button>
-                    <div class="brand-header">
-                        <h2>${brand}</h2>
-                        <p>Товары бренда ${brand}</p>
+                    <div class="breadcrumbs" id="breadcrumbsContainer">
+                        ${createBreadcrumbs(brand)}
+                    </div>
+                    <div class="hierarchy-filters" id="hierarchyFilters">
+                        <!-- Фильтры будут добавлены динамически -->
                     </div>
                     <div class="products-grid">
                         ${products.map(product => {
@@ -1098,6 +1296,9 @@
                         }).join('')}
                     </div>
                 `;
+                
+                // Создаем кнопки фильтрации level1
+                await createHierarchyFilters(brand, products);
                 
                 // Инициализировать цвета по умолчанию после рендеринга
                 setTimeout(() => {
@@ -1146,6 +1347,192 @@
             }
         }
         
+        // Загрузка товаров бренда с учетом категории
+        async function loadProductsByBrandWithCategory(brand, categoryId, categoryName) {
+            console.log(`🎯 Загружаем товары бренда ${brand} в категории ${categoryName}`);
+            // Устанавливаем level0Filter на основе названия категории
+            currentLevel0Filter = categoryName;
+            currentCategoryId = categoryId;
+            currentCategoryName = categoryName;
+            console.log(`📝 Установлены фильтры: level0=${currentLevel0Filter}, categoryId=${currentCategoryId}`);
+            // Вызываем основную функцию
+            await loadProductsByBrand(brand, categoryId);
+        }
+        
+        // Создание фильтров иерархии
+        async function createHierarchyFilters(brand, products) {
+            try {
+                console.log(`🏗️ Создаем фильтры для бренда ${brand}, currentLevel0Filter: ${currentLevel0Filter}`);
+                
+                const filtersContainer = document.getElementById('hierarchyFilters');
+                if (!filtersContainer) return;
+                
+                // Если level0 еще не определен, определяем его из товаров (первая категория)
+                if (!currentLevel0Filter && products.length > 0) {
+                    const firstProductLevel0 = products[0].level0 || products[0].category_name.split(' / ')[0];
+                    currentLevel0Filter = firstProductLevel0;
+                    console.log(`🔍 Автоопределен level0 из товаров: ${currentLevel0Filter}`);
+                }
+                
+                let filtersHtml = '<div class="hierarchy-filter-section">';
+                
+                // Level1 фильтры (начинаем сразу с уровня 1, так как level0 уже выбран ранее)
+                let level1Values = [];
+                if (currentLevel0Filter) {
+                    const level1Url = `${API_BASE}/hierarchy/levels?level=1&brand=${encodeURIComponent(brand)}&parent_level0=${encodeURIComponent(currentLevel0Filter)}`;
+                    console.log(`🔗 Запрашиваем level1 для ${brand} в ${currentLevel0Filter}: ${level1Url}`);
+                    
+                    const level1Response = await fetch(level1Url);
+                    level1Values = await level1Response.json();
+                    console.log(`📋 Получены level1 значения:`, level1Values);
+                }
+                
+                if (level1Values.length > 0) {
+                    filtersHtml += `
+                        <div class="filter-group">
+                            <h4>Серия:</h4>
+                            <div class="filter-buttons">
+                                ${level1Values.map(level1 => 
+                                    `<button class="filter-btn ${currentLevel1Filter === level1 ? 'active' : ''}" 
+                                             onclick="applyLevelFilter('level1', '${level1}')">
+                                        ${level1}
+                                    </button>`
+                                ).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Level2 фильтры (показываем только если выбран level1)
+                if (currentLevel1Filter) {
+                    const level2Response = await fetch(`${API_BASE}/hierarchy/levels?level=2&brand=${encodeURIComponent(brand)}&parent_level1=${encodeURIComponent(currentLevel1Filter)}`);
+                    const level2Values = await level2Response.json();
+                    
+                    if (level2Values.length > 0) {
+                        filtersHtml += `
+                            <div class="filter-group">
+                                <h4>Модель:</h4>
+                                <div class="filter-buttons">
+                                    ${level2Values.map(level2 => 
+                                        `<button class="filter-btn ${currentLevel2Filter === level2 ? 'active' : ''}" 
+                                                 onclick="applyLevelFilter('level2', '${level2}')">
+                                            ${level2}
+                                        </button>`
+                                    ).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+                
+                filtersHtml += '</div>';
+                
+                // Кнопка сброса фильтров
+                if (currentLevel1Filter || currentLevel2Filter) {
+                    filtersHtml += `
+                        <div class="filter-reset">
+                            <button class="reset-btn" onclick="resetFilters()">Сбросить фильтры</button>
+                        </div>
+                    `;
+                }
+                
+                filtersContainer.innerHTML = filtersHtml;
+                
+            } catch (error) {
+                console.error('Ошибка создания фильтров:', error);
+            }
+        }
+        
+        // Применение фильтра по уровням
+        async function applyLevelFilter(filterType, filterValue) {
+            try {
+                // Обновляем глобальные переменные
+                if (filterType === 'level0') {
+                    currentLevel0Filter = filterValue;
+                    currentLevel1Filter = null;
+                    currentLevel2Filter = null;
+                } else if (filterType === 'level1') {
+                    currentLevel1Filter = filterValue;
+                    currentLevel2Filter = null;
+                } else if (filterType === 'level2') {
+                    currentLevel2Filter = filterValue;
+                }
+                
+                // Загружаем отфильтрованные товары
+                await loadFilteredProducts();
+                
+                // Обновляем хлебные крошки
+                updateBreadcrumbs();
+                
+                // Обновляем кнопки фильтров
+                await createHierarchyFilters(currentBrandFilter, []);
+                
+            } catch (error) {
+                console.error('Ошибка применения фильтра:', error);
+            }
+        }
+        
+        // Загрузка отфильтрованных товаров
+        async function loadFilteredProducts() {
+            try {
+                // Добавить индикатор загрузки только к grid товаров
+                const content = document.getElementById('content');
+                const productsContainer = content.querySelector('.products-grid');
+                
+                if (!productsContainer) {
+                    console.error('Products container not found');
+                    return;
+                }
+                
+                // Показываем спиннер загрузки
+                productsContainer.innerHTML = '<div class="loading-products">Обновление товаров...</div>';
+                
+                // Строим URL с текущими фильтрами
+                const params = new URLSearchParams();
+                params.append('brand', currentBrandFilter);
+                params.append('limit', '50');
+                
+                if (currentLevel0Filter) params.append('level0', currentLevel0Filter);
+                if (currentLevel1Filter) params.append('level1', currentLevel1Filter);
+                if (currentLevel2Filter) params.append('level2', currentLevel2Filter);
+                
+                const response = await fetch(`${API_BASE}/products?${params.toString()}`);
+                const products = await response.json();
+                
+                // Обновляем только товары в grid
+                productsContainer.innerHTML = products.map(product => {
+                    storeProductImages(product);
+                    return createProductCard(product);
+                }).join('');
+                
+                // Инициализировать цвета по умолчанию
+                setTimeout(() => {
+                    initializeDefaultColors();
+                }, 100);
+                
+            } catch (error) {
+                console.error('Ошибка загрузки отфильтрованных товаров:', error);
+                const productsContainer = document.querySelector('.products-grid');
+                if (productsContainer) {
+                    productsContainer.innerHTML = '<div class="error">Ошибка загрузки товаров</div>';
+                }
+            }
+        }
+        
+        // Сброс всех фильтров
+        async function resetFilters() {
+            currentLevel1Filter = null;
+            currentLevel2Filter = null;
+            // НЕ сбрасываем currentLevel0Filter - он должен оставаться из категории
+            
+            await loadFilteredProducts();
+            
+            // Обновляем хлебные крошки
+            updateBreadcrumbs();
+            
+            await createHierarchyFilters(currentBrandFilter, []);
+        }
+        
         // Create product card HTML
         function createProductCard(product) {
             const discountHtml = product.discount_percentage > 0 
@@ -1156,9 +1543,12 @@
                 ? `<span class="old-price">${Math.round(product.old_price).toLocaleString()} ₽</span>` 
                 : '';
             
+            // Определяем модель для загрузки вариантов
+            const modelKey = product.model;
+            
             // Создать базовую HTML структуру для вариантов товара
             const variantSelectorsHtml = `
-                <div class="product-variants" data-product-id="${product.id}" data-model="${product.brand} ${product.model}">
+                <div class="product-variants" data-product-id="${product.id}" data-model="${modelKey}">
                     <!-- Варианты будут загружены динамически -->
                     <div class="loading">Загрузка вариантов...</div>
                 </div>
@@ -1205,7 +1595,7 @@
                     </div>
                     <div class="product-info">
                         <div class="product-name">${product.name}</div>
-                        <div class="product-brand">${product.brand} ${product.model}</div>
+                        <div class="product-brand">${product.brand}</div>
                         <div class="product-price">
                             <span class="current-price" id="price-${product.id}">${Math.round(product.price).toLocaleString()} ₽</span>
                             ${oldPriceHtml}
@@ -1233,7 +1623,9 @@
                             </div>
                             <div class="spoiler-content" id="spec-${product.id}" style="display: none;">
                                 <div class="specifications">
-                                    ${product.specifications ? Object.entries(product.specifications).map(([key, value]) => 
+                                    ${product.specifications ? Object.entries(product.specifications)
+                                        .filter(([key, value]) => !['variants', 'images', 'image_folder', 'memories', 'colors', 'sim_types', 'цвета'].includes(key))
+                                        .map(([key, value]) => 
                                         `<div class="spec-item"><span class="spec-key">${key}:</span> <span class="spec-value">${value}</span></div>`
                                     ).join('') : 'Характеристики не указаны'}
                                 </div>
@@ -1362,6 +1754,12 @@
         
         // Update product image based on selected color - БЕЗ ХАРДКОДА!
         async function updateProductImage(productId, selectedColor) {
+            // Валидация входных параметров
+            if (!selectedColor || selectedColor === 'undefined' || selectedColor === 'null') {
+                console.warn(`❌ Неверный цвет для товара ID ${productId}:`, selectedColor);
+                return;
+            }
+            
             // Найти карточку товара
             const productCard = document.querySelector(`[data-product-id="${productId}"]`)?.closest('.product-card');
             if (!productCard) {
@@ -1369,11 +1767,14 @@
                 return;
             }
             
-            // Получить модель товара
-            const modelElement = productCard.querySelector('.product-brand');
-            if (!modelElement) return;
+            // Получить модель товара из data-model атрибута
+            const variantsElement = productCard.querySelector('.product-variants');
+            if (!variantsElement || !variantsElement.dataset.model) {
+                console.warn(`Модель товара не найдена для ID ${productId}`);
+                return;
+            }
             
-            const brandModel = modelElement.textContent.trim(); // "Apple 16"
+            const brandModel = variantsElement.dataset.model; // "Apple iPhone 16 Pro"
             
             // Получить model_key из названия модели
             const modelKey = getModelKey(brandModel);
@@ -1382,9 +1783,29 @@
                 return;
             }
             
+            // Преобразуем название цвета для API (Cosmic Orange -> cosmic-orange)
+            const colorMapping = {
+                'Cosmic Orange': 'cosmic-orange',
+                'Deep Blue': 'deep-blue',
+                'Space Black': 'space-black',
+                'Titanium Desert': 'titanium-desert',
+                'Titanium Natural': 'titanium-natural',
+                'Titanium Black': 'titanium-black',
+                'Titanium White': 'titanium-white',
+                'Teal': 'teal',
+                'Pink': 'pink',
+                'White': 'white',
+                'Black': 'black',
+                'Silver': 'silver'
+            };
+            
+            const colorFolder = colorMapping[selectedColor] || selectedColor.toLowerCase().replace(/\s+/g, '-');
+            
+            console.log(`📸 Обновляем изображения для ${brandModel} цвета ${selectedColor} -> ${colorFolder} (modelKey: ${modelKey})`);
+            
             try {
                 // Получить информацию об изображениях из API
-                const response = await fetch(`/product-images/${modelKey}/${selectedColor}`);
+                const response = await fetch(`/product-images/${modelKey}/${colorFolder}`);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -1425,8 +1846,9 @@
             } catch (error) {
                 console.error(`❌ Ошибка загрузки изображений для ${brandModel} цвета ${selectedColor}:`, error);
                 
-                // Fallback - попробовать простое изображение по умолчанию
-                const fallbackImage = `/static/images/products/placeholder.jpg?v=${Date.now()}`;
+                // Fallback - используем изображение из product.image_url если есть
+                console.log('📸 Устанавливаем fallback изображение из product.image_url:', product.image_url);
+                const fallbackImage = product.image_url || `/static/images/products/placeholder.jpg?v=${Date.now()}`;
                 const carousel = productCard.querySelector('.product-image-carousel');
                 if (carousel) {
                     const mainImg = carousel.querySelector('.product-img');
@@ -1457,9 +1879,13 @@
         
         // Function to get CSS color based on color name
         function getColorStyle(colorName) {
+            if (!colorName || colorName === 'Default' || colorName === 'Не указан') {
+                return '#E9ECEF'; // Дефолтный серый цвет
+            }
+            
             const colorMap = {
                 // iPhone colors
-                'ultramarine': '#663399', // Более фиолетовый
+                'ultramarine': '#a4b6f6', // Ультрамариновый
                 'black': '#000000', 'white': '#FFFFFF', 'pink': '#FFB6C1', // Светло розовый
                 'titanium-black': '#000000', // Чисто черный
                 'titanium-white': '#FFFFFF', 'titanium-natural': '#979792', 'titanium-desert': '#B89569',
@@ -1508,6 +1934,10 @@
         
         // Function to get English label for color
         function getColorLabel(colorName) {
+            if (!colorName || colorName === 'Default' || colorName === 'Не указан') {
+                return 'Default';
+            }
+            
             const colorLabels = {
                 'ultramarine': 'Ultramarine',
                 'black': 'Black',
@@ -1538,36 +1968,293 @@
         
         // Initialize variants and colors for all cards
         async function initializeDefaultColors() {
-            // Создать динамические варианты для всех товаров
+            // Загрузить варианты для всех товаров через новый API
             for (const card of document.querySelectorAll('.product-card')) {
-                const productId = card.querySelector('[data-product-id]')?.dataset.productId;
-                if (productId) {
+                const variantsElement = card.querySelector('[data-model]');
+                if (variantsElement) {
+                    const model = variantsElement.dataset.model;
                     try {
-                        // Создать варианты товара
-                        await createVariantsForProduct(card, productId);
-                        
-                        // Установить цвет по умолчанию
-                        const defaultColor = await getDefaultColorForProduct(card);
-                        updateProductImage(productId, defaultColor);
+                        // Загрузить варианты через новый API
+                        await loadVariantsForModel(card, model);
                     } catch (error) {
-                        console.warn('Ошибка инициализации вариантов товара:', error);
+                        console.warn('Ошибка загрузки вариантов для модели:', model, error);
                     }
                 }
+            }
+        }
+        
+        // Новая функция для загрузки вариантов модели
+        async function loadVariantsForModel(productCard, model) {
+            console.log('🔄 Загружаем варианты для модели:', model);
+            
+            const variantsElement = productCard.querySelector('.product-variants');
+            if (!variantsElement) return;
+            
+            try {
+                const response = await fetch(`/products/${encodeURIComponent(model)}/variants`);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('✅ Загружены варианты:', data);
+                
+                // Очищаем элемент вариантов
+                variantsElement.innerHTML = '';
+                
+                if (data.variants && data.variants.length > 0) {
+                    // Группируем варианты по цветам
+                    const colorGroups = {};
+                    
+                    data.variants.forEach(variant => {
+                        const color = variant.color && variant.color.trim() !== '' ? variant.color : null;
+                        if (color) { // Только добавляем варианты с реальными цветами
+                            if (!colorGroups[color]) {
+                                colorGroups[color] = [];
+                            }
+                            colorGroups[color].push(variant);
+                        }
+                    });
+                    
+                    console.log('🎨 Группы цветов:', Object.keys(colorGroups));
+                    
+                    // Создаем красивые цветные кнопки цветов
+                    const colorButtons = Object.keys(colorGroups).map(color => {
+                        const variants = colorGroups[color];
+                        const activeClass = Object.keys(colorGroups).indexOf(color) === 0 ? 'active' : '';
+                        
+                        // Создаем красивую цветную кнопку
+                        const colorStyle = getColorStyle(color);
+                        const label = getColorLabel(color);
+                        const textColor = getTextColor(colorStyle);
+                        
+                        return `
+                            <button class="variant-btn color-btn ${activeClass}" 
+                                    data-color="${color}" 
+                                    data-model="${model}"
+                                    data-type="color"
+                                    style="background-color: ${colorStyle}; color: ${textColor}; border-color: ${colorStyle};">
+                                ${label}
+                            </button>
+                        `;
+                    }).join('');
+                    
+                    // Создаем красивые кнопки памяти (только с реальными значениями)
+                    const memoryOptions = [...new Set(data.variants
+                        .map(v => v.memory)
+                        .filter(memory => memory && memory.trim() !== ''))];
+                    const memoryButtons = memoryOptions.map((memory, index) => {
+                        const activeClass = index === 0 ? 'active' : '';
+                        return `
+                            <button class="variant-btn memory-btn ${activeClass}" 
+                                    data-memory="${memory}" 
+                                    data-model="${model}"
+                                    data-type="memory">
+                                ${memory}
+                            </button>
+                        `;
+                    }).join('');
+                    
+                    // Создаем красивые кнопки SIM (только с реальными значениями)
+                    const simOptions = [...new Set(data.variants
+                        .map(v => v.sim_type)
+                        .filter(sim => sim && sim.trim() !== ''))];
+                    // Маппинг для отображения типов SIM
+                    const simLabels = {
+                        'Single SIM': 'SIM + eSIM',
+                        'eSIM': 'Dual eSIM',
+                        'Dual SIM': 'Dual SIM'
+                    };
+                    
+                    const simButtons = simOptions.map((sim, index) => {
+                        const activeClass = index === 0 ? 'active' : '';
+                        const displayLabel = simLabels[sim] || sim;
+                        return `
+                            <button class="variant-btn sim-btn ${activeClass}" 
+                                    data-sim="${sim}" 
+                                    data-model="${model}"
+                                    data-type="sim">
+                                ${displayLabel}
+                            </button>
+                        `;
+                    }).join('');
+                    
+                    // Создаем HTML только для элементов с вариантами
+                    let htmlContent = '';
+                    
+                    if (colorButtons) {
+                        htmlContent += `
+                            <div class="variant-group color-group">
+                                <label>Цвет:</label>
+                                <div class="variant-buttons">
+                                    ${colorButtons}
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    if (memoryButtons) {
+                        htmlContent += `
+                            <div class="variant-group memory-group">
+                                <label>Память:</label>
+                                <div class="variant-buttons">
+                                    ${memoryButtons}
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    if (simButtons) {
+                        htmlContent += `
+                            <div class="variant-group sim-group">
+                                <label>СИМ:</label>
+                                <div class="variant-buttons">
+                                    ${simButtons}
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    
+                    variantsElement.innerHTML = htmlContent;
+                    
+                    // Добавляем обработчики событий для новых кнопок
+                    addVariantEventListeners(model, colorGroups);
+                    
+                    // Обновляем цену для первого варианта
+                    updateVariantPrice(model, colorGroups);
+                    
+                } else {
+                    variantsElement.innerHTML = '<div class="no-variants">Варианты не найдены</div>';
+                }
+                
+                    } catch (error) {
+                console.error('Ошибка загрузки вариантов:', error);
+                variantsElement.innerHTML = '<div class="error">Ошибка загрузки вариантов</div>';
+            }
+        }
+        
+        // Функция для добавления обработчиков событий
+        function addVariantEventListeners(model, colorGroups) {
+            // Обработчик изменения цвета
+            document.querySelectorAll(`[data-model="${model}"][data-type="color"]`).forEach(button => {
+                button.addEventListener('click', function() {
+                    // Убираем активный класс с других кнопок цвета
+                    document.querySelectorAll(`[data-model="${model}"][data-type="color"]`).forEach(btn => btn.classList.remove('active'));
+                    // Добавляем активный класс к нажатой кнопке
+                    this.classList.add('active');
+                    
+                    // Обновляем цену при изменении варианта
+                    updateVariantPrice(model, colorGroups);
+                    
+                    // Дополнительное обновление изображений для цвета
+                    const selectedColor = this.dataset.color;
+                    const productCard = this.closest('.product-card');
+                    if (productCard) {
+                        // Получаем product-id из карточки
+                        const productIdMatch = productCard.outerHTML.match(/data-product-id="(\d+)"/);
+                        if (productIdMatch) {
+                            const productId = productIdMatch[1];
+                            updateProductImage(productId, selectedColor);
+                        }
+                    }
+                });
+            });
+            
+            // Обработчик изменения памяти
+            document.querySelectorAll(`[data-model="${model}"][data-type="memory"]`).forEach(button => {
+                button.addEventListener('click', function() {
+                    // Убираем активный класс с других кнопок памяти
+                    document.querySelectorAll(`[data-model="${model}"][data-type="memory"]`).forEach(btn => btn.classList.remove('active'));
+                    // Добавляем активный класс к нажатой кнопке
+                    this.classList.add('active');
+                    
+                    // Обновляем цену при изменении варианта
+                    updateVariantPrice(model, colorGroups);
+                });
+            });
+            
+            // Обработчик изменения SIM
+            document.querySelectorAll(`[data-model="${model}"][data-type="sim"]`).forEach(button => {
+                button.addEventListener('click', function() {
+                    // Убираем активный класс с других кнопок SIM
+                    document.querySelectorAll(`[data-model="${model}"][data-type="sim"]`).forEach(btn => btn.classList.remove('active'));
+                    // Добавляем активный класс к нажатой кнопке
+                    this.classList.add('active');
+                    
+                    // Обновляем цену при изменении варианта
+                    updateVariantPrice(model, colorGroups);
+                });
+            });
+        }
+        
+        // Функция для обновления цены выбранного варианта
+        function updateVariantPrice(model, colorGroups) {
+            const activeColorButton = document.querySelector(`[data-model="${model}"][data-type="color"].active`);
+            const activeMemoryButton = document.querySelector(`[data-model="${model}"][data-type="memory"].active`);
+            const activeSimButton = document.querySelector(`[data-model="${model}"][data-type="sim"].active`);
+            
+            if (!activeColorButton || !activeMemoryButton || !activeSimButton) return;
+            
+            const selectedColor = activeColorButton.dataset.color;
+            const selectedMemory = activeMemoryButton.dataset.memory;
+            const selectedSim = activeSimButton.dataset.sim;
+            
+            // Находим соответствующий вариант
+            const variants = colorGroups[selectedColor] || [];
+            const matchedVariant = variants.find(v => 
+                v.memory === selectedMemory && v.sim_type === selectedSim
+            );
+            
+            // Если точное соответствие не найдено, берем первый доступный вариант этого цвета
+            const fallbackVariant = matchedVariant || variants[0];
+            
+            if (fallbackVariant) {
+                // Обновляем основную цену в карточке товара
+                const productCard = document.querySelector(`[data-model="${model}"]`).closest('.product-card');
+                const currentPriceElement = productCard.querySelector('.current-price');
+                
+                if (currentPriceElement) {
+                    const price = Math.round(fallbackVariant.price).toLocaleString();
+                    currentPriceElement.textContent = `${price} ₽`;
+                }
+                
+                console.log('💱 Обновлена цена:', fallbackVariant.price, '₽');
+                
+                if (!matchedVariant) {
+                    console.log('ℹ️ Использован первый доступный вариант для цвета:', selectedColor);
+                }
+                
+                // Обновляем изображения для выбранного цвета если они есть
+                if (fallbackVariant.images && fallbackVariant.images.length > 0) {
+                    const productCard = document.querySelector(`[data-model="${model}"]`).closest('.product-card');
+                    if (productCard) {
+                        const carousel = productCard.querySelector('.product-image-carousel');
+                        if (carousel) {
+                            const mainImg = carousel.querySelector('.product-img');
+                            if (mainImg) {
+                                mainImg.src = fallbackVariant.images[0] + `?v=${Date.now()}`;
+                                console.log('🖼️ Обновлено изображение для цвета:', selectedColor);
+                            }
+                        }
+                    }
+                }
+            } else {
+                console.warn('❌ Вариант не найден:', {selectedColor, selectedMemory, selectedSim});
             }
         }
         
         async function createColorButtonsForProduct(productCard, productId) {
             console.log('🎨 Начинаем создание кнопок цветов для товара', productId);
             
-            // Получить модель товара
-            const modelElement = productCard.querySelector('.product-brand');
-            if (!modelElement) {
+            // Получить модель товара из data-model атрибута
+            const variantsElement = productCard.querySelector('.product-variants');
+            if (!variantsElement || !variantsElement.dataset.model) {
                 console.log('❌ Элемент с моделью не найден');
                 return;
             }
             
-            const modelText = modelElement.textContent; // "Apple 15 Pro"
-            const brandModel = modelText.trim();
+            const brandModel = variantsElement.dataset.model; // "Apple iPhone 16 Pro"
             console.log('📱 Найдена модель:', brandModel);
             
             // Получить цветовую схему из API с полной информацией о цветах
@@ -1651,12 +2338,11 @@
         }
         
         async function createVariantsForProduct(productCard, productId) {
-            // Получить модель товара
-            const modelElement = productCard.querySelector('.product-brand');
-            if (!modelElement) return;
+            // Получить модель товара из data-model атрибута
+            const variantsElement = productCard.querySelector('.product-variants');
+            if (!variantsElement || !variantsElement.dataset.model) return;
             
-            const modelText = modelElement.textContent; // "Apple 15 Pro"
-            const brandModel = modelText.trim();
+            const brandModel = variantsElement.dataset.model; // "Apple iPhone 16 Pro"
             
             // Получить схему вариантов из API
             const modelKey = getModelKey(brandModel);
@@ -1750,29 +2436,32 @@
         }
         
         function getModelKey(brandModel) {
-            // Преобразовать название модели в model_key
-            if (brandModel.includes('16 Pro Max')) return 'iphone-16-pro-max';
-            if (brandModel.includes('16 Pro')) return 'iphone-16-pro';
-            if (brandModel.includes('17 Pro Max')) return 'iphone-17-pro-max';
-            if (brandModel.includes('17 Pro')) return 'iphone-17-pro';
-            if (brandModel.includes('16') && !brandModel.includes('Pro')) return 'iphone-16';
-            if (brandModel.includes('Air') && brandModel.includes('Apple')) return 'macbook-air-m2';
-            if (brandModel.includes('iPad')) return 'ipad-air';
-            if (brandModel.includes('AirPods')) return 'airpods-pro-2';
-            if (brandModel.includes('HomePod')) return 'homepod-mini';
+            // Преобразовать название модели в model_key (формат для API)
+            console.log('🔍 Определяем model_key для:', brandModel);
             
+            if (brandModel.includes('16 Pro Max')) return 'IPHONE16ProMax';
+            if (brandModel.includes('16 Pro')) return 'IPHONE16Pro';
+            if (brandModel.includes('17 Pro Max')) return 'IPHONE17ProMax';
+            if (brandModel.includes('17 Pro')) return 'IPHONE17Pro';
+            if (brandModel.includes('16')) return 'IPHONE16';
+            if (brandModel.includes('17')) return 'IPHONE17';
+            if (brandModel.includes('MacBook Air M2')) return 'MACBOOKAirM2';
+            if (brandModel.includes('iPad Air')) return 'IPADAir';
+            if (brandModel.includes('AirPods Pro 2')) return 'AIRPODSPro2';
+            if (brandModel.includes('HomePod mini')) return 'HOMEPODmini';
+            
+            console.warn('⚠️ Не удалось определить model_key для:', brandModel);
             return null; // Модель не найдена
         }
         
         
 
         async function getDefaultColorForProduct(productCard) {
-            // Получить модель товара
-            const modelElement = productCard.querySelector('.product-brand');
-            if (!modelElement) return 'Black';
+            // Получить модель товара из data-model атрибута
+            const variantsElement = productCard.querySelector('.product-variants');
+            if (!variantsElement || !variantsElement.dataset.model) return 'Black';
             
-            const modelText = modelElement.textContent;
-            const brandModel = modelText.trim();
+            const brandModel = variantsElement.dataset.model;
             
             const modelKey = getModelKey(brandModel);
             if (!modelKey) {
@@ -1843,7 +2532,7 @@
                                     <h3>⚙️ Характеристики</h3>
                                     <div class="specifications-grid">
                                         ${Object.entries(product.specifications)
-                                            .filter(([key, value]) => key !== 'full_description')
+                                            .filter(([key, value]) => !['full_description', 'variants', 'images', 'image_folder', 'memories', 'colors', 'sim_types', 'цвета'].includes(key))
                                             .map(([category, details]) => `
                                                 <div class="spec-category">
                                                     <h4>${category.charAt(0).toUpperCase() + category.slice(1)}</h4>
@@ -1900,7 +2589,12 @@
             let selectedColor = 'Black'; // По умолчанию черный
             
             if (activeColorButton) {
-                selectedColor = activeColorButton.dataset.colorFolder || activeColorButton.dataset.value;
+                selectedColor = activeColorButton.dataset.colorFolder || activeColorButton.dataset.value || activeColorButton.dataset.color || 'Black';
+            }
+            
+            // Проверяем что selectedColor не undefined
+            if (!selectedColor || selectedColor === 'undefined') {
+                selectedColor = 'Black';
             }
             
             // Создать ключ для конкретного цвета и получить изображения
@@ -1912,31 +2606,96 @@
             const modelElement = productCard?.querySelector('.product-brand');
             const brandModel = modelElement?.textContent?.trim() || '';
             
-            let modelFolder = 'IPHONE15PRO';
-            if (brandModel.includes('15 Pro')) {
-                modelFolder = 'IPHONE15PRO';
+            let modelFolder = 'IPHONE16'; // Дефолтная папка
+            
+            // Определяем папку изображений на основе модели
+            if (brandModel.includes('16 Pro Max')) {
+                modelFolder = 'IPHONE16ProMax';
+            } else if (brandModel.includes('16 Pro')) {
+                modelFolder = 'IPHONE16Pro';
             } else if (brandModel.includes('16')) {
                 modelFolder = 'IPHONE16';
-            }
-            
-            // Простая синхронная проверка - используем предопределенное количество изображений по цветам
-            let expectedImageCount = 4; // По умолчанию 4 изображения
-            
-            // Специальные правила для разных цветов
-            if (selectedColor === 'White') {
-                expectedImageCount = 3; // Белый имеет только 1, 2, 3
+            } else if (brandModel.includes('17 Pro Max')) {
+                modelFolder = 'IPHONE17ProMax';
+            } else if (brandModel.includes('17')) {
+                modelFolder = 'IPHONE17';
+            } else if (brandModel.includes('AirPods Pro 2')) {
+                modelFolder = 'AIRPODSPro2';
+            } else if (brandModel.includes('HomePod mini')) {
+                modelFolder = 'HOMEPODmini';
+            } else if (brandModel.includes('iPad Air')) {
+                modelFolder = 'IPADAir';
             }
             
             // Создаем список изображений только с ожидаемым количеством
             const colorImageList = [];
-            for (let i = 1; i <= expectedImageCount; i++) {
-                colorImageList.push(`/static/images/products/${modelFolder}/${selectedColor}/${i}.jpg`);
+            
+            // Определяем ожидаемое количество изображений для каждого цвета
+            let expectedImageCount = 4; // По умолчанию 4 изображения
+            
+            // Специальные правила для разных цветов моделей
+            if (selectedColor === 'White' && modelFolder === 'IPHONE16') {
+                expectedImageCount = 3; // iPhone 16 White имеет только 3 изображения
+            } else if (selectedColor === 'Silver' && modelFolder === 'IPHONE17ProMax') {
+                expectedImageCount = 3; // iPhone 17 Pro Max Silver имеет 3 изображения
+            } else if (selectedColor === 'Deep Blue' && modelFolder === 'IPHONE17ProMax') {
+                expectedImageCount = 3; // iPhone 17 Pro Max Deep Blue имеет 3 изображения
             }
             
+            // Сопоставление цветов из базы данных с названиями папок
+            const colorFolderMapping = {
+                'Teal': 'teal',
+                'Pink': 'pink', 
+                'White': 'white',
+                'Black': 'black',
+                'Default': 'black', // Дефолтный цвет
+                'Titanium White': 'titanium-white',
+                'Titanium Blue': 'titanium-blue', 
+                'Titanium Natural': 'titanium-natural',
+                'Titanium Black': 'titanium-black',
+                'Titanium Desert': 'titanium-desert',
+                'Space Black': 'space-black',
+                'Silver': 'silver',
+                'Deep Blue': 'deep-blue',
+                'Cosmic Orange': 'cosmic-orange'
+            };
+            
+            // Получаем правильное название папки для цвета
+            const colorFolder = colorFolderMapping[selectedColor] || selectedColor.toLowerCase();
+            
+            // Сначала проверим есть ли уже изображения в cache от updateProductImage
+            let cachedImages = window[colorImagesKey];
+            if (cachedImages && cachedImages.length > 0) {
+                console.log(`📸 Используем изображения из cache для ${selectedColor}:`, cachedImages);
+                colorImageList = cachedImages;
+            } else {
+                // Если нет cached изображений, запрашиваем из API
+                console.log('📸 Получаем изображения из API...');
+                
+                let modelKey = 'IPHONE16ProMax'; // Дефолтная папка
+                if (brandModel.includes('16 Pro Max')) {
+                    modelKey = 'IPHONE16ProMax';
+                } else if (brandModel.includes('17 Pro Max')) {
+                    modelKey = 'IPHONE17ProMax';
+                }
+                
+                fetch(`/product-images/${modelKey}/${colorFolder}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const timestampedImages = data.image_paths.map(img => `${img}?v=${Date.now()}`);
+                        window[colorImagesKey] = timestampedImages;
+                        console.log(`📸 Получены изображения из API для ${selectedColor}:`, timestampedImages);
+                    })
+                    .catch(error => {
+                        console.error(`❌ Ошибка получения изображений для ${selectedColor}:`, error);
+                        // Fallback на статические пути только если API недоступно
+                        for (let i = 1; i <= expectedImageCount; i++) {
+                            colorImageList.push(`/static/images/products/${modelFolder}/${colorFolder}/${i}.jpg`);
+                        }
             const timestampedImages = colorImageList.map(img => `${img}?v=${Date.now()}`);
             window[colorImagesKey] = timestampedImages;
-            
-            console.log(`Created ${timestampedImages.length} images for ${selectedColor}:`, timestampedImages);
+                    });
+            }
             }
             
             const indicators = carousel.querySelectorAll('.indicator');
@@ -2041,6 +2800,129 @@
         }
         
         // Telegram WebApp integration
+        // Создание хлебных крошек навигации
+        function createBreadcrumbs(brand = null) {
+            let breadcrumbs = [];
+            
+            // Домашний уровень (категории)
+            breadcrumbs.push(`
+                <div class="breadcrumb-item">
+                    <a href="javascript:void" class="breadcrumb-link" onclick="loadCategories()">Категории</a>
+                </div>
+            `);
+            
+            // Добавляем категорию (level0) - кликабельную
+            if (currentLevel0Filter) {
+                breadcrumbs.push(`
+                    <span class="breadcrumb-separator">→</span>
+                    <div class="breadcrumb-item">
+                        <a href="javascript:void" class="breadcrumb-link" onclick="navigateToLevel0()">${currentLevel0Filter}</a>
+                    </div>
+                `);
+            }
+            
+            // Добавляем бренд - кликабельный если есть level1 или level2
+            if (brand) {
+                const isClickable = currentLevel1Filter || currentLevel2Filter;
+                if (isClickable) {
+                    breadcrumbs.push(`
+                        <span class="breadcrumb-separator">→</span>
+                        <div class="breadcrumb-item">
+                            <a href="javascript:void" class="breadcrumb-link" onclick="navigateToBrand('${brand}')">${brand}</a>
+                        </div>
+                    `);
+                } else {
+                    breadcrumbs.push(`
+                        <span class="breadcrumb-separator">→</span>
+                        <div class="breadcrumb-item">
+                            <span class="breadcrumb-current">${brand}</span>
+                        </div>
+                    `);
+                }
+            }
+            
+            // Добавляем уровень 1 - кликабельный если есть level2
+            if (currentLevel1Filter) {
+                const isClickable = currentLevel2Filter !== null;
+                if (isClickable) {
+                    breadcrumbs.push(`
+                        <span class="breadcrumb-separator">→</span>
+                        <div class="breadcrumb-item">
+                            <a href="javascript:void" class="breadcrumb-link" onclick="navigateToLevel1('${currentLevel1Filter}')">${currentLevel1Filter}</a>
+                        </div>
+                    `);
+                } else {
+                    breadcrumbs.push(`
+                        <span class="breadcrumb-separator">→</span>
+                        <div class="breadcrumb-item">
+                            <span class="breadcrumb-current">${currentLevel1Filter}</span>
+                        </div>
+                    `);
+                }
+            }
+            
+            // Добавляем уровень 2 - всегда текущий (не кликабельный)
+            if (currentLevel2Filter) {
+                breadcrumbs.push(`
+                    <span class="breadcrumb-separator">→</span>
+                    <div class="breadcrumb-item">
+                        <span class="breadcrumb-current">${currentLevel2Filter}</span>
+                    </div>
+                `);
+            }
+            
+            return `
+                <div class="breadcrumb-trail">
+                    ${breadcrumbs.join('')}
+                </div>
+            `;
+        }
+        
+        // Обновление хлебных крошек
+        function updateBreadcrumbs() {
+            const breadcrumbsContainer = document.getElementById('breadcrumbsContainer');
+            if (breadcrumbsContainer) {
+                breadcrumbsContainer.innerHTML = createBreadcrumbs(currentBrandFilter);
+            }
+        }
+        
+        // Навигация к уровню level0 (категории)
+        async function navigateToLevel0() {
+            if (currentCategoryId && currentCategoryName) {
+                // Загружаем бренды текущей категории
+                await loadSubcategories(currentCategoryId);
+            } else {
+                // Fallback: возвращаемся к главной странице категорий
+                loadCategories();
+            }
+        }
+        
+        // Навигация к бренду (сброс level1 и level2)
+        async function navigateToBrand(brand) {
+            currentLevel1Filter = null;
+            currentLevel2Filter = null;
+            await loadFilteredProducts();
+            updateBreadcrumbs();
+            await createHierarchyFilters(currentBrandFilter, []);
+        }
+        
+        // Навигация к level1 (сброс level2)
+        async function navigateToLevel1(level1Value) {
+            currentLevel1Filter = level1Value;
+            currentLevel2Filter = null;
+            await loadFilteredProducts();
+            updateBreadcrumbs();
+            await createHierarchyFilters(currentBrandFilter, []);
+        }
+        
+        // Навигация к level2
+        async function navigateToLevel2(level2Value) {
+            currentLevel2Filter = level2Value;
+            await loadFilteredProducts();
+            updateBreadcrumbs();
+            await createHierarchyFilters(currentBrandFilter, []);
+        }
+
         if (window.Telegram && window.Telegram.WebApp) {
             window.Telegram.WebApp.ready();
             window.Telegram.WebApp.expand();

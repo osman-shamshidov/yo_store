@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException, UploadFile, File
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, FileResponse, StreamingResponse
 from sqlalchemy.orm import Session
-from sqlalchemy import and_
+from sqlalchemy import and_, func
 from database import get_db
 from models import Product, Category, CurrentPrice
 from pydantic import BaseModel
@@ -15,26 +15,52 @@ from manual_price_manager import manual_price_manager
 
 def get_product_images(product):
     """Получить массив изображений товара"""
-    try:
-        images_data = json.loads(product.images) if product.images else []
-    except json.JSONDecodeError:
-        images_data = []
-    
-    # Извлекаем URL из объектов изображений или используем строки напрямую
     images = []
-    for img_data in images_data:
-        if isinstance(img_data, dict):
-            # Новый формат: {"url": "...", "alt": "..."}
-            images.append(img_data["url"])
-        elif isinstance(img_data, str):
-            # Старый формат: просто строка URL
-            images.append(img_data)
+    
+    # Сначала попробуем получить изображения из specifications
+    try:
+        specs = json.loads(product.specifications) if product.specifications else {}
+        images_data = specs.get('images', [])
+        
+        for img_data in images_data:
+            if isinstance(img_data, dict):
+                # Новый формат: {"url": "...", "alt": "..."}
+                images.append(img_data["url"])
+            elif isinstance(img_data, str):
+                # Новый формат: массив строк
+                images.append(img_data)
+                
+    except json.JSONDecodeError:
+        pass
+    
+    # Если не нашли в specifications, пробуем старое поле images
+    if not images:
+        try:
+            images_data = json.loads(product.images) if product.images else []
+            for img_data in images_data:
+                if isinstance(img_data, dict):
+                    images.append(img_data["url"])
+                elif isinstance(img_data, str):
+                    images.append(img_data)
+        except json.JSONDecodeError:
+            pass
     
     # Если нет множественных изображений, используем основное
     if not images and product.image_url:
         images = [product.image_url]
     
     return images
+
+def parse_images_from_string(images_str: str) -> List[str]:
+    """Парсить строку изображений разделенных запятыми в JSON массив"""
+    if not images_str or not images_str.strip():
+        return []
+    
+    # Разделяем по запятой и очищаем от пробелов
+    image_urls = [url.strip() for url in str(images_str).split(',') if url.strip()]
+    
+    # Конвертируем в JSON массив строк
+    return json.dumps(image_urls)
 
 app = FastAPI(title="Yo Store API", version="1.0.0")
 
@@ -111,15 +137,18 @@ async def get_categories(db: Session = Depends(get_db)):
     
     result = []
     for category in main_categories:
-        # Подсчитать товары в основной категории
-        product_count = db.query(Product).filter(
-            Product.category_id == category.id
-        ).count()
-        
-        # Получить подкатегории
+        # Получить подкатегории сначала
         subcategories = db.query(Category).filter(
             Category.parent_category_id == category.id
         ).all()
+        
+        # Подсчитать товары в основной категории + всех подкатегориях
+        subcategory_ids = [subcat.id for subcat in subcategories]
+        subcategory_ids.append(category.id)  # Включаем основную категорию
+        
+        product_count = db.query(Product).filter(
+            Product.category_id.in_(subcategory_ids)
+        ).count()
         
         subcategory_responses = []
         for subcat in subcategories:
@@ -157,16 +186,44 @@ async def get_categories(db: Session = Depends(get_db)):
 async def get_products(
     category_id: Optional[int] = None,
     brand: Optional[str] = None,
+    level0: Optional[str] = None,
+    level1: Optional[str] = None,
+    level2: Optional[str] = None,
+    model: Optional[str] = None,
     limit: int = 20,
     offset: int = 0,
     db: Session = Depends(get_db)
 ):
-    """Get products with optional category and brand filters"""
-    query = db.query(Product, CurrentPrice, Category).join(
+    """Get unique product models (grouped by level2) with optional hierarchical filters"""
+    # Простая логика: получаем все товары, затем группируем в Python
+    query = db.query(Product, CurrentPrice).outerjoin(
         CurrentPrice, Product.id == CurrentPrice.product_id
-    ).join(Category, Product.category_id == Category.id)
+    )
     
-    if category_id and brand:
+    # Применяем фильтры
+    filters = []
+    
+    if brand:
+        filters.append(Product.brand == brand)
+    if level0:
+        filters.append(Product.level0 == level0)
+    if level1:
+        filters.append(Product.level1 == level1)
+    if level2:
+        filters.append(Product.level2 == level2)
+    if model:
+        filters.append(Product.model == model)
+        
+    # Применяем старую логику categories только для обратной совместимости
+    if category_id and not (level0 or level1 or level2):
+        # Если указана только категория, ищем товары в основной категории и всех подкатегориях
+        subcategory_ids = db.query(Category.id).filter(
+            Category.parent_category_id == category_id
+        ).all()
+        
+        category_ids = [category_id] + [subcat[0] for subcat in subcategory_ids]
+        filters.append(Product.category_id.in_(category_ids))
+    elif category_id and brand and not (level0 or level1 or level2):
         # Если указаны и категория, и бренд, ищем товары в подкатегориях этой категории с нужным брендом
         subcategory_ids = db.query(Category.id).filter(
             and_(
@@ -178,32 +235,61 @@ async def get_products(
         
         if subcategory_ids:
             subcategory_id_list = [subcat[0] for subcat in subcategory_ids]
-            query = query.filter(Product.category_id.in_(subcategory_id_list))
+            filters.append(Product.category_id.in_(subcategory_id_list))
         else:
             # Если подкатегория не найдена, возвращаем пустой результат
-            query = query.filter(Product.id == -1)  # Невозможный ID
-    elif category_id:
-        # Если указана только категория, ищем товары в основной категории и всех подкатегориях
-        subcategory_ids = db.query(Category.id).filter(
-            Category.parent_category_id == category_id
-        ).all()
-        
-        category_ids = [category_id] + [subcat[0] for subcat in subcategory_ids]
-        query = query.filter(Product.category_id.in_(category_ids))
-    elif brand:
-        query = query.filter(Product.brand == brand)
+            filters.append(Product.id == -1)  # Невозможный ID
     
-    # Сортировка по убыванию названия (от Z до A)
-    results = query.order_by(Product.name.desc()).offset(offset).limit(limit).all()
+    # Применяем фильтры
+    if filters:
+        query = query.filter(and_(*filters))
+    
+    # Используем подкеру для получения одного представительного товара из каждой модели
+    subquery = db.query(
+        func.min(Product.id).label('id')
+    ).filter(*filters).group_by(Product.model, Product.brand).subquery()
+    
+    # Теперь получаем только те товары, которые являются представителями групп
+    final_query = db.query(Product, CurrentPrice).outerjoin(
+        CurrentPrice, Product.id == CurrentPrice.product_id
+    ).outerjoin(subquery, Product.id == subquery.c.id).filter(
+        subquery.c.id.isnot(None)
+    ).order_by(Product.model, Product.id)
+    
+    # Применяем лимит и отступ
+    results = final_query.offset(offset).limit(limit).all()
     
     products = []
-    for product, price, category in results:
+    for result in results:
+        product = result[0]  # Product
+
+
+        price = result[1]    # CurrentPrice или None
+        
+        # Если цена отсутствует, используем значения по умолчанию
+        if price is None:
+            price_obj = type('Price', (), {
+                'price': 0.0,
+                'old_price': 0.0,
+                'discount_percentage': 0.0,
+                'currency': 'RUB'
+            })()
+        else:
+            price_obj = price
+        
         try:
             specifications = json.loads(product.specifications) if product.specifications else {}
         except json.JSONDecodeError:
             specifications = {}
         
         images = get_product_images(product)
+        
+        # Получаем название категории из level полей или используем старое поле
+        category_name = product.level0 or "Без категории"
+        if product.level1:
+            category_name += f" / {product.level1}"
+        if product.level2:
+            category_name += f" / {product.level2}"
         
         products.append(ProductResponse(
             id=product.id,
@@ -212,17 +298,149 @@ async def get_products(
             description=product.description,
             brand=product.brand,
             model=product.model,
-            category_name=category.name,
-            image_url=images[0] if images else product.image_url,
+            category_name=category_name,
+            image_url=images[0] if images else (product.image_url or ''),
             images=images,
             specifications=specifications,
-            price=price.price,
-            old_price=price.old_price,
-            discount_percentage=price.discount_percentage,
-            currency=price.currency,
+            price=price_obj.price,
+            old_price=price_obj.old_price,
+            discount_percentage=price_obj.discount_percentage,
+            currency=price_obj.currency,
         ))
     
     return products
+
+@app.get("/products/{model}/variants")
+async def get_model_variants(model: str, db: Session = Depends(get_db)):
+    """Get all variants and their prices for a specific model"""
+    
+    # Сначала попробуем найти основной продукт с полными спецификациями
+    main_product = db.query(Product).filter(
+        Product.model == model,
+        Product.specifications.like('%variants%')
+    ).first()
+    
+    if main_product:
+        # Найден основной продукт с вложенными вариантами
+        specifications = {}
+        try:
+            if main_product.specifications:
+                specifications = json.loads(main_product.specifications)
+        except json.JSONDecodeError:
+            pass
+        
+        variants = []
+        
+        # Извлекаем варианты из specifications.variants
+        if 'variants' in specifications:
+            # Сортируем варианты по цвету (в алфавитном порядке)
+            sorted_variants = sorted(specifications['variants'], key=lambda x: x.get('specifications', {}).get('color', ''))
+            
+            for variant_info in sorted_variants:
+                # Находим цену для этого варианта по SKU
+                variant_product = db.query(Product).filter(Product.sku == variant_info['sku']).first()
+                price = None
+                if variant_product:
+                    price = db.query(CurrentPrice).filter(CurrentPrice.product_id == variant_product.id).first()
+                
+                variant_specs = variant_info.get('specifications', {})
+                
+                # Получаем изображения для цвета из основного продукта
+                variant_color = variant_specs.get('color', '')
+                variant_color_normalized = variant_color.lower().replace(' ', '-')
+                variant_images = []
+                
+                if 'images' in specifications:
+                    for img_info in specifications['images']:
+                        if isinstance(img_info, dict) and 'color' in img_info:
+                            img_color = img_info.get('color', '').lower()
+                            if img_color == variant_color_normalized:
+                                variant_images.append(img_info.get('url', ''))
+                        elif isinstance(img_info, str):
+                            # Прямой URL - пытаемся определить цвет из пути
+                            img_path = img_info.lower()
+                            if variant_color_normalized in img_path:
+                                variant_images.append(img_info)
+                
+                variant_data = {
+                    "sku": variant_info['sku'],
+                    "name": variant_info['name'],
+                    "price": price.price if price else 0.0,
+                    "old_price": price.old_price if price else 0.0,
+                    "discount_percentage": price.discount_percentage if price else 0.0,
+                    "currency": price.currency if price else "RUB",
+                    "stock": variant_info.get('stock', 0),
+                    "is_available": variant_info.get('is_available', True),
+                    
+                    # Добавляем спецификации варианта
+                    "color": variant_specs.get('color', ''),
+                    "memory": variant_specs.get('memory', ''),
+                    "sim_type": variant_specs.get('sim_type', ''),
+                    
+                    # Изображения для этого цвета
+                    "images": variant_images,
+                    "main_image": variant_images[0] if variant_images else ""
+                }
+                
+                variants.append(variant_data)
+        
+        return {
+            "model": model,
+            "variants": variants,
+            "total_variants": len(variants)
+        }
+    
+    # Fallback: Если основного продукта нет, найдем все варианты для данной модели
+    variants_query = db.query(Product, CurrentPrice).outerjoin(
+        CurrentPrice, Product.id == CurrentPrice.product_id
+    ).filter(Product.model == model).order_by(Product.specifications)  # Сортируем по specifications
+    
+    variants = []
+    for result in variants_query.all():
+        product = result[0]
+        price = result[1]
+        
+        # Получаем спецификации варианта
+        specifications = {}
+        try:
+            if product.specifications:
+                specifications = json.loads(product.specifications)
+        except json.JSONDecodeError:
+            pass
+        
+        # Получаем изображения
+        images = get_product_images(product)
+        
+        variant_data = {
+            "sku": product.sku,
+            "name": product.name,
+            "price": price.price if price else 0.0,
+            "old_price": price.old_price if price else 0.0,
+            "discount_percentage": price.discount_percentage if price else 0.0,
+            "currency": price.currency if price else "RUB",
+            "stock": product.stock,
+            "is_available": product.is_available,
+            
+            # Добавляем спецификации варианта (цвет, память, SIM)
+            "color": specifications.get('color', ''),
+            "memory": specifications.get('memory', ''),
+            "sim_type": specifications.get('sim_type', ''),
+            
+            # Изображения для этого варианта (один цвет обычно)
+            "images": images,
+            "main_image": images[0] if images else ""
+        }
+        
+        variants.append(variant_data)
+    
+    # Сортируем варианты по цвету для fallback случая
+    variants.sort(key=lambda x: x.get('color', ''))
+    
+    return {
+        "model": model,
+        "variants": variants,
+        "total_variants": len(variants)
+    }
 
 @app.get("/products/{product_id}", response_model=ProductDetailResponse)
 async def get_product(product_id: int, db: Session = Depends(get_db)):
@@ -253,7 +471,7 @@ async def get_product(product_id: int, db: Session = Depends(get_db)):
         brand=product.brand,
         model=product.model,
         category_name=category.name,
-        image_url=product.image_url,
+        image_url=product.image_url or '',
         images=images,
         specifications=specifications,
         price=price.price,
@@ -303,7 +521,7 @@ async def search_products(
             brand=product.brand,
             model=product.model,
             category_name=category.name,
-            image_url=images[0] if images else product.image_url,
+            image_url=images[0] if images else (product.image_url or ''),
             images=images,
             specifications=specifications,
             price=price.price,
@@ -318,6 +536,11 @@ async def search_products(
 async def webapp():
     """Serve the web app"""
     return FileResponse("webapp.html")
+
+@app.get("/admin")
+async def admin():
+    """Serve the admin panel"""
+    return FileResponse("admin.html")
 
 @app.get("/health")
 async def health_check():
@@ -376,13 +599,17 @@ async def import_products_from_excel(file: UploadFile = File(...), db: Session =
                     continue
                 
                 # Создать товар
+                parsed_images = parse_images_from_string(product_data['image_url'])
+                first_image = product_data['image_url'].split(',')[0].strip() if product_data['image_url'] else None
+                
                 db_product = Product(
                     name=product_data['name'],
                     category_id=product_data['category_id'],
                     description=product_data['description'],
                     brand=product_data['brand'],
                     model=product_data['model'],
-                    image_url=product_data['image_url'],
+                    image_url=first_image,  # Legacy поле - берем первый URL
+                    images=parsed_images,  # Новое поле - JSON массив всех изображений
                     specifications=json.dumps(product_data['specifications']),
                     stock=product_data['stock'],
                     is_available=True
@@ -464,9 +691,9 @@ async def export_products_to_excel(db: Session = Depends(get_db)):
     """Экспортировать все товары в Excel файл"""
     try:
         # Получить все товары с ценами и категориями
-        results = db.query(Product, CurrentPrice, Category).join(
+        results = db.query(Product, CurrentPrice, Category).outerjoin(
             CurrentPrice, Product.id == CurrentPrice.product_id
-        ).join(Category, Product.category_id == Category.id).all()
+        ).outerjoin(Category, Product.category_id == Category.id).all()
         
         products_data = []
         for product, price, category in results:
@@ -475,17 +702,28 @@ async def export_products_to_excel(db: Session = Depends(get_db)):
             except json.JSONDecodeError:
                 specifications = {}
             
+            # Получить массив изображений используя существующую функцию
+            images = get_product_images(product)
+            
             products_data.append({
                 'id': product.id,
+                'sku': product.sku,
                 'name': product.name,
-                'category_name': category.name,
-                'description': product.description,
+                'category_name': category.name if category else '',
+                'level0': product.level0,
+                'level1': product.level1,
+                'level2': product.level2,
+                'description': product.description or '',
                 'brand': product.brand,
-                'model': product.model,
-                'price': price.price,
-                'currency': price.currency,
+                'model': product.model or '',
+                'price': price.price if price else 0.0,
+                'old_price': price.old_price if price else price.price if price else 0.0,
+                'currency': price.currency if price else 'RUB',
+                'discount_percentage': price.discount_percentage if price else 0.0,
                 'stock': product.stock,
-                'image_url': product.image_url,
+                'image_text': ' | '.join(images) if images else product.image_url or '',
+                'images_count': len(images),
+                'is_available': product.is_available,
                 'created_at': product.created_at.strftime('%Y-%m-%d %H:%M:%S') if product.created_at else ''
             })
         
@@ -816,6 +1054,158 @@ async def get_variant_schemes(model_key: str):
         raise HTTPException(status_code=404, detail=f"Схема вариантов не найдена для {model_key}")
     
     return variant_schemes[actual_key]
+
+# Новые endpoints для иерархической фильтрации
+
+@app.get("/hierarchy/brands")
+async def get_brands(db: Session = Depends(get_db)):
+    """Получить все доступные бренды"""
+    brands = db.query(Product.brand.distinct()).filter(
+        Product.brand.isnot(None),
+        Product.is_available == True
+    ).all()
+    return [brand[0] for brand in brands]
+
+@app.get("/hierarchy/levels")
+async def get_hierarchy_levels(
+    level: Optional[int] = None,
+    brand: Optional[str] = None,
+    parent_level0: Optional[str] = None,
+    parent_level1: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
+    """
+    Получить значения уровней иерархии
+    
+    level: кавой уровень получить (0, 1, или 2)
+    brand: фильтр по бренду
+    parent_level0: для уровня 1 - фильтр по level0
+    parent_level1: для уровня 2 - фильтр по level1
+    """
+    
+    filters = [Product.is_available == True]
+    
+    if brand:
+        filters.append(Product.brand == brand)
+    if parent_level0:
+        filters.append(Product.level0 == parent_level0)
+    if parent_level1:
+        filters.append(Product.level1 == parent_level1)
+    
+    query = db.query(Product).filter(and_(*filters))
+    
+    if level == 0:
+        # Получаем все level0
+        results = query.with_entities(Product.level0.distinct()).filter(
+            Product.level0.isnot(None)
+        ).all()
+        return [item[0] for item in results if item[0]]
+        
+    elif level == 1:
+        # Получаем все level1
+        results = query.with_entities(Product.level1.distinct()).filter(
+            Product.level1.isnot(None)
+        ).all()
+        return [item[0] for item in results if item[0]]
+        
+    elif level == 2:
+        # Получаем все level2
+        results = query.with_entities(Product.level2.distinct()).filter(
+            Product.level2.isnot(None)
+        ).all()
+        return [item[0] for item in results if item[0]]
+    
+    else:
+        # Возвращаем всю иерархию
+        return {
+            "level0": db.query(Product.level0.distinct()).filter(
+                Product.level0.isnot(None),
+                Product.is_available == True
+            ).all(),
+            "level1": db.query(Product.level1.distinct()).filter(
+                Product.level1.isnot(None),
+                Product.is_available == True
+            ).all(),
+            "level2": db.query(Product.level2.distinct()).filter(
+                Product.level2.isnot(None),
+                Product.is_available == True
+            ).all()
+        }
+
+@app.get("/hierarchy/models")
+async def get_models(
+    brand: Optional[str] = None,
+    level0: Optional[str] = None,
+    level1: Optional[str] = None,
+    level2: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
+    """Получить все доступные модели с фильтрацией"""
+    
+    filters = [Product.is_available == True]
+    
+    if brand:
+        filters.append(Product.brand == brand)
+    if level0:
+        filters.append(Product.level0 == level0)
+    if level1:
+        filters.append(Product.level1 == level1)
+    if level2:
+        filters.append(Product.level2 == level2)
+    
+    models = db.query(Product.model.distinct()).filter(
+        and_(*filters)
+    ).all()
+    
+    return [model[0] for model in models if model[0]]
+
+@app.get("/hierarchy/skus")
+async def get_skus_with_info(
+    brand: Optional[str] = None,
+    model: Optional[str] = None,
+    level0: Optional[str] = None,
+    level1: Optional[str] = None,
+    level2: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
+    """Получить SKU с детальной информацией"""
+    
+    filters = [Product.is_available == True]
+    
+    if brand:
+        filters.append(Product.brand == brand)
+    if model:
+        filters.append(Product.model == model)
+    if level0:
+        filters.append(Product.level0 == level0)
+    if level1:
+        filters.append(Product.level1 == level1)
+    if level2:
+        filters.append(Product.level2 == level2)
+    
+    # Получаем SKU с ценами
+    results = db.query(Product, CurrentPrice).join(
+        CurrentPrice, Product.id == CurrentPrice.product_id,
+        isouter=True
+    ).filter(and_(*filters)).all()
+    
+    skus_info = []
+    for product, price in results:
+        sku_data = {
+            "sku": product.sku,
+            "name": product.name,
+            "brand": product.brand,
+            "model": product.model,
+            "level0": product.level0,
+            "level1": product.level1,
+            "level2": product.level2,
+            "price": price.price if price else 0.0,
+            "currency": price.currency if price else "RUB",
+            "stock": product.stock
+        }
+        skus_info.append(sku_data)
+    
+    return skus_info
 
 if __name__ == "__main__":
     import uvicorn

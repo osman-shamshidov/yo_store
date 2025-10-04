@@ -24,22 +24,31 @@ class ManualPriceManager:
             should_close = False
         
         try:
+            # Поддерживаем как старый формат (product_id), так и новый (sku)
             product_id = price_data.get('product_id')
+            sku = price_data.get('sku')
             new_price = price_data.get('price')
             old_price = price_data.get('old_price', new_price)
             currency = price_data.get('currency', 'RUB')
             
-            if not product_id or not new_price:
-                raise ValueError("product_id и price обязательны")
+            if not new_price:
+                raise ValueError("price обязательна")
             
-            # Найти товар
-            product = db.query(Product).filter(Product.id == product_id).first()
-            if not product:
-                raise ValueError(f"Товар с ID {product_id} не найден")
+            # Найти товар либо по ID, либо по SKU
+            if product_id:
+                product = db.query(Product).filter(Product.id == product_id).first()
+                if not product:
+                    raise ValueError(f"Товар с ID {product_id} не найден")
+            elif sku:
+                product = db.query(Product).filter(Product.sku == sku).first()
+                if not product:
+                    raise ValueError(f"Товар с SKU '{sku}' не найден")
+            else:
+                raise ValueError("Необходимо указать либо product_id, либо sku")
             
             # Найти текущую цену
             current_price = db.query(CurrentPrice).filter(
-                CurrentPrice.product_id == product_id
+                CurrentPrice.product_id == product.id
             ).first()
             
             if current_price:
@@ -59,7 +68,7 @@ class ManualPriceManager:
             else:
                 # Создать новую цену
                 new_price_record = CurrentPrice(
-                    product_id=product_id,
+                    product_id=product.id,
                     price=new_price,
                     old_price=old_price,
                     discount_percentage=0.0,
@@ -70,7 +79,7 @@ class ManualPriceManager:
             
             # Добавить в историю цен
             price_history = PriceHistory(
-                product_id=product_id,
+                product_id=product.id,
                 price=new_price,
                 old_price=old_price,
                 updated_at=datetime.utcnow()

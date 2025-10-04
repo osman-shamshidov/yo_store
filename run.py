@@ -12,7 +12,7 @@ import os
 import time
 from config import Config
 from database import init_database
-from telegram_bot import ElectronicsStoreBot
+# from telegram_bot import ElectronicsStoreBot  # Отключено для тестирования
 import uvicorn
 from api import app
 
@@ -101,14 +101,15 @@ class ElectronicsStoreApp:
             print("⚠️  TELEGRAM_BOT_TOKEN not set, skipping Telegram bot")
             return None
         
-        print("Starting Telegram bot...")
-        self.bot = ElectronicsStoreBot()
+        # print("Starting Telegram bot...")
+        # self.bot = ElectronicsStoreBot()
+        # 
+        # # Run bot in a separate thread
+        # bot_thread = threading.Thread(target=self.bot.run, daemon=True)
+        # bot_thread.start()
+        print("Telegram bot отключен для тестирования")
         
-        # Run bot in a separate thread
-        bot_thread = threading.Thread(target=self.bot.run, daemon=True)
-        bot_thread.start()
-        
-        return bot_thread
+        return None
     
     def run(self):
         """Run the application"""
