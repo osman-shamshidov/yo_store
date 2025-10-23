@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Yo Store - Магазин электроники</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
@@ -19,12 +19,44 @@
             background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
             min-height: 100vh;
             color: #333;
+            overflow-x: hidden;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        
+        html {
+            width: 100%;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
         }
         
         .container {
             max-width: 1200px;
+            width: 100%;
             margin: 0 auto;
             padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        /* Мобильные устройства */
+        @media screen and (max-width: 768px) {
+            .container {
+                padding: 15px;
+                width: 100%;
+                max-width: none;
+            }
+            
+            body {
+                width: 100vw;
+                overflow-x: hidden;
+            }
+            
+            html {
+                width: 100vw;
+                overflow-x: hidden;
+            }
         }
         
         .header {
@@ -34,13 +66,10 @@
         }
         
         .header h1 {
-            font-size: 2.5rem;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 15px;
         }
         
         .logo {
@@ -50,6 +79,17 @@
             object-fit: cover;
         }
         
+        .logo-link {
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .logo-link:hover {
+            transform: scale(1.05);
+        }
+        
         .header p {
             font-size: 1.1rem;
             opacity: 0.9;
@@ -57,17 +97,17 @@
         
         .search-bar {
             background: white;
-            border-radius: 25px;
-            padding: 15px 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            padding: 10px 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
         }
         
         .search-input {
             width: 100%;
             border: none;
             outline: none;
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             background: transparent;
         }
         
@@ -91,6 +131,114 @@
         .category-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        /* Стили для заголовка категории */
+        .category-header {
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 10px;
+            transition: background-color 0.2s ease;
+        }
+        
+        .category-header:hover {
+            background-color: rgba(102, 126, 234, 0.1);
+        }
+        
+        /* Стили для контейнера брендов */
+        .brands-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+            padding: 16px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #dee2e6 100%);
+            border-radius: 16px;
+            border: 1px solid #ced4da;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        /* Стили для кнопок брендов */
+        .brand-button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            color: #495057;
+            border: 1px solid #dee2e6;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            min-width: 90px;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .brand-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+        
+        .brand-button:hover::before {
+            left: 100%;
+        }
+        
+        .brand-button:hover {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            border-color: #007bff;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,123,255,0.4);
+        }
+        
+        .brand-button:active {
+            transform: translateY(-1px) scale(1.02);
+            box-shadow: 0 4px 15px rgba(0,123,255,0.3);
+        }
+        
+        .brand-icon {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            transition: transform 0.3s ease;
+        }
+        
+        .brand-button:hover .brand-icon {
+            transform: scale(1.1);
+        }
+        
+        .brand-name {
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+        
+        .brand-count {
+            background: rgba(0,123,255,0.1);
+            color: #007bff;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-left: 4px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,123,255,0.2);
+        }
+        
+        .brand-button:hover .brand-count {
+            background: rgba(255,255,255,0.25);
+            color: white;
+            border-color: rgba(255,255,255,0.3);
+            transform: scale(1.1);
         }
         
         /* Стили для подкатегорий */
@@ -127,6 +275,97 @@
             font-weight: 500;
         }
         
+        /* Tablet: use two larger cards per row */
+        @media (max-width: 768px) {
+            .categories {
+                grid-template-columns: repeat(3, minmax(160px, 1fr)) !important; /* 3 cards per row on tablets */
+                gap: 16px !important;
+            }
+            .category-card { padding: 22px !important; }
+        }
+
+        /* Mobile: 2 columns with very compact design */
+        @media (max-width: 430px) {
+            .categories {
+                grid-template-columns: repeat(2, 1fr) !important; /* 2 cards per row on mobile */
+                gap: 6px !important;
+            }
+            .category-card {
+                padding: 8px !important;
+                border-radius: 8px !important;
+            }
+            .category-name {
+                font-size: 0.8rem !important;
+                margin-bottom: 4px !important;
+            }
+            .category-count {
+                font-size: 0.7rem !important;
+            }
+            .category-icon {
+                font-size: 1.2rem !important;
+                margin-bottom: 4px !important;
+            }
+            .brands-container {
+                padding: 6px !important;
+                gap: 4px !important;
+                margin-top: 6px !important;
+            }
+            .brand-button {
+                padding: 4px 6px !important;
+                font-size: 0.75rem !important;
+            }
+            .brand-icon {
+                font-size: 0.8rem !important;
+            }
+            .brand-name {
+                font-size: 0.75rem !important;
+            }
+            .brand-count {
+                font-size: 0.65rem !important;
+            }
+            .subcategory-item { font-size: 0.9rem !important; }
+        }
+        
+        /* Extra small screens - ultra compact 2 columns */
+        @media (max-width: 360px) {
+            .categories {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 4px !important;
+            }
+            .category-card {
+                padding: 6px !important;
+            }
+            .category-name {
+                font-size: 0.75rem !important;
+                margin-bottom: 2px !important;
+            }
+            .category-count {
+                font-size: 0.65rem !important;
+            }
+            .category-icon {
+                font-size: 1rem !important;
+                margin-bottom: 2px !important;
+            }
+            .brands-container {
+                padding: 4px !important;
+                gap: 2px !important;
+                margin-top: 4px !important;
+            }
+            .brand-button {
+                padding: 3px 4px !important;
+                font-size: 0.7rem !important;
+            }
+            .brand-icon {
+                font-size: 0.7rem !important;
+            }
+            .brand-name {
+                font-size: 0.7rem !important;
+            }
+            .brand-count {
+                font-size: 0.6rem !important;
+            }
+        }
+
         .subcategory-count {
             font-size: 0.8em;
             opacity: 0.8;
@@ -476,15 +715,15 @@
         
         /* Стили для иерархических фильтров */
         .hierarchy-filters {
-            margin: 15px 0;
-            padding: 12px 20px;
+            margin: 12px 0 8px 0;
+            padding: 10px 16px;
             background: #f8f9fa;
             border-radius: 12px;
             border: 1px solid #e9ecef;
         }
         
         .hierarchy-filter-section {
-            margin-bottom: 6px;
+            margin-bottom: 0;
         }
         
         .filter-group {
@@ -507,12 +746,12 @@
         }
         
         .filter-btn {
-            padding: 8px 16px;
+            padding: 6px 12px;
             background: #ffffff;
-            border: 2px solid #dee2e6;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 500;
+            border: 1px solid #dee2e6;
+            border-radius: 16px;
+            font-size: 13px;
+            font-weight: 400;
             color: #495057;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -721,9 +960,36 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3rem;
+            font-size: 1rem;
             background: #f0f0f0;
             border-radius: 15px;
+        }
+        
+        .loading-placeholder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            margin: 0;
+            background: transparent;
+            animation: spin 1.5s linear infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .loading-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
         
         .image-indicators {
@@ -781,6 +1047,74 @@
         
         .image-nav.next {
             right: 10px;
+        }
+        
+        /* Стили для анимации слайда изображений */
+        .product-image-carousel {
+            position: relative;
+        }
+        
+        .image-slide-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .image-slide-wrapper {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .image-slide-item {
+            flex: 0 0 100%;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .image-slide-item img {
+            width: 90%;
+            height: 90%;
+            object-fit: contain;
+            border-radius: 10px;
+            transition: opacity 0.3s ease-in-out;
+        }
+        
+        /* Анимация появления изображения */
+        .image-slide-item.fade-in {
+            animation: fadeInSlide 0.4s ease-in-out;
+        }
+        
+        @keyframes fadeInSlide {
+            0% {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        /* Анимация исчезновения изображения */
+        .image-slide-item.fade-out {
+            animation: fadeOutSlide 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeOutSlide {
+            0% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
         }
         
         /* Стили для детального просмотра товара */
@@ -1036,8 +1370,9 @@
     <div class="container">
         <div class="header">
             <h1>
-                <img src="/static/images/logo.jpg" alt="Yo Store" class="logo">
-                Yo Store
+                <a href="#" onclick="goToHomePage()" class="logo-link">
+                    <img src="/static/images/logo.jpg" alt="Yo Store" class="logo">
+                </a>
             </h1>
             <p>Лучшие цены на технику • Доставка по всей России</p>
         </div>
@@ -1063,6 +1398,14 @@
         let currentCategoryId = null; // Сохраняем ID текущей категории
         let currentCategoryName = null; // Сохраняем название текущей категории
         
+        // Объект для хранения текущих фильтров
+        let currentFilters = {
+            level0: null,
+            level1: null,
+            level2: null,
+            brand: null
+        };
+        
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM loaded, starting initialization...');
@@ -1081,6 +1424,9 @@
             try {
                 loadCategories();
                 setupSearch();
+                
+                // Инициализируем поддержку свайпов
+                initializeSwipeSupport();
                 
                 // Таймаут на случай если загрузка застряла
                 setTimeout(() => {
@@ -1115,52 +1461,130 @@
             });
         }
         
-        // Load categories
+        // Clear filters function
+        function clearFilters() {
+            // Clear hierarchy filters
+            const hierarchyFilters = document.getElementById('hierarchyFilters');
+            if (hierarchyFilters) {
+                hierarchyFilters.style.display = 'none';
+            }
+            
+            // Clear active filter buttons
+            const activeButtons = document.querySelectorAll('.filter-btn.active');
+            activeButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Reset current filters
+            currentFilters = {
+                level0: null,
+                level1: null,
+                level2: null,
+                brand: null
+            };
+        }
+        
+        // Go to home page function
+        function goToHomePage() {
+            console.log('🏠 Going to home page...');
+            
+            // Clear search input
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.value = '';
+            }
+            
+            // Hide products section
+            const productsSection = document.getElementById('products');
+            if (productsSection) {
+                productsSection.style.display = 'none';
+            }
+            
+            // Show categories section
+            const categoriesSection = document.getElementById('categories');
+            if (categoriesSection) {
+                categoriesSection.style.display = 'block';
+            }
+            
+            // Clear any active filters
+            clearFilters();
+            
+            // Reset current view
+            currentView = 'categories';
+            
+            // Reload categories to show fresh data
+            loadCategories();
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            console.log('✅ Home page loaded');
+        }
+        
+        // Load categories with brands inside
         async function loadCategories() {
             try {
                 console.log('Starting loadCategories...');
                 showLoading();
-                console.log('Fetching categories from:', `${API_BASE}/categories`);
-                const response = await fetch(`${API_BASE}/categories`);
-                console.log('Response status:', response.status);
                 
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                // Получаем категории
+                const categoriesResponse = await fetch(`${API_BASE}/categories`);
+                if (!categoriesResponse.ok) {
+                    throw new Error(`HTTP ${categoriesResponse.status}: ${categoriesResponse.statusText}`);
                 }
+                const categories = await categoriesResponse.json();
                 
-                const categories = await response.json();
-                console.log('Categories loaded:', categories.length);
+                // Получаем все бренды
+                const brandsResponse = await fetch(`${API_BASE}/hierarchy/brands`);
+                const allBrands = await brandsResponse.json();
                 
                 currentView = 'categories';
                 currentCategoryId = null;
                 
-                console.log('Creating categories HTML...');
                 const content = document.getElementById('content');
-                
-                // Упрощенная версия для отладки
                 let categoriesHtml = '<div class="categories">';
                 
-                for (let i = 0; i < categories.length; i++) {
-                    const category = categories[i];
-                    console.log(`Processing category ${i}: ${category.name}`);
+                for (const category of categories) {
+                    console.log(`Processing category: ${category.name}`);
+                    
+                    // Получаем бренды для этой категории
+                    const brandData = [];
+                    for (const brand of allBrands) {
+                        try {
+                            const countResponse = await fetch(`${API_BASE}/products?brand=${encodeURIComponent(brand)}&level0=${encodeURIComponent(category.level_0)}&limit=1`);
+                            const products = await countResponse.json();
+                            if (products && products.length > 0) {
+                                // Получаем точное количество товаров
+                                const fullCountResponse = await fetch(`${API_BASE}/products?brand=${encodeURIComponent(brand)}&level0=${encodeURIComponent(category.level_0)}&limit=1000`);
+                                const allProducts = await fullCountResponse.json();
+                                
+                                brandData.push({
+                                    brand: brand,
+                                    icon: brand === 'Apple' ? '🍎' : (brand === 'Samsung' ? '📱' : '📦'),
+                                    product_count: allProducts.length
+                                });
+                            }
+                        } catch (error) {
+                            console.warn(`Ошибка получения товаров для бренда ${brand}:`, error);
+                        }
+                    }
                     
                     categoriesHtml += `
-                        <div class="category-card" onclick="loadSubcategories(${category.id})">
-                            <div class="category-icon">${category.icon}</div>
-                            <div class="category-name">${category.name}</div>
-                            <div class="category-count">${category.product_count} товаров</div>
+                        <div class="category-card">
+                            <div class="category-header" onclick="loadSubcategories(${category.id})">
+                                <div class="category-icon">${category.icon}</div>
+                                <div class="category-name">${category.name}</div>
+                                <div class="category-count">${category.product_count} товаров</div>
+                            </div>
                     `;
                     
-                    // Добавляем подкатегории если есть
-                    if (category.subcategories && category.subcategories.length > 0) {
-                        categoriesHtml += '<div class="subcategories">';
-                        for (let j = 0; j < category.subcategories.length; j++) {
-                            const subcat = category.subcategories[j];
+                    // Добавляем бренды как кнопки внутри категории
+                    if (brandData.length > 0) {
+                        categoriesHtml += '<div class="brands-container">';
+                        for (const brand of brandData) {
                             categoriesHtml += `
-                                <div class="subcategory-item" onclick="event.stopPropagation(); loadProductsByBrandWithCategory('${subcat.brand}', ${category.id}, '${category.name}')">
-                                    <span class="subcategory-icon">${subcat.icon}</span>
-                                    <span class="subcategory-name">${subcat.brand}</span>
-                                    <span class="subcategory-count">${subcat.product_count}</span>
+                                <div class="brand-button" onclick="event.stopPropagation(); loadProductsByBrand('${brand.brand}', '${category.level_0}')">
+                                    <span class="brand-icon">${brand.icon}</span>
+                                    <span class="brand-name">${brand.brand}</span>
+                                    <span class="brand-count">${brand.product_count}</span>
                                 </div>
                             `;
                         }
@@ -1188,13 +1612,45 @@
         async function loadSubcategories(categoryId) {
             try {
                 showLoading();
-                const response = await fetch(`${API_BASE}/categories`);
-                const categories = await response.json();
                 
-                // Найти нужную категорию
+                // Получаем категорию
+                const categoriesResponse = await fetch(`${API_BASE}/categories`);
+                const categories = await categoriesResponse.json();
                 const category = categories.find(cat => cat.id === categoryId);
-                if (!category || !category.subcategories || category.subcategories.length === 0) {
-                    showError('Подкатегории не найдены');
+                
+                if (!category) {
+                    showError('Категория не найдена');
+                    return;
+                }
+                
+                // Получаем бренды для этой категории (level_0)
+                const brandsResponse = await fetch(`${API_BASE}/hierarchy/brands`);
+                const allBrands = await brandsResponse.json();
+                
+                // Для каждого бренда получаем количество товаров в этой категории
+                const brandData = [];
+                for (const brand of allBrands) {
+                    try {
+                        const countResponse = await fetch(`${API_BASE}/products?brand=${encodeURIComponent(brand)}&level_0=${encodeURIComponent(category.level_0)}&limit=1`);
+                        const products = await countResponse.json();
+                        if (products && products.length > 0) {
+                            // Получаем точное количество товаров
+                            const fullCountResponse = await fetch(`${API_BASE}/products?brand=${encodeURIComponent(brand)}&level_0=${encodeURIComponent(category.level_0)}&limit=1000`);
+                            const allProducts = await fullCountResponse.json();
+                            
+                            brandData.push({
+                                brand: brand,
+                                icon: brand === 'Apple' ? '🍎' : (brand === 'Samsung' ? '📱' : '📦'),
+                                product_count: allProducts.length
+                            });
+                        }
+                    } catch (e) {
+                        console.error(`Error checking brand ${brand}:`, e);
+                    }
+                }
+                
+                if (brandData.length === 0) {
+                    showError('Бренды не найдены');
                     return;
                 }
                 
@@ -1209,7 +1665,7 @@
                         <p>Выберите бренд для просмотра товаров</p>
                     </div>
                     <div class="subcategories-grid">
-                        ${category.subcategories.map(subcat => `
+                        ${brandData.map(subcat => `
                             <div class="subcategory-card" onclick="loadProductsByBrandWithCategory('${subcat.brand}', ${categoryId}, '${category.name}')">
                                 <div class="subcategory-icon">${subcat.icon}</div>
                                 <div class="subcategory-name">${subcat.brand}</div>
@@ -1219,6 +1675,7 @@
                     </div>
                 `;
             } catch (error) {
+                console.error('Error loading subcategories:', error);
                 showError('Ошибка загрузки подкатегорий');
             }
         }
@@ -1255,24 +1712,19 @@
         }
         
         // Load products by brand with hierarchical filters
-        async function loadProductsByBrand(brand, categoryId) {
+        async function loadProductsByBrand(brand, categoryLevel0) {
             try {
                 showLoading();
                 
-                // Сохраняем текущий фильтр бренда
+                // Сохраняем текущий фильтр бренда и категории
                 currentBrandFilter = brand;
-                // Не сбрасываем currentLevel0Filter - он уже определен из категории
+                currentLevel0Filter = categoryLevel0; // Устанавливаем категорию из параметра
                 currentLevel1Filter = null;
                 currentLevel2Filter = null;
                 
-                // Получаем товары с учетом уровня категории (level0) если он уже определен
-                let url = `${API_BASE}/products?brand=${encodeURIComponent(brand)}&limit=50`;
-                if (currentLevel0Filter) {
-                    url += `&level0=${encodeURIComponent(currentLevel0Filter)}`;
-                    console.log(`🔗 Запрашиваем товары с URL: ${url}`);
-                } else {
-                    console.log(`🔗 Запрашиваем товары без level0 фильтра: ${url}`);
-                }
+                // Получаем товары с учетом уровня категории (level0)
+                let url = `${API_BASE}/products?brand=${encodeURIComponent(brand)}&level0=${encodeURIComponent(categoryLevel0)}&limit=50`;
+                console.log(`🔗 Запрашиваем товары бренда ${brand} в категории ${categoryLevel0}: ${url}`);
                 
                 const response = await fetch(url);
                 const products = await response.json();
@@ -1281,13 +1733,8 @@
                     console.log(`📋 Первый товар: ${products[0].name} (level0: ${products[0].level0})`);
                 }
                 
-                // Определяем level0 из контекста категории или первого товара ТОЛЬКО если еще не определен
-                if (!currentLevel0Filter && products.length > 0) {
-                    currentLevel0Filter = products[0].level0 || products[0].category_name.split(' / ')[0];
-                }
-                
                 currentView = 'brand_products';
-                currentCategoryId = categoryId;
+                currentCategoryId = categoryLevel0;
                 
                 const content = document.getElementById('content');
                 content.innerHTML = `
@@ -1313,6 +1760,7 @@
                 setTimeout(async () => {
                     await initializeDefaultColors();
                     await loadDefaultImages();
+                    await loadAllSpecifications();
                 }, 100);
             } catch (error) {
                 showError('Ошибка загрузки товаров бренда');
@@ -1385,7 +1833,7 @@
                     console.log(`🔍 Автоопределен level0 из товаров: ${currentLevel0Filter}`);
                 }
                 
-                let filtersHtml = '<div class="hierarchy-filter-section">';
+                let filtersHtml = '<div class="hierarchy-filter-section"><div style="margin: 0 0 10px 0; font-size: 0.9rem; font-weight: normal; color: #666;">Фильтры</div>';
                 
                 // Level1 фильтры (начинаем сразу с уровня 1, так как level0 уже выбран ранее)
                 let level1Values = [];
@@ -1401,7 +1849,6 @@
                 if (level1Values.length > 0) {
                     filtersHtml += `
                         <div class="filter-group">
-                            <h4>Серия:</h4>
                             <div class="filter-buttons">
                                 ${level1Values.map(level1 => 
                                     `<button class="filter-btn ${currentLevel1Filter === level1 ? 'active' : ''}" 
@@ -1422,7 +1869,6 @@
                     if (level2Values.length > 0) {
                         filtersHtml += `
                             <div class="filter-group">
-                                <h4>Модель:</h4>
                                 <div class="filter-buttons">
                                     ${level2Values.map(level2 => 
                                         `<button class="filter-btn ${currentLevel2Filter === level2 ? 'active' : ''}" 
@@ -1574,26 +2020,26 @@
                 if (product.images.length > 1) {
                     imageHtml = `
                         <div class="product-image-carousel" data-product-id="${product.id}">
-                            <img src="${product.images[0]}" alt="${product.name}" class="product-img" style="opacity: 0;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                            <div class="image-placeholder loading-placeholder">📱</div>
+                            <img src="${product.images[0]}" alt="${product.name}" class="product-img" style="opacity: 0;">
+                            <div class="image-placeholder loading-placeholder"><img src="/static/images/logo.jpg" alt="Loading..."></div>
                             <div class="image-indicators">
                                 ${product.images.map((_, index) => 
                                     `<span class="indicator ${index === 0 ? 'active' : ''}" data-index="${index}"></span>`
                                 ).join('')}
                             </div>
-                            <div class="image-nav prev" onclick="event.stopPropagation(); changeImage(${product.id}, -1)">‹</div>
-                            <div class="image-nav next" onclick="event.stopPropagation(); changeImage(${product.id}, 1)">›</div>
+                            <div class="image-nav prev" onclick="event.stopPropagation(); changeImageWithSlide(${product.id}, -1)">‹</div>
+                            <div class="image-nav next" onclick="event.stopPropagation(); changeImageWithSlide(${product.id}, 1)">›</div>
                         </div>
                     `;
                 } else {
                     // Одно изображение из базы данных
                     imageHtml = `
                         <div class="product-image-carousel" data-product-id="${product.id}">
-                            <img src="${product.images[0]}" alt="${product.name}" class="product-img" style="opacity: 0;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                            <div class="image-placeholder loading-placeholder">📱</div>
+                            <img src="${product.images[0]}" alt="${product.name}" class="product-img" style="opacity: 0;">
+                            <div class="image-placeholder loading-placeholder"><img src="/static/images/logo.jpg" alt="Loading..."></div>
                             <div class="image-indicators"></div>
-                            <div class="image-nav prev" onclick="event.stopPropagation(); changeImage(${product.id}, -1)" style="display:none;">‹</div>
-                            <div class="image-nav next" onclick="event.stopPropagation(); changeImage(${product.id}, 1)" style="display:none;">›</div>
+                            <div class="image-nav prev" onclick="event.stopPropagation(); changeImageWithSlide(${product.id}, -1)" style="display:none;">‹</div>
+                            <div class="image-nav next" onclick="event.stopPropagation(); changeImageWithSlide(${product.id}, 1)" style="display:none;">›</div>
                         </div>
                     `;
                 }
@@ -1601,11 +2047,11 @@
                 // Старое поле image_url
                 imageHtml = `
                     <div class="product-image-carousel" data-product-id="${product.id}">
-                            <img src="${product.image_url}" alt="${product.name}" class="product-img" style="opacity: 0;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                        <div class="image-placeholder loading-placeholder">📱</div>
+                            <img src="${product.image_url}" alt="${product.name}" class="product-img" style="opacity: 0;">
+                        <div class="image-placeholder loading-placeholder"><img src="/static/images/logo.jpg" alt="Loading..."></div>
                         <div class="image-indicators"></div>
-                        <div class="image-nav prev" onclick="event.stopPropagation(); changeImage(${product.id}, -1)" style="display:none;">‹</div>
-                        <div class="image-nav next" onclick="event.stopPropagation(); changeImage(${product.id}, 1)" style="display:none;">›</div>
+                        <div class="image-nav prev" onclick="event.stopPropagation(); changeImageWithSlide(${product.id}, -1)" style="display:none;">‹</div>
+                        <div class="image-nav next" onclick="event.stopPropagation(); changeImageWithSlide(${product.id}, 1)" style="display:none;">›</div>
                     </div>
                 `;
             } else {
@@ -1614,8 +2060,8 @@
                     <div class="product-image-carousel" data-product-id="${product.id}">
                         <div class="image-placeholder loading-placeholder">📱</div>
                         <div class="image-indicators"></div>
-                        <div class="image-nav prev" onclick="event.stopPropagation(); changeImage(${product.id}, -1)" style="display:none;">‹</div>
-                        <div class="image-nav next" onclick="event.stopPropagation(); changeImage(${product.id}, 1)" style="display:none;">›</div>
+                        <div class="image-nav prev" onclick="event.stopPropagation(); changeImageWithSlide(${product.id}, -1)" style="display:none;">‹</div>
+                        <div class="image-nav next" onclick="event.stopPropagation(); changeImageWithSlide(${product.id}, 1)" style="display:none;">›</div>
                     </div>
                 `;
             }
@@ -1626,7 +2072,7 @@
                         ${imageHtml}
                     </div>
                     <div class="product-info">
-                        <div class="product-name">${product.name}</div>
+                        <div class="product-name">${product.level_2 || product.name}</div>
                         <div class="product-brand">${product.brand}</div>
                         <div class="product-price">
                             <span class="current-price" id="price-${product.id}">${Math.round(product.price).toLocaleString()} ₽</span>
@@ -1654,12 +2100,8 @@
                                 <span class="spoiler-arrow" id="arrow-spec-${product.id}">▶</span>
                             </div>
                             <div class="spoiler-content" id="spec-${product.id}" style="display: none;">
-                                <div class="specifications">
-                                    ${product.specifications ? Object.entries(product.specifications)
-                                        .filter(([key, value]) => !['variants', 'images', 'image_folder', 'memories', 'colors', 'sim_types', 'цвета'].includes(key))
-                                        .map(([key, value]) => 
-                                        `<div class="spec-item"><span class="spec-key">${key}:</span> <span class="spec-value">${value}</span></div>`
-                                    ).join('') : 'Характеристики не указаны'}
+                                <div class="specifications" data-level2="${product.level_2}">
+                                    <div class="loading-specs">Загрузка характеристик...</div>
                                 </div>
                             </div>
                         </div>
@@ -1751,7 +2193,7 @@
             const productCard = buttonElement.closest('.product-card');
             const variantsContainer = productCard.querySelector('.product-variants');
             const variantType = buttonElement.dataset.type;
-            const variantValue = buttonElement.dataset.value;
+            const variantValue = buttonElement.dataset.value || buttonElement.dataset.color;
             
             // Снять активность с других кнопок того же типа
             const sameTypeButtons = variantsContainer.querySelectorAll(`[data-type="${variantType}"]`);
@@ -1760,17 +2202,27 @@
             // Активировать выбранную кнопку
             buttonElement.classList.add('active');
             
-            // Обновить изображение если выбран цвет
-            if (variantType === 'color') {
-                updateProductImage(productId, variantValue);
-            }
-            
             // Получить все выбранные варианты
             const selectedVariants = {};
             const activeButtons = variantsContainer.querySelectorAll('.variant-btn.active');
             activeButtons.forEach(btn => {
-                selectedVariants[btn.dataset.type] = btn.dataset.value;
+                selectedVariants[btn.dataset.type] = btn.dataset.value || btn.dataset.color;
             });
+            
+            // Обновить изображение если выбран цвет (при любом изменении вариантов)
+            if (variantType === 'color') {
+                updateProductImage(productId, variantValue);
+            } else {
+                // При изменении других вариантов (память, SIM) обновляем изображение с текущим цветом
+                const activeColorButton = variantsContainer.querySelector('[data-type="color"].active');
+                if (activeColorButton) {
+                    const currentColor = activeColorButton.dataset.value || activeColorButton.dataset.color;
+                    updateProductImage(productId, currentColor);
+                }
+            }
+            
+            // Обновить характеристики товара при смене вариантов
+            updateProductSpecifications(productId, selectedVariants);
             
             // Получить базовую цену
             const priceElement = productCard.querySelector(`#price-${productId}`);
@@ -1784,14 +2236,134 @@
             priceElement.textContent = `${Math.round(newPrice).toLocaleString()} ₽`;
         }
         
+        // Update product specifications based on selected variants
+        async function updateProductSpecifications(productId, selectedVariants) {
+            try {
+                // Получить информацию о товаре с выбранными вариантами
+                const response = await fetch(`/products/${productId}/variants`);
+                const variantsData = await response.json();
+                
+                // Найти товар с выбранными вариантами
+                const matchingVariant = variantsData.variants.find(variant => {
+                    return variant.color === selectedVariants.color &&
+                           variant.memory === selectedVariants.memory &&
+                           variant.sim_type === selectedVariants.sim;
+                });
+                
+                if (matchingVariant) {
+                    // Загрузить общие характеристики из таблицы level2_descriptions
+                    const level2Details = await loadLevel2Details(variantsData.model);
+                    
+                    // Обновить характеристики в DOM
+                    const productCard = document.querySelector(`[data-product-id="${productId}"]`)?.closest('.product-card');
+                    if (productCard) {
+                        const specsElement = productCard.querySelector(`#spec-${productId}`);
+                        if (specsElement) {
+                            const specsContainer = specsElement.querySelector('.specifications');
+                            if (specsContainer) {
+                                // Объединить общие характеристики с вариантами
+                                const allSpecs = {
+                                    ...level2Details, // Общие характеристики (процессор, экран, камера и т.д.)
+                                    'Память': matchingVariant.memory || selectedVariants.memory,
+                                    'Цвет': matchingVariant.color || selectedVariants.color,
+                                    'SIM': matchingVariant.sim_type || selectedVariants.sim
+                                };
+                                
+                                // Обновить HTML характеристик
+                                specsContainer.innerHTML = Object.entries(allSpecs)
+                                    .filter(([key, value]) => value && value !== 'undefined')
+                                    .map(([key, value]) => 
+                                        `<div class="spec-item"><span class="spec-key">${key}:</span> <span class="spec-value">${value}</span></div>`
+                                    ).join('');
+                                
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error(`❌ Ошибка обновления характеристик для товара ${productId}:`, error);
+            }
+        }
+        
+        // Функция для загрузки характеристик для всех товаров
+        async function loadAllSpecifications() {
+            const specsContainers = document.querySelectorAll('.specifications[data-level2]');
+            
+            for (const container of specsContainers) {
+                const level2 = container.dataset.level2;
+                if (level2) {
+                    try {
+                        const details = await loadLevel2Details(level2);
+                        
+                        // Получить варианты товара для добавления к общим характеристикам
+                        const productCard = container.closest('.product-card');
+                        const productIdElement = productCard?.querySelector('[data-product-id]');
+                        const productId = productIdElement?.dataset.productId;
+                        
+                        if (productId) {
+                            // Получить первый вариант товара для отображения базовых характеристик
+                            const response = await fetch(`/products/${productId}/variants`);
+                            if (response.ok) {
+                                const variantsData = await response.json();
+                                const firstVariant = variantsData.variants[0];
+                                
+                                if (firstVariant) {
+                                    // Объединить общие характеристики с первым вариантом
+                                    const allSpecs = {
+                                        ...details, // Общие характеристики
+                                        'Память': firstVariant.memory,
+                                        'Цвет': firstVariant.color,
+                                        'SIM': firstVariant.sim_type
+                                    };
+                                    
+                                    // Обновить HTML характеристик
+                                    container.innerHTML = Object.entries(allSpecs)
+                                        .filter(([key, value]) => value && value !== 'undefined')
+                                        .map(([key, value]) => 
+                                            `<div class="spec-item"><span class="spec-key">${key}:</span> <span class="spec-value">${value}</span></div>`
+                                        ).join('');
+                                } else {
+                                    // Если нет вариантов, показать только общие характеристики
+                                    container.innerHTML = Object.entries(details)
+                                        .filter(([key, value]) => value && value !== 'undefined')
+                                        .map(([key, value]) => 
+                                            `<div class="spec-item"><span class="spec-key">${key}:</span> <span class="spec-value">${value}</span></div>`
+                                        ).join('') || 'Характеристики не указаны';
+                                }
+                            }
+                        }
+                    } catch (error) {
+                        console.error(`Ошибка загрузки характеристик для ${level2}:`, error);
+                        container.innerHTML = 'Ошибка загрузки характеристик';
+                    }
+                }
+            }
+        }
+
+        // Функция для загрузки характеристик из таблицы level2_descriptions
+        async function loadLevel2Details(level2) {
+            try {
+                const response = await fetch(`/level2-descriptions/${encodeURIComponent(level2)}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    return data.details || {};
+                }
+            } catch (error) {
+                console.error(`Ошибка загрузки характеристик для ${level2}:`, error);
+            }
+            return {};
+        }
+        
         // Update product image based on selected color - БЕЗ ХАРДКОДА!
         async function updateProductImage(productId, selectedColor) {
             
             // Валидация входных параметров
-            if (!selectedColor || selectedColor === 'undefined' || selectedColor === 'null') {
-                console.warn(`❌ Неверный цвет для товара ID ${productId}:`, selectedColor);
+            if (!selectedColor || selectedColor === 'undefined' || selectedColor === 'null' || selectedColor === undefined) {
+                console.warn(`❌ Неверный цвет для товара ID ${productId}:`, selectedColor, typeof selectedColor);
                 return;
             }
+            
+            console.log(`🔍 updateProductImage вызвана для товара ${productId} с цветом:`, selectedColor, typeof selectedColor);
             
             // Найти карточку товара
             const productCard = document.querySelector(`[data-product-id="${productId}"]`)?.closest('.product-card');
@@ -1816,29 +2388,14 @@
                 return;
             }
             
-            // Преобразуем название цвета для API (Cosmic Orange -> cosmic-orange)
-            const colorMapping = {
-                'Cosmic Orange': 'cosmic-orange',
-                'Deep Blue': 'deep-blue',
-                'Space Black': 'space-black',
-                'Titanium Desert': 'titanium-desert',
-                'Titanium Natural': 'titanium-natural',
-                'Titanium Black': 'titanium-black',
-                'Titanium White': 'titanium-white',
-                'Teal': 'teal',
-                'Pink': 'pink',
-                'White': 'white',
-                'Black': 'black',
-                'Silver': 'silver'
-            };
+            // Используем оригинальное название цвета для API запроса
+            const apiColor = selectedColor; // "Deep Blue"
             
-            const colorFolder = colorMapping[selectedColor] || selectedColor.toLowerCase().replace(/\s+/g, '-');
-            
-            console.log(`📸 Обновляем изображения для ${brandModel} цвета ${selectedColor} -> ${colorFolder} (modelKey: ${modelKey})`);
+            console.log(`📸 Обновляем изображения для ${brandModel} цвета ${selectedColor} -> ${apiColor} (modelKey: ${modelKey})`);
             
             try {
                 // Получить информацию об изображениях из API
-                const response = await fetch(`/product-images/${modelKey}/${colorFolder}`);
+                const response = await fetch(`/product-images/${modelKey}/${encodeURIComponent(apiColor)}`);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -1858,12 +2415,45 @@
                         loadingPlaceholder.style.display = 'none';
                     }
 
-                    // Обновить главное изображение с плавной заменой
-                    const mainImg = carousel.querySelector('.product-img');
-                    if (mainImg && timestampedPaths[0]) {
-                        // Устанавливаем новое изображение и сразу показываем его
-                        mainImg.src = timestampedPaths[0];
-                        mainImg.style.opacity = '1';
+                    // Проверяем, есть ли уже структура слайдов
+                    let slideContainer = carousel.querySelector('.image-slide-container');
+                    
+                    if (slideContainer) {
+                        // Обновляем существующую структуру слайдов
+                        const slideWrapper = slideContainer.querySelector('.image-slide-wrapper');
+                        const slideItems = slideContainer.querySelectorAll('.image-slide-item');
+                        
+                        // Удаляем старые слайды
+                        slideItems.forEach(item => item.remove());
+                        
+                        // Создаем новые слайды для нового цвета
+                        timestampedPaths.forEach((imageSrc, index) => {
+                            const slideItem = document.createElement('div');
+                            slideItem.className = 'image-slide-item';
+                            if (index === 0) {
+                                slideItem.classList.add('fade-in');
+                            }
+                            
+                            const img = document.createElement('img');
+                            img.src = imageSrc;
+                            img.alt = `Product image ${index + 1}`;
+                            img.style.opacity = index === 0 ? '1' : '0';
+                            
+                            slideItem.appendChild(img);
+                            slideWrapper.appendChild(slideItem);
+                        });
+                        
+                        // Сбрасываем позицию слайдера на первое изображение
+                        slideWrapper.style.transform = 'translateX(0%)';
+                        
+                    } else {
+                        // Обновляем обычное изображение
+                        const mainImg = carousel.querySelector('.product-img');
+                        if (mainImg && timestampedPaths[0]) {
+                            // Устанавливаем новое изображение и сразу показываем его
+                            mainImg.src = timestampedPaths[0];
+                            mainImg.style.opacity = '1';
+                        }
                     }
                     
                     // Индикаторы карусели
@@ -1924,6 +2514,35 @@
                     }
                 }
             }
+        }
+        
+        // Показать загрузчики для всех изображений при загрузке страницы
+        function showLoadingPlaceholders() {
+            console.log('🔄 Показываем загрузчики для всех изображений...');
+            
+            document.querySelectorAll('.product-img').forEach(img => {
+                const placeholder = img.nextElementSibling;
+                if (placeholder && placeholder.classList.contains('loading-placeholder')) {
+                    // Скрыть изображение и показать загрузчик
+                    img.style.opacity = '0';
+                    placeholder.style.display = 'flex';
+                    
+                    // Проверить, загружено ли изображение
+                    if (img.complete && img.naturalHeight !== 0) {
+                        // Изображение уже загружено, показать его
+                        setTimeout(() => {
+                            img.style.opacity = '1';
+                            placeholder.style.display = 'none';
+                        }, 100);
+                    } else {
+                        // Изображение еще загружается, добавить обработчик
+                        img.onload = function() {
+                            this.style.opacity = '1';
+                            this.nextElementSibling.style.display = 'none';
+                        };
+                    }
+                }
+            });
         }
         
         // Initialize variant buttons event listeners
@@ -2064,26 +2683,9 @@
                 const defaultColors = ['Black', 'black', 'White', 'white', 'Space Black', 'space-black'];
                 
                 for (const colorName of defaultColors) {
-                    const colorMapping = {
-                        'Cosmic Orange': 'cosmic-orange',
-                        'Deep Blue': 'deep-blue',
-                        'Space Black': 'space-black',
-                        'Titanium Desert': 'titanium-desert',
-                        'Titanium Natural': 'titanium-natural',
-                        'Titanium Black': 'titanium-black',
-                        'Titanium White': 'titanium-white',
-                        'Teal': 'teal',
-                        'Pink': 'pink',
-                        'White': 'white',
-                        'Black': 'black',
-                        'Silver': 'silver'
-                    };
-                    
-                    const colorFolder = colorMapping[colorName] || colorName.toLowerCase().replace(/\s+/g, '-');
-                    
                     try {
                         // Пытаемся загрузить изображение для этого цвета
-                        const response = await fetch(`/product-images/${modelKey}/${colorFolder}`);
+                        const response = await fetch(`/product-images/${modelKey}/${encodeURIComponent(colorName)}`);
                         
                         if (response.ok) {
                             const imageData = await response.json();
@@ -2149,6 +2751,9 @@
         // Функция для загрузки изображений по умолчанию для первого цвета
         async function loadDefaultImages() {
             console.log('🖼️ Загружаем изображения по умолчанию для всех товаров...');
+            
+            // Сначала показать загрузчики для всех изображений
+            showLoadingPlaceholders();
             
             for (const card of document.querySelectorAll('.product-card')) {
                 const colorButton = card.querySelector('.variant-btn.color-btn.active');
@@ -2645,16 +3250,17 @@
             // Преобразовать название модели в model_key (формат для API)
             console.log('🔍 Определяем model_key для:', brandModel);
             
-            if (brandModel.includes('16 Pro Max')) return 'IPHONE16ProMax';
-            if (brandModel.includes('16 Pro')) return 'IPHONE16Pro';
-            if (brandModel.includes('17 Pro Max')) return 'IPHONE17ProMax';
-            if (brandModel.includes('17 Pro')) return 'IPHONE17Pro';
-            if (brandModel.includes('16')) return 'IPHONE16';
-            if (brandModel.includes('17')) return 'IPHONE17';
-            if (brandModel.includes('MacBook Air M2')) return 'MACBOOKAirM2';
-            if (brandModel.includes('iPad Air')) return 'IPADAir';
-            if (brandModel.includes('AirPods Pro 2')) return 'AIRPODSPro2';
-            if (brandModel.includes('HomePod mini')) return 'HOMEPODmini';
+            if (brandModel.includes('16 Pro Max')) return 'iphone16promax';
+            if (brandModel.includes('16 Pro')) return 'iphone16pro';
+            if (brandModel.includes('17 Pro Max')) return 'iphone17promax';
+            if (brandModel.includes('17 Pro')) return 'iphone17pro';
+            if (brandModel.includes('16')) return 'iphone16';
+            if (brandModel.includes('17')) return 'iphone17';
+            if (brandModel.includes('Galaxy S24 Ultra')) return 'galaxys24ultra';
+            if (brandModel.includes('MacBook Air M2')) return 'macbookairm2';
+            if (brandModel.includes('iPad Air')) return 'ipadair';
+            if (brandModel.includes('AirPods Pro 2')) return 'airpodspro2';
+            if (brandModel.includes('HomePod mini')) return 'homepodmini';
             
             console.warn('⚠️ Не удалось определить model_key для:', brandModel);
             return null; // Модель не найдена
@@ -2812,21 +3418,21 @@
             const modelElement = productCard?.querySelector('.product-brand');
             const brandModel = modelElement?.textContent?.trim() || '';
             
-            let modelFolder = 'IPHONE16'; // Дефолтная папка
+            let modelFolder = 'iphone16'; // Дефолтная папка
             
             // Определяем папку изображений на основе модели
             if (brandModel.includes('16 Pro Max')) {
-                modelFolder = 'IPHONE16ProMax';
+                modelFolder = 'iphone16promax';
             } else if (brandModel.includes('16 Pro')) {
-                modelFolder = 'IPHONE16Pro';
+                modelFolder = 'iphone16pro';
             } else if (brandModel.includes('16')) {
-                modelFolder = 'IPHONE16';
+                modelFolder = 'iphone16';
             } else if (brandModel.includes('17 Pro Max')) {
-                modelFolder = 'IPHONE17ProMax';
+                modelFolder = 'iphone17promax';
             } else if (brandModel.includes('17')) {
-                modelFolder = 'IPHONE17';
+                modelFolder = 'iphone17';
             } else if (brandModel.includes('AirPods Pro 2')) {
-                modelFolder = 'AIRPODSPro2';
+                modelFolder = 'airpodspro2';
             } else if (brandModel.includes('HomePod mini')) {
                 modelFolder = 'HOMEPODmini';
             } else if (brandModel.includes('iPad Air')) {
@@ -2840,11 +3446,11 @@
             let expectedImageCount = 4; // По умолчанию 4 изображения
             
             // Специальные правила для разных цветов моделей
-            if (selectedColor === 'White' && modelFolder === 'IPHONE16') {
+            if (selectedColor === 'White' && modelFolder === 'iphone16') {
                 expectedImageCount = 3; // iPhone 16 White имеет только 3 изображения
-            } else if (selectedColor === 'Silver' && modelFolder === 'IPHONE17ProMax') {
+            } else if (selectedColor === 'Silver' && modelFolder === 'iphone17promax') {
                 expectedImageCount = 3; // iPhone 17 Pro Max Silver имеет 3 изображения
-            } else if (selectedColor === 'Deep Blue' && modelFolder === 'IPHONE17ProMax') {
+            } else if (selectedColor === 'Deep Blue' && modelFolder === 'iphone17promax') {
                 expectedImageCount = 3; // iPhone 17 Pro Max Deep Blue имеет 3 изображения
             }
             
@@ -2878,11 +3484,11 @@
                 // Если нет cached изображений, запрашиваем из API
                 console.log('📸 Получаем изображения из API...');
                 
-                let modelKey = 'IPHONE16ProMax'; // Дефолтная папка
+                let modelKey = 'iphone16promax'; // Дефолтная папка
                 if (brandModel.includes('16 Pro Max')) {
-                    modelKey = 'IPHONE16ProMax';
+                    modelKey = 'iphone16promax';
                 } else if (brandModel.includes('17 Pro Max')) {
-                    modelKey = 'IPHONE17ProMax';
+                    modelKey = 'iphone17promax';
                 }
                 
                 fetch(`/product-images/${modelKey}/${colorFolder}`)
@@ -2953,6 +3559,241 @@
                     console.warn('No fallback image available for product:', productId);
                 }
             }
+        }
+        
+        // Новая функция для смены изображений с анимацией слайда
+        function changeImageWithSlide(productId, direction) {
+            console.log('changeImageWithSlide called:', productId, direction);
+            const carousel = document.querySelector(`[data-product-id="${productId}"]`);
+            if (!carousel) {
+                console.log('Carousel not found for product:', productId);
+                return;
+            }
+            
+            // Найти карточку товара для определения текущего цвета
+            const productCard = carousel.closest('.product-card');
+            const variantsContainer = productCard?.querySelector('.product-variants');
+            const activeColorButton = variantsContainer?.querySelector('.variant-btn[data-type="color"].active');
+            
+            let selectedColor = 'Black'; // По умолчанию черный
+            
+            if (activeColorButton) {
+                selectedColor = activeColorButton.dataset.colorFolder || activeColorButton.dataset.value || activeColorButton.dataset.color || 'Black';
+            }
+            
+            // Проверяем что selectedColor не undefined
+            if (!selectedColor || selectedColor === 'undefined') {
+                selectedColor = 'Black';
+            }
+            
+            // Создать ключ для конкретного цвета и получить изображения
+            const colorImagesKey = `${productId}-${selectedColor}`;
+            
+            // Получаем изображения для текущего цвета
+            const activeColorImages = window[colorImagesKey];
+            if (!activeColorImages || activeColorImages.length === 0) {
+                console.log('No images available for color:', selectedColor);
+                return;
+            }
+            
+            const indicators = carousel.querySelectorAll('.indicator');
+            const currentActive = carousel.querySelector('.indicator.active');
+            const currentIndex = parseInt(currentActive.dataset.index);
+            
+            let newIndex = currentIndex + direction;
+            
+            // Циклическое переключение в пределах доступных изображений
+            if (newIndex < 0) {
+                newIndex = indicators.length - 1;
+            } else if (newIndex >= indicators.length) {
+                newIndex = 0;
+            }
+            
+            // Дополнительная проверка: убедиться что для текущего цвета это изображение существует
+            if (newIndex >= activeColorImages.length) {
+                console.log(`Index ${newIndex} is out of range for color ${selectedColor} (only ${activeColorImages.length} images), adjusting...`);
+                newIndex = Math.max(0, activeColorImages.length - 1);
+            }
+            
+            console.log('Changing from index', currentIndex, 'to', newIndex);
+            
+            // Создаем или получаем контейнер для слайдов
+            let slideContainer = carousel.querySelector('.image-slide-container');
+            if (!slideContainer) {
+                // Создаем структуру для слайдов
+                const currentImg = carousel.querySelector('.product-img');
+                if (currentImg) {
+                    slideContainer = document.createElement('div');
+                    slideContainer.className = 'image-slide-container';
+                    
+                    const slideWrapper = document.createElement('div');
+                    slideWrapper.className = 'image-slide-wrapper';
+                    slideWrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
+                    
+                    // Создаем слайды для всех изображений
+                    activeColorImages.forEach((imageSrc, index) => {
+                        const slideItem = document.createElement('div');
+                        slideItem.className = 'image-slide-item';
+                        if (index === currentIndex) {
+                            slideItem.classList.add('fade-in');
+                        }
+                        
+                        const img = document.createElement('img');
+                        img.src = imageSrc;
+                        img.alt = `Product image ${index + 1}`;
+                        img.style.opacity = index === currentIndex ? '1' : '0';
+                        
+                        slideItem.appendChild(img);
+                        slideWrapper.appendChild(slideItem);
+                    });
+                    
+                    slideContainer.appendChild(slideWrapper);
+                    
+                    // Заменяем старое изображение на новую структуру
+                    currentImg.parentNode.replaceChild(slideContainer, currentImg);
+                }
+            }
+            
+            if (slideContainer) {
+                const slideWrapper = slideContainer.querySelector('.image-slide-wrapper');
+                const slideItems = slideContainer.querySelectorAll('.image-slide-item');
+                
+                // Анимация перехода
+                slideWrapper.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+                slideWrapper.style.transform = `translateX(-${newIndex * 100}%)`;
+                
+                // Обновляем видимость изображений
+                slideItems.forEach((item, index) => {
+                    const img = item.querySelector('img');
+                    if (index === newIndex) {
+                        img.style.opacity = '1';
+                        item.classList.add('fade-in');
+                        item.classList.remove('fade-out');
+                    } else {
+                        img.style.opacity = '0';
+                        item.classList.remove('fade-in');
+                        if (index === currentIndex) {
+                            item.classList.add('fade-out');
+                        }
+                    }
+                });
+                
+                // Убираем класс fade-out после анимации
+                setTimeout(() => {
+                    slideItems.forEach(item => {
+                        item.classList.remove('fade-out');
+                    });
+                }, 300);
+            }
+            
+            // Обновить активный индикатор
+            currentActive.classList.remove('active');
+            indicators[newIndex].classList.add('active');
+        }
+        
+        // Добавляем поддержку свайпов только для мобильных устройств
+        function addSwipeSupport() {
+            // Проверяем, что это мобильное устройство
+            const isMobile = window.innerWidth <= 768 || 
+                            ('ontouchstart' in window) ||
+                            /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (!isMobile) {
+                console.log('Desktop device detected, skipping swipe support');
+                return;
+            }
+            
+            console.log('Mobile device detected, adding swipe support');
+            const carousels = document.querySelectorAll('.product-image-carousel');
+            
+            carousels.forEach(carousel => {
+                let startX = 0;
+                let startY = 0;
+                let endX = 0;
+                let endY = 0;
+                let isSwipe = false;
+                
+                carousel.addEventListener('touchstart', (e) => {
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                    isSwipe = false;
+                }, { passive: true });
+                
+                carousel.addEventListener('touchmove', (e) => {
+                    if (!isSwipe) {
+                        endX = e.touches[0].clientX;
+                        endY = e.touches[0].clientY;
+                        
+                        const deltaX = Math.abs(endX - startX);
+                        const deltaY = Math.abs(endY - startY);
+                        
+                        // Определяем, что это горизонтальный свайп
+                        if (deltaX > deltaY && deltaX > 30) {
+                            isSwipe = true;
+                        }
+                    }
+                }, { passive: true });
+                
+                carousel.addEventListener('touchend', (e) => {
+                    if (isSwipe) {
+                        const deltaX = endX - startX;
+                        const productId = carousel.dataset.productId;
+                        
+                        if (Math.abs(deltaX) > 50) { // Минимальное расстояние свайпа
+                            if (deltaX > 0) {
+                                // Свайп вправо - предыдущее изображение
+                                changeImageWithSlide(parseInt(productId), -1);
+                            } else {
+                                // Свайп влево - следующее изображение
+                                changeImageWithSlide(parseInt(productId), 1);
+                            }
+                        }
+                    }
+                }, { passive: true });
+            });
+        }
+        
+        // Инициализация свайпов после загрузки контента
+        function initializeSwipeSupport() {
+            // Проверяем, что это мобильное устройство
+            const isMobile = window.innerWidth <= 768 || 
+                            ('ontouchstart' in window) ||
+                            /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (!isMobile) {
+                console.log('Desktop device detected, swipe support disabled');
+                return;
+            }
+            
+            console.log('Initializing swipe support for mobile device');
+            
+            // Добавляем поддержку свайпов для существующих каруселей
+            addSwipeSupport();
+            
+            // Наблюдатель за изменениями DOM для новых каруселей
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.type === 'childList') {
+                        mutation.addedNodes.forEach((node) => {
+                            if (node.nodeType === 1) { // Element node
+                                if (node.classList && node.classList.contains('product-image-carousel')) {
+                                    addSwipeSupport();
+                                } else if (node.querySelectorAll) {
+                                    const newCarousels = node.querySelectorAll('.product-image-carousel');
+                                    if (newCarousels.length > 0) {
+                                        addSwipeSupport();
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+            
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
         }
         
         // Функция для проверки существования изображений
