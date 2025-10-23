@@ -1071,13 +1071,6 @@
             right: 10px;
         }
         
-        /* Скрыть стрелки на мобильных устройствах */
-        @media (max-width: 768px) {
-            .image-nav {
-                display: none !important;
-            }
-        }
-        
         /* Стили для анимации слайда изображений */
         .product-image-carousel {
             position: relative;
@@ -1375,6 +1368,16 @@
                 width: 92%;
                 height: 92%;
                 margin: 4%;
+            }
+            
+            /* Улучшения для свайпа на мобильных устройствах */
+            .product-image-carousel {
+                touch-action: pan-x;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .image-nav {
+                display: none !important; /* Скрываем стрелки на мобильных */
             }
         }
         
@@ -1790,6 +1793,8 @@
                     await initializeDefaultColors();
                     await loadDefaultImages();
                     await loadAllSpecifications();
+                    // Инициализируем поддержку свайпов для новых каруселей
+                    initializeSwipeSupport();
                 }, 100);
             } catch (error) {
                 showError('Ошибка загрузки товаров бренда');
@@ -1828,6 +1833,8 @@
                     setTimeout(async () => {
                         await initializeDefaultColors();
                         await loadDefaultImages();
+                        // Инициализируем поддержку свайпов для новых каруселей
+                        initializeSwipeSupport();
                     }, 100);
                 }
             } catch (error) {
@@ -3613,10 +3620,8 @@
         
         // Новая функция для смены изображений с анимацией слайда
         function changeImageWithSlide(productId, direction) {
-            console.log('changeImageWithSlide called:', productId, direction);
             const carousel = document.querySelector(`[data-product-id="${productId}"]`);
             if (!carousel) {
-                console.log('Carousel not found for product:', productId);
                 return;
             }
             
@@ -3641,8 +3646,8 @@
             
             // Получаем изображения для текущего цвета
             const activeColorImages = window[colorImagesKey];
+            
             if (!activeColorImages || activeColorImages.length === 0) {
-                console.log('No images available for color:', selectedColor);
                 return;
             }
             
@@ -3757,19 +3762,24 @@
             const carousels = document.querySelectorAll('.product-image-carousel');
             
             carousels.forEach(carousel => {
+                // Проверяем, что обработчики еще не добавлены
+                if (carousel.dataset.swipeInitialized === 'true') {
+                    return;
+                }
+                
                 let startX = 0;
                 let startY = 0;
                 let endX = 0;
                 let endY = 0;
                 let isSwipe = false;
                 
-                carousel.addEventListener('touchstart', (e) => {
+                const handleTouchStart = (e) => {
                     startX = e.touches[0].clientX;
                     startY = e.touches[0].clientY;
                     isSwipe = false;
-                }, { passive: true });
+                };
                 
-                carousel.addEventListener('touchmove', (e) => {
+                const handleTouchMove = (e) => {
                     if (!isSwipe) {
                         endX = e.touches[0].clientX;
                         endY = e.touches[0].clientY;
@@ -3782,14 +3792,14 @@
                             isSwipe = true;
                         }
                     }
-                }, { passive: true });
+                };
                 
-                carousel.addEventListener('touchend', (e) => {
+                const handleTouchEnd = (e) => {
                     if (isSwipe) {
                         const deltaX = endX - startX;
                         const productId = carousel.dataset.productId;
                         
-                        if (Math.abs(deltaX) > 50) { // Минимальное расстояние свайпа
+                        if (Math.abs(deltaX) > 20) { // Минимальное расстояние свайпа
                             if (deltaX > 0) {
                                 // Свайп вправо - предыдущее изображение
                                 changeImageWithSlide(parseInt(productId), -1);
@@ -3799,7 +3809,16 @@
                             }
                         }
                     }
-                }, { passive: true });
+                };
+                
+                carousel.addEventListener('touchstart', handleTouchStart, { passive: true });
+                carousel.addEventListener('touchmove', handleTouchMove, { passive: true });
+                carousel.addEventListener('touchend', handleTouchEnd, { passive: true });
+                
+                // Отмечаем, что обработчики добавлены
+                carousel.dataset.swipeInitialized = 'true';
+                
+                console.log('Swipe handlers added to carousel:', productId);
             });
         }
         
