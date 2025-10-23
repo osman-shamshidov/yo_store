@@ -2395,13 +2395,26 @@
             
             try {
                 // Получить информацию об изображениях из API
-                const response = await fetch(`/product-images/${modelKey}/${encodeURIComponent(apiColor)}`);
+                const apiUrl = `/product-images/${modelKey}/${encodeURIComponent(apiColor)}`;
+                console.log(`🌐 API запрос: ${apiUrl}`);
+                
+                const response = await fetch(apiUrl);
+                
+                console.log(`📡 API ответ: ${response.status} ${response.statusText}`);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
                 
                 const imageData = await response.json();
+                console.log(`📊 Данные изображений:`, imageData);
+                
+                // Проверяем, что image_paths существует
+                if (!imageData.image_paths || !Array.isArray(imageData.image_paths)) {
+                    console.warn(`❌ Некорректные данные изображений для ${brandModel} цвета ${selectedColor}:`, imageData);
+                    console.warn(`❌ image_paths не является массивом:`, imageData.image_paths);
+                    throw new Error('Некорректные данные изображений');
+                }
                 
                 // Добавить timestamp для предотвращения кэширования
                 const timestampedPaths = imageData.image_paths.map(img => `${img}?v=${Date.now()}`);
@@ -2453,6 +2466,17 @@
                             // Устанавливаем новое изображение и сразу показываем его
                             mainImg.src = timestampedPaths[0];
                             mainImg.style.opacity = '1';
+                        } else {
+                            // Попробуем создать изображение, если его нет
+                            if (!mainImg && timestampedPaths[0]) {
+                                const newImg = document.createElement('img');
+                                newImg.src = timestampedPaths[0];
+                                newImg.alt = `${brandModel} ${selectedColor}`;
+                                newImg.className = 'product-img';
+                                newImg.style.opacity = '1';
+                                
+                                carousel.appendChild(newImg);
+                            }
                         }
                     }
                     
@@ -2485,13 +2509,10 @@
                     window[`${productId}-${selectedColor}`] = timestampedPaths;
                 }
                 
-                console.log(`✅ Обновлены изображения для ${brandModel} цвета ${selectedColor} (${imageData.image_count} фото из ${imageData.folder_name})`);
+                console.log(`✅ Обновлены изображения для ${brandModel} цвета ${selectedColor}`);
                 
             } catch (error) {
                 console.error(`❌ Ошибка загрузки изображений для ${brandModel} цвета ${selectedColor}:`, error);
-                
-                // Fallback - используем изображение из product.image_url если есть
-                console.log('📸 Устанавливаем fallback изображение из product.image_url:', product.image_url);
                 const carousel = productCard.querySelector('.product-image-carousel');
                 if (carousel) {
                     // Скрыть loading placeholder
