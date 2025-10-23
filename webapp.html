@@ -1071,6 +1071,13 @@
             right: 10px;
         }
         
+        /* Скрыть стрелки на мобильных устройствах */
+        @media (max-width: 768px) {
+            .image-nav {
+                display: none !important;
+            }
+        }
+        
         /* Стили для анимации слайда изображений */
         .product-image-carousel {
             position: relative;
