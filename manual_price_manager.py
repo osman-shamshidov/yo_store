@@ -7,7 +7,7 @@ import json
 from datetime import datetime
 from sqlalchemy.orm import Session
 from database import SessionLocal
-from models import Product, CurrentPrice, PriceHistory
+from models import Product, CurrentPrice
 
 class ManualPriceManager:
     """Класс для ручного управления ценами через Excel файлы"""
@@ -77,14 +77,7 @@ class ManualPriceManager:
                 )
                 db.add(new_price_record)
             
-            # Добавить в историю цен
-            price_history = PriceHistory(
-                product_id=product.id,
-                price=new_price,
-                old_price=old_price,
-                updated_at=datetime.utcnow()
-            )
-            db.add(price_history)
+            # История цен удалена из новой структуры БД
             
             print(f"✅ Обновлена цена для {product.name}: {old_price} -> {new_price} {currency}")
             
@@ -139,31 +132,14 @@ class ManualPriceManager:
             print(f"❌ Неверный JSON в файле цен: {file_path}")
             return 0, [f"Неверный JSON в файле {file_path}"]
     
-    def get_price_history(self, product_id: int, limit: int = 10):
-        """Получить историю цен товара"""
-        db = SessionLocal()
-        try:
-            history = db.query(PriceHistory).filter(
-                PriceHistory.product_id == product_id
-            ).order_by(PriceHistory.updated_at.desc()).limit(limit).all()
-            
-            return [
-                {
-                    'price': h.price,
-                    'old_price': h.old_price,
-                    'updated_at': h.updated_at.isoformat()
-                }
-                for h in history
-            ]
-        finally:
-            db.close()
+    # Функция get_price_history удалена - история цен больше не хранится в БД
     
     def get_all_current_prices(self):
         """Получить все текущие цены с информацией о товарах"""
         db = SessionLocal()
         try:
             results = db.query(Product, CurrentPrice).join(
-                CurrentPrice, Product.id == CurrentPrice.product_id
+                CurrentPrice, Product.sku == CurrentPrice.sku
             ).filter(Product.is_available == True).all()
             
             prices = []
