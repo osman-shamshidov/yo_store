@@ -5,6 +5,7 @@ from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, B
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from datetime import datetime
+import json
 
 Base = declarative_base()
 
@@ -25,18 +26,50 @@ class Product(Base):
     level_1 = Column(String(100))  # 16 Series, MacBook
     level_2 = Column(String(100), index=True)  # iPhone 16, iPhone 16 Pro, Air M2
     
-    # Характеристики для вариантов
-    color = Column(String(50))  # Black, White, Titanium Black
-    ram = Column(String(20))  # 8GB, 16GB (для ноутбуков)
-    disk = Column(String(20))  # 128GB, 256GB, 512GB, 1TB
-    sim_config = Column(String(50))  # Single SIM, Dual SIM, eSIM
-    
     # Дополнительно
-    specifications = Column(Text)  # JSON с остальными характеристиками
+    specifications = Column(Text)  # JSON с характеристиками (color, disk, sim_config и др.)
     stock = Column(Integer, default=0)
     is_available = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    @property
+    def color(self):
+        """Извлечь цвет из specifications"""
+        if self.specifications:
+            try:
+                specs = json.loads(self.specifications) if isinstance(self.specifications, str) else self.specifications
+                return specs.get('color', '')
+            except (json.JSONDecodeError, TypeError):
+                return ''
+        return ''
+    
+    @property
+    def disk(self):
+        """Извлечь объем памяти из specifications"""
+        if self.specifications:
+            try:
+                specs = json.loads(self.specifications) if isinstance(self.specifications, str) else self.specifications
+                return specs.get('disk', '')
+            except (json.JSONDecodeError, TypeError):
+                return ''
+        return ''
+    
+    @property
+    def sim_config(self):
+        """Извлечь конфигурацию SIM из specifications"""
+        if self.specifications:
+            try:
+                specs = json.loads(self.specifications) if isinstance(self.specifications, str) else self.specifications
+                return specs.get('sim_config', '')
+            except (json.JSONDecodeError, TypeError):
+                return ''
+        return ''
+    
+    @property
+    def memory(self):
+        """Алиас для disk (для обратной совместимости)"""
+        return self.disk
+
     
     # Связь с ценой
     price = relationship("CurrentPrice", back_populates="product", uselist=False, cascade="all, delete-orphan")
