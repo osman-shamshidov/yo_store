@@ -1439,6 +1439,54 @@
             brand: null
         };
         
+        // Сохранение и восстановление состояния
+        function saveAppState() {
+            const state = {
+                currentCategoryId: currentCategoryId,
+                currentCategoryName: currentCategoryName,
+                currentBrandFilter: currentBrandFilter,
+                currentLevel0Filter: currentLevel0Filter,
+                currentLevel1Filter: currentLevel1Filter,
+                currentLevel2Filter: currentLevel2Filter,
+                currentProductId: currentProductId,
+                searchQuery: document.getElementById('searchInput')?.value || '',
+                timestamp: Date.now()
+            };
+            localStorage.setItem('yo_mini_app_state', JSON.stringify(state));
+            console.log('💾 Состояние сохранено:', state);
+        }
+        
+        function restoreAppState() {
+            try {
+                const savedState = localStorage.getItem('yo_mini_app_state');
+                if (!savedState) return false;
+                
+                const state = JSON.parse(savedState);
+                
+                // Проверяем что состояние не слишком старое (24 часа)
+                if (Date.now() - state.timestamp > 24 * 60 * 60 * 1000) {
+                    localStorage.removeItem('yo_mini_app_state');
+                    return false;
+                }
+                
+                // Восстанавливаем состояние
+                currentCategoryId = state.currentCategoryId;
+                currentCategoryName = state.currentCategoryName;
+                currentBrandFilter = state.currentBrandFilter;
+                currentLevel0Filter = state.currentLevel0Filter;
+                currentLevel1Filter = state.currentLevel1Filter;
+                currentLevel2Filter = state.currentLevel2Filter;
+                currentProductId = state.currentProductId;
+                
+                console.log('🔄 Состояние восстановлено:', state);
+                return true;
+            } catch (error) {
+                console.error('Ошибка восстановления состояния:', error);
+                localStorage.removeItem('yo_mini_app_state');
+                return false;
+            }
+        }
+        
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM loaded, starting initialization...');
@@ -1455,11 +1503,30 @@
             }, 1000);
             
             try {
-                loadCategories();
+                // Пытаемся восстановить состояние
+                const stateRestored = restoreAppState();
+                
+                if (stateRestored && currentProductId) {
+                    // Если был открыт товар, загружаем его
+                    showProductDetails(currentProductId);
+                } else if (stateRestored && currentBrandFilter) {
+                    // Если был выбран бренд, загружаем товары бренда
+                    loadProductsByBrand(currentBrandFilter, currentLevel0Filter);
+                } else if (stateRestored && currentCategoryId) {
+                    // Если была выбрана категория, загружаем товары категории
+                    loadProducts(currentCategoryId);
+                } else {
+                    // Иначе загружаем категории (главная страница)
+                    loadCategories();
+                }
+                
                 setupSearch();
                 
                 // Инициализируем поддержку свайпов
                 initializeSwipeSupport();
+                
+                // Сохраняем состояние при закрытии страницы
+                window.addEventListener('beforeunload', saveAppState);
                 
                 // Таймаут на случай если загрузка застряла
                 setTimeout(() => {
@@ -1558,6 +1625,16 @@
                 console.log('Starting loadCategories...');
                 showLoading();
                 
+                // Сбрасываем все фильтры и сохраняем состояние главной страницы
+                currentCategoryId = null;
+                currentCategoryName = null;
+                currentBrandFilter = null;
+                currentLevel0Filter = null;
+                currentLevel1Filter = null;
+                currentLevel2Filter = null;
+                currentProductId = null;
+                saveAppState();
+                
                 // Получаем категории
                 const categoriesResponse = await fetch(`${API_BASE}/categories`);
                 if (!categoriesResponse.ok) {
@@ -1570,7 +1647,6 @@
                 const allBrands = await brandsResponse.json();
                 
                 currentView = 'categories';
-                currentCategoryId = null;
                 
                 const content = document.getElementById('content');
                 let categoriesHtml = '<div class="categories">';
@@ -1717,11 +1793,20 @@
         async function loadProducts(categoryId) {
             try {
                 showLoading();
+                
+                // Сохраняем состояние
+                currentCategoryId = categoryId;
+                currentBrandFilter = null;
+                currentLevel0Filter = null;
+                currentLevel1Filter = null;
+                currentLevel2Filter = null;
+                currentProductId = null;
+                saveAppState();
+                
                 const response = await fetch(`${API_BASE}/products?category_id=${categoryId}&limit=20`);
                 const products = await response.json();
                 
                 currentView = 'products';
-                currentCategoryId = categoryId;
                 
                 const content = document.getElementById('content');
                 content.innerHTML = `
@@ -1754,6 +1839,10 @@
                 currentLevel0Filter = categoryLevel0; // Устанавливаем категорию из параметра
                 currentLevel1Filter = null;
                 currentLevel2Filter = null;
+                currentProductId = null; // Сбрасываем товар при переходе к списку
+                
+                // Сохраняем состояние
+                saveAppState();
                 
                 // Получаем товары с учетом уровня категории (level0)
                 let url = `${API_BASE}/products?brand=${encodeURIComponent(brand)}&level0=${encodeURIComponent(categoryLevel0)}&limit=50`;
@@ -3365,6 +3454,11 @@
         async function showProductDetails(productId) {
             try {
                 showLoading();
+                
+                // Сохраняем состояние перед переходом к товару
+                currentProductId = productId;
+                saveAppState();
+                
                 const response = await fetch(`${API_BASE}/products/${productId}`);
                 const product = await response.json();
                 
