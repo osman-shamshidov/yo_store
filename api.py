@@ -22,30 +22,7 @@ def normalize_model_key(model_key: str) -> str:
     """Нормализовать ключ модели для поиска в файловой системе"""
     # Приводим к нижнему регистру
     model_key = model_key.lower()
-    
-    # Исправляем структуру названий моделей
-    if 'iphone16promax' in model_key:
-        return 'iphone16promax'
-    elif 'iphone16pro' in model_key:
-        return 'iphone16pro'
-    elif 'iphone17promax' in model_key:
-        return 'iphone17promax'
-    elif 'iphone17pro' in model_key:
-        return 'iphone17pro'
-    elif 'iphone16' in model_key:
-        return 'iphone16'
-    elif 'iphone17' in model_key:
-        return 'iphone17'
-    elif 'galaxys24ultra' in model_key:
-        return 'galaxys24ultra'
-    elif 'macbookairm2' in model_key:
-        return 'macbookairm2'
-    elif 'ipadair' in model_key:
-        return 'ipadair'
-    elif 'airpodspro2' in model_key:
-        return 'airpodspro2'
-    elif 'homepodmini' in model_key:
-        return 'homepodmini'
+
     
     # Если не найдено совпадение, возвращаем как есть
     return model_key
@@ -189,6 +166,32 @@ class ProductDetailResponse(BaseModel):
     
     class Config:
         from_attributes = True
+
+# --- Helpers ---
+def ensure_category_exists(db: Session, level0: Optional[str], level1: Optional[str] = None, level2: Optional[str] = None) -> None:
+    """Создать записи в таблице Category для уровней, если их нет."""
+    try:
+        # level_0 only
+        if level0:
+            exists_l0 = db.query(Category).filter(Category.level_0 == level0, Category.level_1 == None, Category.level_2 == None).first()
+            if not exists_l0:
+                db.add(Category(level_0=level0, level_1=None, level_2=None))
+                db.flush()
+        # level_1
+        if level0 and level1:
+            exists_l1 = db.query(Category).filter(Category.level_0 == level0, Category.level_1 == level1, Category.level_2 == None).first()
+            if not exists_l1:
+                db.add(Category(level_0=level0, level_1=level1, level_2=None))
+                db.flush()
+        # level_2
+        if level0 and level1 and level2:
+            exists_l2 = db.query(Category).filter(Category.level_0 == level0, Category.level_1 == level1, Category.level_2 == level2).first()
+            if not exists_l2:
+                db.add(Category(level_0=level0, level_1=level1, level_2=level2))
+                db.flush()
+    except Exception:
+        # Не прерываем основной процесс импорта из-за проблем с категориями
+        pass
 
 # API Routes
 @app.get("/")
@@ -838,25 +841,34 @@ async def import_products_from_excel(file: UploadFile = File(...), db: Session =
                 # Создать товар
                 parsed_images = parse_images_from_string(product_data['image_url'])
                 
+                # Сформировать specifications из данных
+                specs = dict(product_data.get('specifications') or {})
+                if product_data.get('color'):
+                    specs['color'] = product_data['color']
+                if product_data.get('ram'):
+                    specs['ram'] = product_data['ram']
+                if product_data.get('disk'):
+                    specs['disk'] = product_data['disk']
+                if product_data.get('sim_config'):
+                    specs['sim_config'] = product_data['sim_config']
+
                 db_product = Product(
                     sku=sku,
                     name=product_data['name'],
                     level_0=product_data['level0'],
                     level_1=product_data.get('level1'),
                     level_2=product_data.get('level2'),
-                    description=product_data.get('description', ''),
                     brand=product_data['brand'],
-                    color=product_data.get('color', ''),
-                    ram=product_data.get('ram', ''),
-                    disk=product_data.get('disk', ''),
-                    sim_config=product_data.get('sim_config', ''),
-                    specifications=json.dumps(product_data['specifications']),
+                    specifications=json.dumps(specs),
                     stock=product_data['stock'],
                     is_available=True
                 )
                 
                 db.add(db_product)
                 db.flush()  # Получить ID
+
+                # Ensure categories exist
+                ensure_category_exists(db, product_data.get('level0'), product_data.get('level1'), product_data.get('level2'))
                 
                 # Создать начальную цену
                 db_price = CurrentPrice(
@@ -1023,16 +1035,18 @@ async def update_or_create_products_from_excel(file: UploadFile = File(...), db:
                     existing_product.level_2 = product_data.get('level2', '')
                     existing_product.brand = product_data.get('brand', '')
                     existing_product.stock = product_data.get('stock', 0)
+                    # Ensure categories exist for updated levels
+                    ensure_category_exists(db, product_data.get('level0'), product_data.get('level1'), product_data.get('level2'))
                     
-                    # Обновляем специфичные поля товара
-                    if 'color' in product_data and product_data['color']:
-                        existing_product.color = product_data['color']
-                    if 'disk' in product_data and product_data['disk']:
-                        existing_product.disk = product_data['disk']
-                    if 'ram' in product_data and product_data['ram']:
-                        existing_product.ram = product_data['ram']
-                    if 'sim_config' in product_data and product_data['sim_config']:
-                        existing_product.sim_config = product_data['sim_config']
+                    # Обновляем характеристики в specifications JSON
+                    try:
+                        existing_specs = json.loads(existing_product.specifications) if existing_product.specifications else {}
+                    except json.JSONDecodeError:
+                        existing_specs = {}
+                    for key in ['color', 'disk', 'ram', 'sim_config']:
+                        if product_data.get(key):
+                            existing_specs[key] = product_data[key]
+                    existing_product.specifications = json.dumps(existing_specs)
                     
                     # Обновляем изображения если указаны (в таблице ProductImage)
                     if product_data.get('image_url') and existing_product.level_2 and existing_product.color:
@@ -1076,6 +1090,16 @@ async def update_or_create_products_from_excel(file: UploadFile = File(...), db:
                     # Создаем новый товар
                     parsed_images = parse_images_from_string(product_data.get('image_url', ''))
                     
+                    specs = dict(product_data.get('specifications') or {})
+                    if product_data.get('color'):
+                        specs['color'] = product_data['color']
+                    if product_data.get('ram'):
+                        specs['ram'] = product_data['ram']
+                    if product_data.get('disk'):
+                        specs['disk'] = product_data['disk']
+                    if product_data.get('sim_config'):
+                        specs['sim_config'] = product_data['sim_config']
+
                     db_product = Product(
                         sku=product_data['sku'],
                         name=product_data['name'],
@@ -1083,15 +1107,13 @@ async def update_or_create_products_from_excel(file: UploadFile = File(...), db:
                         level_1=product_data.get('level1', ''),
                         level_2=product_data.get('level2', ''),
                         brand=product_data.get('brand', ''),
-                        description=product_data.get('description', ''),
                         stock=product_data.get('stock', 0),
-                        color=product_data.get('color', ''),
-                        disk=product_data.get('disk', ''),
-                        ram=product_data.get('ram', ''),
-                        sim_config=product_data.get('sim_config', ''),
+                        specifications=json.dumps(specs),
                         is_available=True
                     )
                     db.add(db_product)
+                    # Ensure categories exist
+                    ensure_category_exists(db, product_data.get('level0'), product_data.get('level1'), product_data.get('level2'))
                     
                     # Добавляем цену
                     db_price = CurrentPrice(
@@ -1922,18 +1944,23 @@ async def import_single_product(product_data: dict, db: Session = Depends(get_db
             images_json = None
         
         # Создаем новый товар
+        specs = dict(product_data.get('specifications') or {})
+        if product_data.get('color'):
+            specs['color'] = product_data['color']
+        if product_data.get('ram'):
+            specs['ram'] = product_data['ram']
+        if product_data.get('disk'):
+            specs['disk'] = product_data['disk']
+        if product_data.get('sim_config'):
+            specs['sim_config'] = product_data['sim_config']
+
         new_product = Product(
             name=product_data['name'],
             sku=sku,
             brand=product_data['brand'],
-            description=product_data.get('description', ''),
             stock=product_data.get('stock', 0),
             is_available=product_data.get('is_available', True),
-            color=product_data.get('color', ''),
-            ram=product_data.get('ram', ''),
-            disk=product_data.get('disk', ''),
-            sim_config=product_data.get('sim_config', ''),
-            specifications=json.dumps(product_data.get('specifications', {})),
+            specifications=json.dumps(specs),
             level_0=product_data.get('level0', ''),
             level_1=product_data.get('level1', ''),
             level_2=product_data.get('level2', '')
@@ -1942,6 +1969,8 @@ async def import_single_product(product_data: dict, db: Session = Depends(get_db
         db.add(new_product)
         db.commit()
         db.refresh(new_product)
+        # Ensure categories exist
+        ensure_category_exists(db, product_data.get('level0'), product_data.get('level1'), product_data.get('level2'))
         
         # Добавляем цену, если она указана
         if 'price' in product_data and product_data['price']:

@@ -18,6 +18,8 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
             color: #333;
             overflow-x: hidden;
             width: 100%;
@@ -36,8 +38,9 @@
             max-width: 1200px;
             width: 100%;
             margin: 0 auto;
-            padding: 20px;
+            padding: 0 20px 20px 20px; /* шапка примыкает к верху */
             box-sizing: border-box;
+            flex: 1 0 auto; /* растягиваем контент, чтобы футер был внизу */
         }
         
         /* Мобильные устройства */
@@ -60,16 +63,20 @@
         }
         
         .header {
-            text-align: center;
-            color: #333;
-            margin-bottom: 30px;
+            display: block;
+            color: #111827;
+            background: #f3f4f6; /* светло-серая шапка */
+            border-bottom: 1px solid #e5e7eb;
+            border-radius: 0; /* прямоугольная */
+            margin: 0 0 20px 0; /* примыкает к верхней линии */
+            padding: 10px 0; /* вертикальные отступы внутри */
         }
         
         .header h1 {
-            margin-bottom: 10px;
+            margin: 0;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: center; /* логотип по центру */
         }
         
         .logo {
@@ -90,10 +97,7 @@
             transform: scale(1.05);
         }
         
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
+        .header p { display: none; }
         
         .search-bar {
             background: white;
@@ -712,6 +716,60 @@
             color: white;
             border-color: #667eea;
             font-weight: 600;
+        }
+        /* Help (About) floating button */
+        .help-fab {
+            position: fixed;
+            top: 18px;
+            right: 18px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #2d6cdf;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1100;
+        }
+        .help-fab:hover { background: #1f56bf; }
+        .about-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.35);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1099;
+        }
+        .about-modal { background: #fff; width: min(720px, 92vw); max-height: 86vh; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; }
+        .about-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid #eee; }
+        .about-title { font-size: 18px; font-weight: 700; }
+        .about-close { background: transparent; border: none; font-size: 20px; cursor: pointer; color: #666; }
+        .about-content { padding: 16px 18px 20px 18px; overflow: auto; max-height: 70vh; }
+        .about-section { margin-bottom: 16px; }
+        .about-section h4 { margin: 0 0 8px 0; font-size: 15px; }
+        .about-list { margin: 0; padding-left: 18px; color: #444; }
+        .about-kv { color: #444; }
+        .about-kv div { margin: 4px 0; }
+
+        /* About footer at bottom */
+        .about-footer {
+            margin-top: 30px;
+            background: #f3f4f6;
+            border-top: 1px solid #e5e7eb;
+            padding: 20px;
+            border-radius: 12px;
+        }
+        .about-footer h3 { margin: 0 0 12px 0; font-size: 16px; }
+        .about-footer .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
         }
         
         .category-icon {
@@ -1407,7 +1465,6 @@
                     <img src="/static/images/logo.jpg" alt="Yo Store" class="logo">
                 </a>
             </h1>
-            <p>Лучшие цены на технику • Доставка по всей России</p>
         </div>
         
         <div class="search-bar">
@@ -1418,6 +1475,37 @@
             <div class="loading">Подождите, идет загрузка...</div>
         </div>
     </div>
+
+    <!-- About footer (bottom block) -->
+    <footer class="about-footer">
+        <h3>О нас</h3>
+        <div class="grid">
+            <div>
+                <h4>Контакты</h4>
+                <div class="about-kv">
+                    <div>Телефон: +7 (999) 123-45-67</div>
+                    <div>Email: hello@yo-store.example</div>
+                    <div>Telegram: @yostore_support</div>
+                </div>
+            </div>
+            <div>
+                <h4>Адрес</h4>
+                <div class="about-kv">
+                    <div>г. Москва, ул. Примерная, 10, офис 5</div>
+                    <div>Пн–Вс: 10:00–20:00</div>
+                </div>
+            </div>
+            <div>
+                <h4>О компании</h4>
+                <ul class="about-list">
+                    <li>Работаем быстро и аккуратно с 2018 года</li>
+                    <li>Официальные поставки и проверенные поставщики</li>
+                    <li>Расширенная гарантия и поддержка</li>
+                    <li>Удобные способы оплаты и доставки</li>
+                </ul>
+            </div>
+        </div>
+    </footer>
 
     <script>
         const API_BASE = window.location.origin;
@@ -1856,7 +1944,6 @@
                 }
                 
                 currentView = 'brand_products';
-                currentCategoryId = categoryLevel0;
                 
                 const content = document.getElementById('content');
                 content.innerHTML = `
@@ -1941,7 +2028,7 @@
             currentCategoryName = categoryName;
             console.log(`📝 Установлены фильтры: level0=${currentLevel0Filter}, categoryId=${currentCategoryId}`);
             // Вызываем основную функцию
-            await loadProductsByBrand(brand, categoryId);
+            await loadProductsByBrand(brand, categoryName);
         }
         
         // Создание фильтров иерархии
@@ -3404,23 +3491,14 @@
         }
         
         function getModelKey(brandModel) {
-            // Преобразовать название модели в model_key (формат для API)
-            console.log('🔍 Определяем model_key для:', brandModel);
-            
-            if (brandModel.includes('16 Pro Max')) return 'iphone16promax';
-            if (brandModel.includes('16 Pro')) return 'iphone16pro';
-            if (brandModel.includes('17 Pro Max')) return 'iphone17promax';
-            if (brandModel.includes('17 Pro')) return 'iphone17pro';
-            if (brandModel.includes('16')) return 'iphone16';
-            if (brandModel.includes('17')) return 'iphone17';
-            if (brandModel.includes('Galaxy S24 Ultra')) return 'galaxys24ultra';
-            if (brandModel.includes('MacBook Air M2')) return 'macbookairm2';
-            if (brandModel.includes('iPad Air')) return 'ipadair';
-            if (brandModel.includes('AirPods Pro 2')) return 'airpodspro2';
-            if (brandModel.includes('HomePod mini')) return 'homepodmini';
-            
-            console.warn('⚠️ Не удалось определить model_key для:', brandModel);
-            return null; // Модель не найдена
+            // Простая нормализация: нижний регистр + удаление пробелов, дефисов, кавычек и типографских тире
+            const raw = String(brandModel || '');
+            const key = raw
+                .toLowerCase()
+                .replace(/["'«»]/g, '')
+                .replace(/[–—-]/g, '')
+                .replace(/\s+/g, '');
+            return key || null;
         }
         
         
@@ -4144,6 +4222,21 @@
         if (window.Telegram && window.Telegram.WebApp) {
             window.Telegram.WebApp.ready();
             window.Telegram.WebApp.expand();
+        }
+
+        // About modal controls
+        function openAboutModal() {
+            const el = document.getElementById('aboutBackdrop');
+            if (el) el.style.display = 'flex';
+        }
+        function closeAboutModal() {
+            const el = document.getElementById('aboutBackdrop');
+            if (el) el.style.display = 'none';
+        }
+        function backdropAboutClick(event) {
+            if (event.target && event.target.id === 'aboutBackdrop') {
+                closeAboutModal();
+            }
         }
     </script>
 </body>
