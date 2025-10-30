@@ -101,19 +101,38 @@
         
         .search-bar {
             background: white;
-            border-radius: 20px;
-            padding: 10px 16px;
+            border-radius: 14px;
+            padding: 6px 12px;
             margin-bottom: 20px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            position: relative; /* для иконки справа */
+            padding-right: 36px; /* место под кнопку */
         }
         
         .search-input {
             width: 100%;
             border: none;
             outline: none;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             background: transparent;
         }
+
+        .search-icon-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 22px;
+            height: 22px;
+            display: grid;
+            place-items: center;
+            background: transparent;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            color: #6b7280; /* slate-500 */
+        }
+        .search-icon-btn:hover { color: #2d6cdf; background: #f3f4f6; }
         
         .categories {
             display: grid;
@@ -803,6 +822,7 @@
             font-size: 2.5rem;
             margin-bottom: 10px;
         }
+        .category-icon svg { width: 28px; height: 28px; display: inline-block; vertical-align: middle; }
         
         .category-name {
             font-weight: 600;
@@ -1517,7 +1537,13 @@
         </div>
         
         <div class="search-bar">
-            <input type="text" class="search-input" placeholder="🔍 Поиск товаров..." id="searchInput">
+            <input type="text" class="search-input" placeholder="Например, 17 Pro Max" id="searchInput">
+            <button class="search-icon-btn" aria-label="Найти" onclick="searchFromIcon()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+                    <line x1="16.65" y1="16.65" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
         </div>
         
         <div id="content">
@@ -1561,6 +1587,19 @@
     <script>
         const API_BASE = window.location.origin;
         let currentView = 'categories';
+        // Render category icon with overrides
+        function renderCategoryIcon(name, fallbackIcon) {
+            const n = String(name || '').toLowerCase();
+            const laptopSvg = `
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <rect x="3" y="5" width="18" height="11" rx="2" stroke="currentColor" stroke-width="1.8"/>
+                    <rect x="2" y="17" width="20" height="2.5" rx="1.2" fill="currentColor"/>
+                </svg>`;
+            if (n.includes('ноутбук') || n.includes('laptop') || n.includes('macbook')) {
+                return laptopSvg;
+            }
+            return fallbackIcon || '📦';
+        }
         
         // Глобальные переменные для фильтрации
         let currentBrandFilter = null;
@@ -1699,6 +1738,17 @@
                 }, 500);
             });
         }
+
+        function searchFromIcon() {
+            const input = document.getElementById('searchInput');
+            if (!input) return;
+            const query = input.value.trim();
+            if (query.length > 2) {
+                searchProducts(query);
+            } else if (query.length === 0 && currentView === 'search') {
+                loadCategories();
+            }
+        }
         
         // Clear filters function
         function clearFilters() {
@@ -1818,7 +1868,7 @@
                     categoriesHtml += `
                         <div class="category-card">
                             <div class="category-header" onclick="loadSubcategories(${category.id})">
-                                <div class="category-icon">${category.icon}</div>
+                                <div class="category-icon">${renderCategoryIcon(category.name, category.icon)}</div>
                                 <div class="category-name">${category.name}</div>
                                 <div class="category-count">${category.product_count} товаров</div>
                             </div>
@@ -1830,7 +1880,6 @@
                         for (const brand of brandData) {
                             categoriesHtml += `
                                 <div class="brand-button" onclick="event.stopPropagation(); loadProductsByBrand('${brand.brand}', '${category.level_0}')">
-                                    <span class="brand-icon">${brand.icon}</span>
                                     <span class="brand-name">${brand.brand}</span>
                                     <span class="brand-count">${brand.product_count}</span>
                                 </div>
@@ -1909,13 +1958,12 @@
                 content.innerHTML = `
                     <button class="back-button" onclick="loadCategories()">← Назад к категориям</button>
                     <div class="category-header">
-                        <h2>${category.icon} ${category.name}</h2>
+                        <h2><span class="category-icon">${renderCategoryIcon(category.name, category.icon)}</span> ${category.name}</h2>
                         <p>Выберите бренд для просмотра товаров</p>
                     </div>
                     <div class="subcategories-grid">
                         ${brandData.map(subcat => `
                             <div class="subcategory-card" onclick="loadProductsByBrandWithCategory('${subcat.brand}', ${categoryId}, '${category.name}')">
-                                <div class="subcategory-icon">${subcat.icon}</div>
                                 <div class="subcategory-name">${subcat.brand}</div>
                                 <div class="subcategory-count">${subcat.product_count} товаров</div>
                             </div>
