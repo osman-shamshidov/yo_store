@@ -301,10 +301,10 @@
         /* Tablet: use two larger cards per row */
         @media (max-width: 768px) {
             .categories {
-                grid-template-columns: repeat(3, minmax(160px, 1fr)) !important; /* 3 cards per row on tablets */
-                gap: 16px !important;
+                grid-template-columns: repeat(2, 1fr) !important; /* 2 карточки в ряд на планшетах */
+                gap: 12px !important;
             }
-            .category-card { padding: 22px !important; }
+            .category-card { padding: 18px !important; }
         }
 
         /* Mobile: 2 columns with very compact design */
@@ -2158,6 +2158,8 @@
                     
                     const level1Response = await fetch(level1Url);
                     level1Values = await level1Response.json();
+                    // Сортировка по возрастанию
+                    level1Values.sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' }));
                     console.log(`📋 Получены level1 значения:`, level1Values);
                 }
                 
@@ -2180,6 +2182,10 @@
                 if (currentLevel1Filter) {
                     const level2Response = await fetch(`${API_BASE}/hierarchy/levels?level=2&brand=${encodeURIComponent(brand)}&parent_level1=${encodeURIComponent(currentLevel1Filter)}`);
                     const level2Values = await level2Response.json();
+                    // Сортировка по возрастанию
+                    if (level2Values.length > 0) {
+                        level2Values.sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' }));
+                    }
                     
                     if (level2Values.length > 0) {
                         filtersHtml += `
@@ -2281,6 +2287,7 @@
                 setTimeout(async () => {
                     await initializeDefaultColors();
                     await loadDefaultImages();
+                    await loadAllSpecifications();
                 }, 100);
                 
             } catch (error) {
@@ -2617,6 +2624,12 @@
             const specsContainers = document.querySelectorAll('.specifications[data-level2]');
             
             for (const container of specsContainers) {
+                // Удаляем placeholder "Загрузка характеристик..." если есть
+                const loadingPlaceholder = container.querySelector('.loading-specs');
+                if (loadingPlaceholder) {
+                    loadingPlaceholder.remove();
+                }
+                
                 const level2 = container.dataset.level2;
                 if (level2) {
                     try {
