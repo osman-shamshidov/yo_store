@@ -634,7 +634,7 @@
         /* Special styles for color buttons */
         .color-btn {
             position: relative;
-            overflow: hidden;
+            overflow: visible; /* для отображения тултипа вне кнопки */
             border: 2px solid;
             font-weight: 600;
             text-shadow: 0px 0px 2px rgba(0,0,0,0.3);
@@ -645,6 +645,33 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             backdrop-filter: blur(10px);
+        }
+        /* Tooltip for color button */
+        .color-btn[data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: calc(100% + 8px); /* полностью над кнопкой */
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7); /* светлее */
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 400; /* тоньше */
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.1s ease-in-out;
+            z-index: 5;
+        }
+        .color-btn[data-tooltip]:hover::after,
+        .color-btn[data-tooltip]:focus::after {
+            opacity: 1;
+        }
+        /* Скрыть подсказку принудительно (после клика) */
+        .color-btn.no-tooltip::after {
+            opacity: 0 !important;
         }
         
         .color-btn::before {
@@ -2448,6 +2475,18 @@
             
             // Обновить изображение если выбран цвет (при любом изменении вариантов)
             if (variantType === 'color') {
+                // Скрыть подсказку через 2 секунды после клика
+                try {
+                    buttonElement.classList.remove('no-tooltip');
+                    setTimeout(() => {
+                        buttonElement.classList.add('no-tooltip');
+                    }, 2000);
+                    // Вновь разрешать показ подсказки при уходе курсора
+                    buttonElement.addEventListener('mouseleave', function handleLeave() {
+                        buttonElement.classList.remove('no-tooltip');
+                        buttonElement.removeEventListener('mouseleave', handleLeave);
+                    });
+                } catch (e) {}
                 updateProductImage(productId, variantValue);
             } else {
                 // При изменении других вариантов (память, SIM) обновляем изображение с текущим цветом
@@ -2503,7 +2542,7 @@
                                     ...level2Details, // Общие характеристики (процессор, экран, камера и т.д.)
                                     'Память': matchingVariant.memory || selectedVariants.memory,
                                     'Цвет': matchingVariant.color || selectedVariants.color,
-                                    'SIM': matchingVariant.sim_type || selectedVariants.sim
+                                    'Конфигурация SIM': matchingVariant.sim_type || selectedVariants.sim
                                 };
                                 
                                 // Обновить HTML характеристик
@@ -2550,7 +2589,7 @@
                                         ...details, // Общие характеристики
                                         'Память': firstVariant.memory,
                                         'Цвет': firstVariant.color,
-                                        'SIM': firstVariant.sim_type
+                                        'Конфигурация SIM': firstVariant.sim_type
                                     };
                                     
                                     // Обновить HTML характеристик
@@ -3167,8 +3206,8 @@
                                     data-color="${color}" 
                                     data-model="${model}"
                                     data-type="color"
-                                    style="background-color: ${(color && color.toLowerCase().includes('titanium') && color.toLowerCase() && color.toLowerCase().includes('desert')) ? '#d0b6a8' : colorStyle}; color: ${textColor}; border-color: ${(color && color.toLowerCase().includes('titanium') && color.toLowerCase().includes('desert')) ? '#d0b6a8' : colorStyle};"
-                                    title="${label}">
+                                    data-tooltip="${label}"
+                                    style="background-color: ${(color && color.toLowerCase().includes('titanium') && color.toLowerCase() && color.toLowerCase().includes('desert')) ? '#d0b6a8' : colorStyle}; color: ${textColor}; border-color: ${(color && color.toLowerCase().includes('titanium') && color.toLowerCase().includes('desert')) ? '#d0b6a8' : colorStyle};">
                             </button>
                         `;
                     }).join('');
@@ -3241,7 +3280,7 @@
                     if (simButtons) {
                         htmlContent += `
                             <div class="variant-group sim-group">
-                                <label>СИМ:</label>
+                                <label>Конфигурация SIM:</label>
                                 <div class="variant-buttons">
                                     ${simButtons}
                                 </div>
@@ -3460,7 +3499,7 @@
                 
                 console.log(`🎨 Создаю кнопку для цвета ${actualColorValue}:`, { colorStyle, label, textColor });
                 
-                return `<button class="variant-btn color-btn ${isActive}" data-type="color" data-value="${actualColorValue}" data-color-folder="${folderName}" style="background-color: ${(actualColorValue && actualColorValue.toLowerCase().includes('titanium') && actualColorValue.toLowerCase().includes('desert')) ? '#d0b6a8' : colorStyle}; color: ${textColor}; border-color: ${(actualColorValue && actualColorValue.toLowerCase().includes('titanium') && actualColorValue.toLowerCase().includes('desert')) ? '#d0b6a8' : colorStyle};" title="${label}"></button>`;
+                return `<button class="variant-btn color-btn ${isActive}" data-type="color" data-value="${actualColorValue}" data-color-folder="${folderName}" data-tooltip="${label}" style="background-color: ${(actualColorValue && actualColorValue.toLowerCase().includes('titanium') && actualColorValue.toLowerCase().includes('desert')) ? '#d0b6a8' : colorStyle}; color: ${textColor}; border-color: ${(actualColorValue && actualColorValue.toLowerCase().includes('titanium') && actualColorValue.toLowerCase().includes('desert')) ? '#d0b6a8' : colorStyle};"></button>`;
             }).join('');
             
             console.log('🎨 Создан HTML кнопок:', colorButtonsHTML);
@@ -3532,7 +3571,7 @@
                 // Определить метку для типа варианта
                 const labels = {
                     memory: 'Память',
-                    sim: 'SIM',
+                    sim: 'Конфигурация SIM',
                     screen: 'Диагональ',
                     ram: 'RAM',
                     ssd: 'SSD',
