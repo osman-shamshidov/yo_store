@@ -2429,7 +2429,10 @@ async def delete_product_by_sku(sku: str, db: Session = Depends(get_db)):
 @app.get("/level2-descriptions/{level_2}")
 async def get_level2_description(level_2: str, db: Session = Depends(get_db)):
     """Get description and specifications for a level_2 product"""
-    description = db.query(Level2Description).filter(Level2Description.level_2 == level_2).first()
+    # Нормализуем регистр и лишние пробелы, ищем без учета регистра
+    from sqlalchemy import func
+    normalized = (level_2 or "").strip()
+    description = db.query(Level2Description).filter(func.lower(Level2Description.level_2) == normalized.lower()).first()
     
     if not description:
         raise HTTPException(status_code=404, detail="Description not found")
