@@ -2228,12 +2228,12 @@
             // Обработка изображений - показываем изображение из базы данных сразу
             let imageHtml = '';
             
-            if (product.images && product.images.length > 0) {
+                if (product.images && product.images.length > 0) {
                 // Если есть множественные изображения из базы данных
                 if (product.images.length > 1) {
                     imageHtml = `
                         <div class="product-image-carousel" data-product-id="${product.id}">
-                            <img src="${product.images[0]}" alt="${product.name}" class="product-img" style="opacity: 0;">
+                            <img alt="${product.name}" class="product-img" style="opacity: 0;">
                             <div class="image-placeholder loading-placeholder"><img src="/static/images/logo.jpg" alt="Loading..."></div>
                             <div class="image-indicators">
                                 ${product.images.map((_, index) => 
@@ -2248,7 +2248,7 @@
                     // Одно изображение из базы данных
                     imageHtml = `
                         <div class="product-image-carousel" data-product-id="${product.id}">
-                            <img src="${product.images[0]}" alt="${product.name}" class="product-img" style="opacity: 0;">
+                            <img alt="${product.name}" class="product-img" style="opacity: 0;">
                             <div class="image-placeholder loading-placeholder"><img src="/static/images/logo.jpg" alt="Loading..."></div>
                             <div class="image-indicators"></div>
                             <div class="image-nav prev" onclick="event.stopPropagation(); changeImageWithSlide(${product.id}, -1)" style="display:none;">‹</div>
@@ -2260,7 +2260,7 @@
                 // Старое поле image_url
                 imageHtml = `
                     <div class="product-image-carousel" data-product-id="${product.id}">
-                            <img src="${product.image_url}" alt="${product.name}" class="product-img" style="opacity: 0;">
+                            <img alt="${product.name}" class="product-img" style="opacity: 0;">
                         <div class="image-placeholder loading-placeholder"><img src="/static/images/logo.jpg" alt="Loading..."></div>
                         <div class="image-indicators"></div>
                         <div class="image-nav prev" onclick="event.stopPropagation(); changeImageWithSlide(${product.id}, -1)" style="display:none;">‹</div>
@@ -2568,7 +2568,8 @@
         }
         
         // Update product image based on selected color - БЕЗ ХАРДКОДА!
-        async function updateProductImage(productId, selectedColor) {
+        async function updateProductImage(productId, selectedColor, options = {}) {
+            const waitForLoad = options.waitForLoad === true;
             
             // Валидация входных параметров
             if (!selectedColor || selectedColor === 'undefined' || selectedColor === 'null' || selectedColor === undefined) {
@@ -2635,10 +2636,12 @@
                 // Обновить изображения в карусели
                 const carousel = productCard.querySelector('.product-image-carousel');
                 if (carousel) {
-                    // Скрыть loading placeholder
+                    // Placeholder пока изображение не загрузится
                     const loadingPlaceholder = carousel.querySelector('.loading-placeholder');
-                    if (loadingPlaceholder) {
+                    if (loadingPlaceholder && !waitForLoad) {
                         loadingPlaceholder.style.display = 'none';
+                    } else if (loadingPlaceholder && waitForLoad) {
+                        loadingPlaceholder.style.display = 'block';
                     }
 
                     // Проверяем, есть ли уже структура слайдов
@@ -2676,17 +2679,25 @@
                         // Обновляем обычное изображение
                         const mainImg = carousel.querySelector('.product-img');
                         if (mainImg && timestampedPaths[0]) {
-                            // Устанавливаем новое изображение и сразу показываем его
+                            // Устанавливаем новое изображение
+                            mainImg.style.opacity = '0';
+                            mainImg.onload = () => {
+                                if (loadingPlaceholder) loadingPlaceholder.style.display = 'none';
+                                mainImg.style.opacity = '1';
+                            };
                             mainImg.src = timestampedPaths[0];
-                            mainImg.style.opacity = '1';
                         } else {
                             // Попробуем создать изображение, если его нет
                             if (!mainImg && timestampedPaths[0]) {
                                 const newImg = document.createElement('img');
-                                newImg.src = timestampedPaths[0];
                                 newImg.alt = `${brandModel} ${selectedColor}`;
                                 newImg.className = 'product-img';
-                                newImg.style.cssText = 'width: 90%; height: 90%; object-fit: contain; border-radius: 15px; margin: 5%; opacity: 1;';
+                                newImg.style.cssText = 'width: 90%; height: 90%; object-fit: contain; border-radius: 15px; margin: 5%; opacity: 0;';
+                                newImg.onload = () => {
+                                    if (loadingPlaceholder) loadingPlaceholder.style.display = 'none';
+                                    newImg.style.opacity = '1';
+                                };
+                                newImg.src = timestampedPaths[0];
                                 
                                 carousel.appendChild(newImg);
                             }
@@ -3033,7 +3044,8 @@
                     
                     if (productId && selectedColor) {
                         try {
-                            await updateProductImage(productId, selectedColor);
+                            // Ждем полной загрузки нужного изображения перед показом
+                            await updateProductImage(productId, selectedColor, { waitForLoad: true });
                         } catch (error) {
                             console.warn(`Ошибка загрузки изображения для товара ${productId} цвета ${selectedColor}:`, error);
                         }
