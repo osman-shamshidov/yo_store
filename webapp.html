@@ -5306,12 +5306,10 @@
         }
         
         function clearCart() {
-            if (confirm('Вы уверены, что хотите очистить корзину?')) {
-                cart = [];
-                saveCart();
-                updateCartBadge();
-                renderCart();
-            }
+            cart = [];
+            saveCart();
+            updateCartBadge();
+            renderCart();
         }
         
         function renderCart() {
