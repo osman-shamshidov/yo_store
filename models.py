@@ -150,3 +150,49 @@ class Level2Description(Base):
     details = Column(Text, nullable=False)  # JSON с характеристиками (процессор, память, экран и т.д.)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+class Order(Base):
+    """
+    Заказы пользователей
+    """
+    __tablename__ = "orders"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    order_number = Column(String(50), unique=True, nullable=False, index=True)  # Номер заказа
+    customer_name = Column(String(200), nullable=False)
+    contact_method = Column(String(50), nullable=False)  # phone, email, telegram, whatsapp
+    contact_value = Column(String(200), nullable=False)
+    address = Column(Text)
+    comment = Column(Text)
+    shipping_type = Column(String(50), nullable=False)  # delivery, pickup
+    delivery_option = Column(String(100))  # moscow, spb, etc.
+    pickup_address = Column(Text)
+    delivery_datetime = Column(DateTime)
+    total = Column(Float, nullable=False)
+    status = Column(String(50), default="new")  # new, processing, completed, cancelled
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Связь с товарами заказа
+    items = relationship("OrderItem", back_populates="order", cascade="all, delete-orphan")
+
+class OrderItem(Base):
+    """
+    Товары в заказе
+    """
+    __tablename__ = "order_items"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    order_id = Column(Integer, ForeignKey('orders.id', ondelete='CASCADE'), nullable=False, index=True)
+    product_id = Column(Integer, ForeignKey('products.id'), nullable=False, index=True)
+    product_name = Column(String(200), nullable=False)
+    price = Column(Float, nullable=False)
+    quantity = Column(Integer, nullable=False, default=1)
+    color = Column(String(50))
+    memory = Column(String(50))
+    sim = Column(String(50))
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    # Связи
+    order = relationship("Order", back_populates="items")
+    product = relationship("Product")

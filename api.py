@@ -4,7 +4,7 @@ from fastapi.responses import HTMLResponse, FileResponse, StreamingResponse, Red
 from sqlalchemy.orm import Session
 from sqlalchemy import and_, func
 from database import get_db
-from models import Product, Category, CurrentPrice, ProductImage, Level2Description
+from models import Product, Category, CurrentPrice, ProductImage, Level2Description, Order, OrderItem
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
@@ -2453,6 +2453,104 @@ async def get_level2_description(level_2: str, db: Session = Depends(get_db)):
         "description": description.description,
         "details": details
     }
+
+# Pydantic models for orders
+class OrderItemCreate(BaseModel):
+    product_id: int
+    name: str
+    price: float
+    quantity: int
+    color: Optional[str] = None
+    memory: Optional[str] = None
+    sim: Optional[str] = None
+
+class CustomerInfo(BaseModel):
+    name: str
+    contact_method: str
+    contact_value: str
+    address: Optional[str] = None
+    comment: Optional[str] = None
+
+class ShippingInfo(BaseModel):
+    type: str
+    delivery_option: Optional[str] = None
+    pickup_address: Optional[str] = None
+
+class OrderCreate(BaseModel):
+    customer: CustomerInfo
+    shipping: ShippingInfo
+    delivery_datetime: Optional[str] = None
+    items: List[OrderItemCreate]
+    total: float
+
+class OrderResponse(BaseModel):
+    id: int
+    order_number: str
+    customer_name: str
+    total: float
+    status: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+@app.post("/orders", response_model=OrderResponse)
+async def create_order(order_data: OrderCreate, db: Session = Depends(get_db)):
+    """Создать новый заказ"""
+    try:
+        # Генерируем номер заказа
+        from datetime import datetime as dt
+        order_number = f"ORD-{dt.now().strftime('%Y%m%d%H%M%S')}-{db.query(Order).count() + 1}"
+        
+        # Парсим delivery_datetime если указан
+        delivery_datetime = None
+        if order_data.delivery_datetime:
+            try:
+                delivery_datetime = dt.fromisoformat(order_data.delivery_datetime.replace('Z', '+00:00'))
+            except:
+                pass
+        
+        # Создаем заказ
+        order = Order(
+            order_number=order_number,
+            customer_name=order_data.customer.name,
+            contact_method=order_data.customer.contact_method,
+            contact_value=order_data.customer.contact_value,
+            address=order_data.customer.address,
+            comment=order_data.customer.comment,
+            shipping_type=order_data.shipping.type,
+            delivery_option=order_data.shipping.delivery_option,
+            pickup_address=order_data.shipping.pickup_address,
+            delivery_datetime=delivery_datetime,
+            total=order_data.total,
+            status="new"
+        )
+        
+        db.add(order)
+        db.flush()  # Получаем ID заказа
+        
+        # Создаем товары заказа
+        for item_data in order_data.items:
+            order_item = OrderItem(
+                order_id=order.id,
+                product_id=item_data.product_id,
+                product_name=item_data.name,
+                price=item_data.price,
+                quantity=item_data.quantity,
+                color=item_data.color,
+                memory=item_data.memory,
+                sim=item_data.sim
+            )
+            db.add(order_item)
+        
+        db.commit()
+        db.refresh(order)
+        
+        return order
+        
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Ошибка создания заказа: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn

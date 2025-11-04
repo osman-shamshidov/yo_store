@@ -162,106 +162,90 @@
             padding: 10px;
             border-radius: 10px;
             transition: background-color 0.2s ease;
+            background-color: white !important;
         }
         
         .category-header:hover {
-            background-color: rgba(102, 126, 234, 0.1);
+            background-color: rgba(102, 126, 234, 0.1) !important;
         }
         
         /* Стили для контейнера брендов */
         .brands-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
             margin-top: 15px;
-            padding: 16px;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #dee2e6 100%);
-            border-radius: 16px;
-            border: 1px solid #ced4da;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+            padding: 12px;
+            background: white;
+            border-radius: 12px;
+            border: none;
+            box-shadow: none;
         }
         
         /* Стили для кнопок брендов */
         .brand-button {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 10px 16px;
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-            color: #495057;
-            border: 1px solid #dee2e6;
-            border-radius: 25px;
+            gap: 6px;
+            padding: 8px 14px;
+            background: #f8f9fa;
+            color: #333;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            font-size: 0.875rem;
             font-weight: 500;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            min-width: 90px;
+            box-shadow: none;
+            min-width: auto;
             justify-content: center;
             position: relative;
-            overflow: hidden;
-        }
-        
-        .brand-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            transition: left 0.5s;
-        }
-        
-        .brand-button:hover::before {
-            left: 100%;
+            overflow: visible;
         }
         
         .brand-button:hover {
-            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            background: #007AFF;
             color: white;
-            border-color: #007bff;
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 8px 25px rgba(0,123,255,0.4);
+            border-color: #007AFF;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,122,255,0.2);
         }
         
         .brand-button:active {
-            transform: translateY(-1px) scale(1.02);
-            box-shadow: 0 4px 15px rgba(0,123,255,0.3);
+            transform: translateY(0);
+            box-shadow: 0 1px 4px rgba(0,122,255,0.15);
         }
         
         .brand-icon {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            transition: transform 0.3s ease;
+            font-size: 1rem;
+            opacity: 0.8;
+            transition: opacity 0.2s ease;
         }
         
         .brand-button:hover .brand-icon {
-            transform: scale(1.1);
+            opacity: 1;
         }
         
         .brand-name {
-            font-weight: 600;
-            letter-spacing: 0.3px;
+            font-weight: 500;
+            letter-spacing: 0;
         }
         
         .brand-count {
-            background: rgba(0,123,255,0.1);
-            color: #007bff;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 700;
+            background: rgba(0,122,255,0.1);
+            color: #007AFF;
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
             margin-left: 4px;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(0,123,255,0.2);
+            transition: all 0.2s ease;
+            border: none;
         }
         
         .brand-button:hover .brand-count {
-            background: rgba(255,255,255,0.25);
+            background: rgba(255,255,255,0.2);
             color: white;
-            border-color: rgba(255,255,255,0.3);
-            transform: scale(1.1);
         }
         
         /* Стили для подкатегорий */
@@ -307,11 +291,11 @@
             .category-card { padding: 18px !important; }
         }
 
-        /* Mobile: 2 columns with very compact design */
-        @media (max-width: 430px) {
+        /* Mobile: 1 column for iPhone (including iPhone 16 Pro Max) */
+        @media (max-width: 480px) {
             .categories {
-                grid-template-columns: repeat(2, 1fr) !important; /* 2 cards per row on mobile */
-                gap: 6px !important;
+                grid-template-columns: repeat(1, 1fr) !important; /* 1 card per row on mobile */
+                gap: 12px !important;
             }
             .category-card {
                 padding: 8px !important;
@@ -349,11 +333,11 @@
             .subcategory-item { font-size: 0.9rem !important; }
         }
         
-        /* Extra small screens - ultra compact 2 columns */
+        /* Extra small screens - 1 column */
         @media (max-width: 360px) {
             .categories {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 4px !important;
+                grid-template-columns: repeat(1, 1fr) !important;
+                gap: 10px !important;
             }
             .category-card {
                 padding: 6px !important;
@@ -458,7 +442,7 @@
             text-align: center;
             margin-bottom: 2rem;
             padding: 1rem;
-            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            background: white !important;
             border-radius: 15px;
             color: #333;
         }
@@ -477,26 +461,45 @@
         
         .subcategories-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            padding: 1rem 0;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+            padding: 0;
         }
         
         .subcategory-card {
             background: white;
-            border-radius: 15px;
-            padding: 1.5rem;
+            border-radius: 12px;
+            padding: 20px 16px;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
-            border: 2px solid transparent;
+            border: 1px solid #f0f0f0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .subcategory-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #007AFF, #0056CC);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
         }
         
         .subcategory-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 122, 255, 0.15);
+            border-color: #007AFF;
+        }
+        
+        .subcategory-card:hover::before {
+            transform: scaleX(1);
         }
         
         .subcategory-card .subcategory-icon {
@@ -506,19 +509,27 @@
         }
         
         .subcategory-card .subcategory-name {
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 600;
-            color: #333;
-            margin-bottom: 0.5rem;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
         }
         
         .subcategory-card .subcategory-count {
-            font-size: 0.9rem;
+            font-size: 0.75rem;
             color: #666;
-            background: #f8f9fa;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
+            background: #f5f5f7;
+            padding: 4px 10px;
+            border-radius: 12px;
             display: inline-block;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .subcategory-card:hover .subcategory-count {
+            background: rgba(0, 122, 255, 0.1);
+            color: #007AFF;
         }
         
         .product-description-spoiler, .product-specifications-spoiler {
@@ -824,8 +835,20 @@
         .category-icon {
             font-size: 2.5rem;
             margin-bottom: 10px;
+            width: 170px;
+            height: 170px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
         }
         .category-icon svg { width: 28px; height: 28px; display: inline-block; vertical-align: middle; }
+        .category-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 6px;
+        }
         
         .category-name {
             font-weight: 600;
@@ -951,6 +974,7 @@
             overflow: hidden;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
         }
         
         .product-card:hover {
@@ -1012,6 +1036,132 @@
             border-radius: 10px;
             font-size: 0.8rem;
             font-weight: 600;
+        }
+        
+        .low-stock-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #e74c3c;
+            color: white;
+            padding: 4px 9px;
+            border-radius: 6px;
+            font-size: 0.63rem;
+            font-weight: 600;
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+            pointer-events: none;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            padding: 20px 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            z-index: 10000;
+            min-width: 320px;
+            max-width: 400px;
+            animation: slideInRight 0.3s ease-out;
+            border-left: 4px solid #10b981;
+        }
+        
+        .notification.success {
+            border-left-color: #10b981;
+        }
+        
+        .notification.error {
+            border-left-color: #e74c3c;
+        }
+        
+        .notification-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .notification-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .notification.success .notification-icon {
+            background: #d1fae5;
+            color: #10b981;
+        }
+        
+        .notification.error .notification-icon {
+            background: #fee2e2;
+            color: #e74c3c;
+        }
+        
+        .notification-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1f2937;
+            flex: 1;
+        }
+        
+        .notification-message {
+            font-size: 0.875rem;
+            color: #6b7280;
+            line-height: 1.5;
+            margin-top: 4px;
+        }
+        
+        .notification-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: #9ca3af;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .notification-close:hover {
+            background: #f3f4f6;
+            color: #374151;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+        
+        .notification.hiding {
+            animation: slideOutRight 0.3s ease-out forwards;
         }
         
         .product-description {
@@ -2052,6 +2202,41 @@
             transform: none;
         }
         
+        .cart-telegram-btn {
+            background: #0088cc;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 400;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+            height: 100%;
+            box-sizing: border-box;
+            white-space: nowrap;
+        }
+        
+        .cart-telegram-btn span {
+            display: inline-block;
+        }
+        
+        .cart-telegram-btn:hover {
+            background: #006699;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,136,204,0.3);
+        }
+        
+        .cart-telegram-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
         .clear-cart-btn {
             background: transparent;
             color: #ef4444;
@@ -2258,22 +2443,29 @@
                 <h2 class="cart-title">Оформить заказ</h2>
                 <form id="cartForm" onsubmit="submitCart(event)">
                     <div class="form-group">
-                        <input type="text" id="customerName" name="name" required placeholder="ФИО *" autocomplete="on">
+                        <input type="text" id="customerName" name="name" required placeholder="Имя *" autocomplete="on">
                     </div>
                     <div class="form-group">
-                        <input type="tel" id="customerPhone" name="phone" required placeholder="Телефон *" autocomplete="on">
-                    </div>
-                    <div class="form-group">
-                        <input type="email" id="customerEmail" name="email" placeholder="Email" autocomplete="on">
-                    </div>
-                    <div class="form-group">
-                        <select id="contactMethod" name="contact_method" class="form-select">
+                        <select id="contactMethod" name="contact_method" class="form-select" onchange="handleContactMethodChange(this.value)" required>
                             <option value="">Как с вами связаться?</option>
                             <option value="phone">Телефон</option>
                             <option value="email">Email</option>
                             <option value="telegram">Telegram</option>
                             <option value="whatsapp">WhatsApp</option>
                         </select>
+                    </div>
+                    <!-- Динамические поля для контакта -->
+                    <div class="form-group contact-field" id="contactPhoneField" style="display: none;">
+                        <input type="tel" id="contactPhone" name="contact_phone" placeholder="Телефон для связи" autocomplete="tel">
+                    </div>
+                    <div class="form-group contact-field" id="contactEmailField" style="display: none;">
+                        <input type="email" id="contactEmail" name="contact_email" placeholder="Email для связи" autocomplete="email">
+                    </div>
+                    <div class="form-group contact-field" id="contactTelegramField" style="display: none;">
+                        <input type="text" id="contactTelegram" name="contact_telegram" placeholder="Telegram username (например: @username)" autocomplete="off">
+                    </div>
+                    <div class="form-group contact-field" id="contactWhatsAppField" style="display: none;">
+                        <input type="tel" id="contactWhatsApp" name="contact_whatsapp" placeholder="WhatsApp номер" autocomplete="tel">
                     </div>
                     <div class="form-group">
                         <label class="form-group-title">Доставка</label>
@@ -2337,7 +2529,18 @@
                             </svg>
                         </div>
                     </div>
-                    <button type="submit" class="cart-submit-btn" id="cartSubmitBtn">Оформить заказ</button>
+                    <div style="display: flex; gap: 12px; align-items: stretch;">
+                        <button type="submit" class="cart-submit-btn" id="cartSubmitBtn" style="flex: 1; margin-top: 0;">Оформить заказ</button>
+                        <button type="button" class="cart-telegram-btn" id="cartTelegramBtn" onclick="sendOrderToTelegram()" title="Отправить заказ в Telegram" style="margin-top: 0;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 6px;">
+                                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.12l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+                            </svg>
+                            <span>В Telegram</span>
+                        </button>
+                    </div>
+                    <div style="margin-top: 8px; font-size: 0.85rem; color: #6b7280; text-align: center;">
+                        <span style="color: #007AFF;">«Оформить заказ»</span> — мы примем заказ в работу и свяжемся с вами по выбранному каналу связи
+                    </div>
                     <div class="cart-consent-text">
                         Нажимая на кнопку, вы даете согласие на обработку персональных данных
                     </div>
@@ -2375,14 +2578,22 @@
         // Render category icon with overrides
         function renderCategoryIcon(name, fallbackIcon) {
             const n = String(name || '').toLowerCase();
-            const laptopSvg = `
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <rect x="3" y="5" width="18" height="11" rx="2" stroke="currentColor" stroke-width="1.8"/>
-                    <rect x="2" y="17" width="20" height="2.5" rx="1.2" fill="currentColor"/>
-                </svg>`;
+            
+            // Для категории "Ноутбуки" используем изображение
             if (n.includes('ноутбук') || n.includes('laptop') || n.includes('macbook')) {
-                return laptopSvg;
+                return `<img src="https://static.re-store.ru/upload/resize_cache/iblock/986/100500_800_140cd750bba9870f18aada2478b24840a/waidg8h9cgj34fqht941w4rm4uvxq0q3.jpg" alt="Ноутбуки" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">`;
             }
+            
+            // Для категории "Смартфоны" используем изображение
+            if (n.includes('смартфон') || n.includes('smartphone') || n.includes('phone')) {
+                return `<img src="https://static.re-store.ru/upload/resize_cache/iblock/e03/100500_800_140cd750bba9870f18aada2478b24840a/2cv3sg5dbqinytvc3gcintdcokuemh3x.jpg" alt="Смартфоны" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">`;
+            }
+            
+            // Для категории "Аксессуары" используем изображение
+            if (n.includes('аксессуар') || n.includes('accessory') || n.includes('accessories')) {
+                return `<img src="https://static.re-store.ru/upload/resize_cache/iblock/d50/1120_560_140cd750bba9870f18aada2478b24840a/sk0o9i98co0nnws077to80jfukvw0rdd.jpg" alt="Аксессуары" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">`;
+            }
+            
             return fallbackIcon || '📦';
         }
         
@@ -2666,7 +2877,6 @@
                             categoriesHtml += `
                                 <div class="brand-button" onclick="event.stopPropagation(); loadProductsByBrand('${brand.brand}', '${category.level_0}')">
                                     <span class="brand-name">${brand.brand}</span>
-                                    <span class="brand-count">${brand.product_count}</span>
                                 </div>
                             `;
                         }
@@ -2742,15 +2952,10 @@
                 const content = document.getElementById('content');
                 content.innerHTML = `
                     <button class="back-button" onclick="loadCategories()">← Назад к категориям</button>
-                    <div class="category-header">
-                        <h2><span class="category-icon">${renderCategoryIcon(category.name, category.icon)}</span> ${category.name}</h2>
-                        <p>Выберите бренд для просмотра товаров</p>
-                    </div>
                     <div class="subcategories-grid">
                         ${brandData.map(subcat => `
                             <div class="subcategory-card" onclick="loadProductsByBrandWithCategory('${subcat.brand}', ${categoryId}, '${category.name}')">
                                 <div class="subcategory-name">${subcat.brand}</div>
-                                <div class="subcategory-count">${subcat.product_count} товаров</div>
                             </div>
                         `).join('')}
                     </div>
@@ -3172,6 +3377,7 @@
             
             return `
                 <div class="product-card">
+                    <div class="low-stock-badge" id="low-stock-badge-${product.id}" style="display: none;">Осталась 1 шт</div>
                     <div class="product-image">
                         ${imageHtml}
                     </div>
@@ -4305,6 +4511,13 @@
                         console.log('💱 Обновлена цена из colorGroups:', fallbackVariant.price, '₽');
                     }
                     
+                    // Обновляем бейдж "Осталась 1 шт" на основе stock выбранного варианта
+                    const variantsElement = productCard?.querySelector('.product-variants');
+                    const productId = variantsElement?.dataset.productId || productCard?.querySelector('[data-product-id]')?.dataset.productId;
+                    if (productId && fallbackVariant.stock !== undefined) {
+                        updateLowStockBadge(productId, fallbackVariant.stock);
+                    }
+                    
                     // Изображения обновляются только при изменении цвета, не при изменении других вариантов
                     return;
                 }
@@ -4360,12 +4573,31 @@
                         console.log('💱 Обновлена цена из API:', finalVariant.price, '₽', 'для варианта:', finalVariant.sku);
                     }
                     
+                    // Обновляем бейдж "Осталась 1 шт" на основе stock выбранного варианта
+                    const variantsElement = productCard?.querySelector('.product-variants');
+                    const productId = variantsElement?.dataset.productId || productCard?.querySelector('[data-product-id]')?.dataset.productId;
+                    if (productId && finalVariant.stock !== undefined) {
+                        updateLowStockBadge(productId, finalVariant.stock);
+                    }
+                    
                     // Изображения обновляются только при изменении цвета, не при изменении других вариантов
                 } else {
                     console.warn('⚠️ Не найден вариант с ценой для модели:', model, 'выбранные параметры:', {selectedColor, selectedMemory, selectedRam, selectedSim});
                 }
             } catch (error) {
                 console.error('❌ Ошибка при обновлении цены:', error);
+            }
+        }
+        
+        // Update low stock badge based on selected variant stock
+        function updateLowStockBadge(productId, stock) {
+            const badge = document.getElementById(`low-stock-badge-${productId}`);
+            if (badge) {
+                if (stock === 1) {
+                    badge.style.display = 'block';
+                } else {
+                    badge.style.display = 'none';
+                }
             }
         }
         
@@ -5491,12 +5723,57 @@
             
             const formData = new FormData(form);
             const shippingType = formData.get('shipping_type') || 'delivery';
+            const contactMethod = formData.get('contact_method') || '';
+            
+            // Получаем контактные данные в зависимости от выбранного способа связи
+            let contactValue = '';
+            if (contactMethod === 'phone') {
+                contactValue = formData.get('contact_phone') || '';
+                if (!contactValue) {
+                    alert('Пожалуйста, укажите телефон для связи');
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Оформить заказ';
+                    }
+                    return;
+                }
+            } else if (contactMethod === 'email') {
+                contactValue = formData.get('contact_email') || '';
+                if (!contactValue) {
+                    alert('Пожалуйста, укажите email для связи');
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Оформить заказ';
+                    }
+                    return;
+                }
+            } else if (contactMethod === 'telegram') {
+                contactValue = formData.get('contact_telegram') || '';
+                if (!contactValue) {
+                    alert('Пожалуйста, укажите Telegram username');
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Оформить заказ';
+                    }
+                    return;
+                }
+            } else if (contactMethod === 'whatsapp') {
+                contactValue = formData.get('contact_whatsapp') || '';
+                if (!contactValue) {
+                    alert('Пожалуйста, укажите WhatsApp номер');
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Оформить заказ';
+                    }
+                    return;
+                }
+            }
+            
             const orderData = {
                 customer: {
                     name: formData.get('name'),
-                    phone: formData.get('phone'),
-                    email: formData.get('email') || '',
-                    contact_method: formData.get('contact_method') || '',
+                    contact_method: contactMethod,
+                    contact_value: contactValue,
                     address: formData.get('address') || '',
                     comment: formData.get('comment') || ''
                 },
@@ -5528,7 +5805,8 @@
                 });
                 
                 if (response.ok) {
-                    alert('Заказ успешно оформлен! Мы свяжемся с вами в ближайшее время.');
+                    const orderResponse = await response.json();
+                    showNotification('success', 'Заказ успешно оформлен!', `Номер заказа: ${orderResponse.order_number}. Мы свяжемся с вами в ближайшее время.`);
                     cart = [];
                     saveCart();
                     updateCartBadge();
@@ -5537,17 +5815,59 @@
                     closeCart();
                 } else {
                     const error = await response.text();
-                    alert(`Ошибка оформления заказа: ${error}`);
+                    showNotification('error', 'Ошибка оформления заказа', error || 'Произошла ошибка при оформлении заказа. Попробуйте еще раз.');
                 }
             } catch (error) {
                 console.error('Ошибка отправки заказа:', error);
-                alert('Ошибка отправки заказа. Попробуйте позже или свяжитесь с нами по телефону.');
+                showNotification('error', 'Ошибка отправки заказа', 'Не удалось отправить заказ. Попробуйте позже или свяжитесь с нами по телефону.');
             } finally {
                 if (submitBtn) {
                     submitBtn.disabled = false;
                     submitBtn.textContent = 'Оформить заказ';
                 }
             }
+        }
+        
+        // Show notification
+        function showNotification(type, title, message) {
+            // Remove existing notifications
+            const existingNotifications = document.querySelectorAll('.notification');
+            existingNotifications.forEach(notif => {
+                notif.classList.add('hiding');
+                setTimeout(() => notif.remove(), 300);
+            });
+            
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            
+            const iconSvg = type === 'success' 
+                ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>'
+                : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
+            
+            notification.innerHTML = `
+                <button class="notification-close" onclick="this.closest('.notification').classList.add('hiding'); setTimeout(() => this.closest('.notification').remove(), 300);">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="notification-header">
+                    <div class="notification-icon">
+                        ${iconSvg}
+                    </div>
+                    <div class="notification-title">${title}</div>
+                </div>
+                <div class="notification-message">${message}</div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                notification.classList.add('hiding');
+                setTimeout(() => notification.remove(), 300);
+            }, 5000);
         }
         
         // Helper function to get selected variants from product card
@@ -5602,12 +5922,35 @@
                     currentPrice = parseInt(priceText) || product.price;
                 }
                 
-                // Get first image
+                // Получаем изображение для выбранного цвета
                 let productImage = '';
-                if (product.images && product.images.length > 0) {
-                    productImage = product.images[0];
-                } else if (product.image_url) {
-                    productImage = product.image_url;
+                if (variants.color) {
+                    try {
+                        // Получаем modelKey для API запроса
+                        const brandModel = product.model || product.name || '';
+                        const modelKey = getModelKey(brandModel);
+                        if (modelKey && variants.color) {
+                            // Запрашиваем изображения для выбранного цвета
+                            const imageResponse = await fetch(`/product-images/${modelKey}/${encodeURIComponent(variants.color)}`);
+                            if (imageResponse.ok) {
+                                const imageData = await imageResponse.json();
+                                if (imageData.image_paths && imageData.image_paths.length > 0) {
+                                    productImage = imageData.image_paths[0];
+                                }
+                            }
+                        }
+                    } catch (error) {
+                        console.warn('Ошибка получения изображения для цвета:', error);
+                    }
+                }
+                
+                // Если изображение для цвета не найдено, используем первое доступное
+                if (!productImage) {
+                    if (product.images && product.images.length > 0) {
+                        productImage = product.images[0];
+                    } else if (product.image_url) {
+                        productImage = product.image_url;
+                    }
                 }
                 
                 // Для одного товара level_2 может быть в поле model, так как ProductDetailResponse не имеет level_2
@@ -5705,12 +6048,35 @@
                     currentPrice = parseInt(priceText) || product.price;
                 }
                 
-                // Get first image
+                // Получаем изображение для выбранного цвета
                 let productImage = '';
-                if (product.images && product.images.length > 0) {
-                    productImage = product.images[0];
-                } else if (product.image_url) {
-                    productImage = product.image_url;
+                if (variants.color) {
+                    try {
+                        // Получаем modelKey для API запроса
+                        const brandModel = product.model || product.name || '';
+                        const modelKey = getModelKey(brandModel);
+                        if (modelKey && variants.color) {
+                            // Запрашиваем изображения для выбранного цвета
+                            const imageResponse = await fetch(`/product-images/${modelKey}/${encodeURIComponent(variants.color)}`);
+                            if (imageResponse.ok) {
+                                const imageData = await imageResponse.json();
+                                if (imageData.image_paths && imageData.image_paths.length > 0) {
+                                    productImage = imageData.image_paths[0];
+                                }
+                            }
+                        }
+                    } catch (error) {
+                        console.warn('Ошибка получения изображения для цвета:', error);
+                    }
+                }
+                
+                // Если изображение для цвета не найдено, используем первое доступное
+                if (!productImage) {
+                    if (product.images && product.images.length > 0) {
+                        productImage = product.images[0];
+                    } else if (product.image_url) {
+                        productImage = product.image_url;
+                    }
                 }
                 
                 // Для одного товара level_2 может быть в поле model, так как ProductDetailResponse не имеет level_2
@@ -5737,6 +6103,174 @@
                 console.error('Ошибка добавления в корзину:', error);
                 alert('Ошибка добавления товара в корзину');
             }
+        }
+        
+        // Handle contact method change
+        function handleContactMethodChange(method) {
+            // Скрываем все поля контакта
+            const contactFields = document.querySelectorAll('.contact-field');
+            contactFields.forEach(field => {
+                field.style.display = 'none';
+                // Очищаем значения полей при скрытии
+                const input = field.querySelector('input');
+                if (input) {
+                    input.value = '';
+                    input.removeAttribute('required');
+                }
+            });
+            
+            // Показываем соответствующее поле в зависимости от выбора
+            if (method === 'phone') {
+                const phoneField = document.getElementById('contactPhoneField');
+                if (phoneField) {
+                    phoneField.style.display = 'block';
+                    const input = phoneField.querySelector('input');
+                    if (input) {
+                        input.setAttribute('required', 'required');
+                    }
+                }
+            } else if (method === 'email') {
+                const emailField = document.getElementById('contactEmailField');
+                if (emailField) {
+                    emailField.style.display = 'block';
+                    const input = emailField.querySelector('input');
+                    if (input) {
+                        input.setAttribute('required', 'required');
+                    }
+                }
+            } else if (method === 'telegram') {
+                const telegramField = document.getElementById('contactTelegramField');
+                if (telegramField) {
+                    telegramField.style.display = 'block';
+                    const input = telegramField.querySelector('input');
+                    if (input) {
+                        input.setAttribute('required', 'required');
+                    }
+                }
+            } else if (method === 'whatsapp') {
+                const whatsappField = document.getElementById('contactWhatsAppField');
+                if (whatsappField) {
+                    whatsappField.style.display = 'block';
+                    const input = whatsappField.querySelector('input');
+                    if (input) {
+                        input.setAttribute('required', 'required');
+                    }
+                }
+            }
+        }
+        
+        // Send order to Telegram
+        function sendOrderToTelegram() {
+            if (cart.length === 0) {
+                alert('Корзина пуста');
+                return;
+            }
+            
+            // Получаем данные из формы (если форма заполнена)
+            const form = document.getElementById('cartForm');
+            let name = '';
+            let contactMethod = '';
+            let contactValue = '';
+            let shippingType = 'delivery';
+            let address = '';
+            let comment = '';
+            let deliveryDateTime = '';
+            
+            if (form) {
+                const formData = new FormData(form);
+                name = formData.get('name') || '';
+                contactMethod = formData.get('contact_method') || '';
+                
+                // Получаем контактные данные в зависимости от выбранного способа связи
+                if (contactMethod === 'phone') {
+                    contactValue = formData.get('contact_phone') || '';
+                } else if (contactMethod === 'email') {
+                    contactValue = formData.get('contact_email') || '';
+                } else if (contactMethod === 'telegram') {
+                    contactValue = formData.get('contact_telegram') || '';
+                } else if (contactMethod === 'whatsapp') {
+                    contactValue = formData.get('contact_whatsapp') || '';
+                }
+                
+                shippingType = formData.get('shipping_type') || 'delivery';
+                address = formData.get('address') || '';
+                comment = formData.get('comment') || '';
+                deliveryDateTime = formData.get('delivery_datetime') || '';
+            }
+            
+            // Формируем список товаров
+            let itemsText = '';
+            let totalPrice = 0;
+            
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.quantity;
+                totalPrice += itemTotal;
+                
+                const specs = [];
+                if (item.color) specs.push(item.color);
+                if (item.memory) specs.push(item.memory);
+                if (item.sim) specs.push(item.sim);
+                const specsText = specs.length > 0 ? ` (${specs.join(', ')})` : '';
+                
+                itemsText += `${index + 1}. ${item.level_2 || item.name}${specsText}\n`;
+                itemsText += `   Цена: ${Math.round(item.price).toLocaleString()} ₽ × ${item.quantity} = ${Math.round(itemTotal).toLocaleString()} ₽\n\n`;
+            });
+            
+            // Формируем сообщение
+            const deliveryPrice = 990;
+            const finalTotal = totalPrice + deliveryPrice;
+            
+            let message = `Привет! Хочу сделать заказ\n\n`;
+            
+            // Добавляем информацию о клиенте только если она указана
+            if (name) {
+                message += `Имя: ${name}\n`;
+            }
+            
+            if (contactMethod && contactValue) {
+                const contactMethodText = {
+                    'phone': 'Телефон',
+                    'email': 'Email',
+                    'telegram': 'Telegram',
+                    'whatsapp': 'WhatsApp'
+                }[contactMethod] || contactMethod;
+                message += `Способ связи: ${contactMethodText}\n`;
+                message += `Контакт: ${contactValue}\n`;
+            }
+            
+            if (name || (contactMethod && contactValue)) {
+                message += `\n`;
+            }
+            
+            message += `Товары:\n${itemsText}`;
+            
+            message += `Сумма товаров: ${Math.round(totalPrice).toLocaleString()} ₽\n`;
+            message += `Доставка: ${Math.round(deliveryPrice).toLocaleString()} ₽\n`;
+            message += `Итого: ${Math.round(finalTotal).toLocaleString()} ₽\n`;
+            
+            if (shippingType) {
+                const shippingText = shippingType === 'delivery' ? 'Доставка' : 'Самовывоз';
+                message += `\nТип доставки: ${shippingText}\n`;
+            }
+            
+            if (address) {
+                message += `Адрес: ${address}\n`;
+            }
+            
+            if (deliveryDateTime) {
+                message += `Дата и время: ${deliveryDateTime}\n`;
+            }
+            
+            if (comment) {
+                message += `Комментарий: ${comment}\n`;
+            }
+            
+            // URL-encode сообщение
+            const encodedMessage = encodeURIComponent(message);
+            
+            // Открываем Telegram
+            const telegramUrl = `https://t.me/yoo_manager?text=${encodedMessage}`;
+            window.open(telegramUrl, '_blank');
         }
         
         // Shipping type toggle
@@ -5793,6 +6327,12 @@
             setTimeout(() => {
                 initShippingToggle();
                 initDateTimePicker();
+                
+                // Инициализация формы контакта - восстановить состояние выбранного способа связи
+                const contactMethodSelect = document.getElementById('contactMethod');
+                if (contactMethodSelect && contactMethodSelect.value) {
+                    handleContactMethodChange(contactMethodSelect.value);
+                }
             }, 100);
         };
     </script>
