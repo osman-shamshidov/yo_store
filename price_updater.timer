@@ -1,0 +1,13 @@
+[Unit]
+Description=Timer для обновления цен Yo Store каждые 30 минут
+Requires=price_updater.service
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=30min
+Unit=price_updater.service
+
+[Install]
+WantedBy=timers.target
+
+

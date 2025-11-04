@@ -3340,14 +3340,8 @@
                     });
                 } catch (e) {}
                 updateProductImage(productId, variantValue);
-            } else {
-                // При изменении других вариантов (память, SIM) обновляем изображение с текущим цветом
-                const activeColorButton = variantsContainer.querySelector('[data-type="color"].active');
-                if (activeColorButton) {
-                    const currentColor = activeColorButton.dataset.value || activeColorButton.dataset.color;
-                    updateProductImage(productId, currentColor);
-                }
             }
+            // При изменении других вариантов (память, RAM, SIM) изображение не обновляется - оно меняется только при изменении цвета
             
             // Обновить характеристики товара при смене вариантов
             updateProductSpecifications(productId, selectedVariants);
@@ -4086,6 +4080,22 @@
                         `;
                     }).join('');
                     
+                    // Создаем красивые кнопки RAM (только с реальными значениями) - для ноутбуков
+                    const ramOptions = [...new Set(data.variants
+                        .map(v => v.ram)
+                        .filter(ram => ram && ram.trim() !== ''))];
+                    const ramButtons = ramOptions.map((ram, index) => {
+                        const activeClass = index === 0 ? 'active' : '';
+                        return `
+                            <button class="variant-btn ram-btn ${activeClass}" 
+                                    data-ram="${ram}" 
+                                    data-model="${model}"
+                                    data-type="ram">
+                                ${ram}
+                            </button>
+                        `;
+                    }).join('');
+                    
                     // Создаем красивые кнопки SIM (только с реальными значениями)
                     const simOptions = [...new Set(data.variants
                         .map(v => v.sim_type)
@@ -4130,6 +4140,17 @@
                                 <label>Память:</label>
                                 <div class="variant-buttons">
                                     ${memoryButtons}
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    if (ramButtons) {
+                        htmlContent += `
+                            <div class="variant-group ram-group">
+                                <label>RAM:</label>
+                                <div class="variant-buttons">
+                                    ${ramButtons}
                                 </div>
                             </div>
                         `;
@@ -4205,6 +4226,19 @@
                 });
             });
             
+            // Обработчик изменения RAM
+            document.querySelectorAll(`[data-model="${model}"][data-type="ram"]`).forEach(button => {
+                button.addEventListener('click', function() {
+                    // Убираем активный класс с других кнопок RAM
+                    document.querySelectorAll(`[data-model="${model}"][data-type="ram"]`).forEach(btn => btn.classList.remove('active'));
+                    // Добавляем активный класс к нажатой кнопке
+                    this.classList.add('active');
+                    
+                    // Обновляем цену при изменении варианта
+                    updateVariantPrice(model, colorGroups);
+                });
+            });
+            
             // Обработчик изменения SIM
             document.querySelectorAll(`[data-model="${model}"][data-type="sim"]`).forEach(button => {
                 button.addEventListener('click', function() {
@@ -4220,58 +4254,118 @@
         }
         
         // Функция для обновления цены выбранного варианта
-        function updateVariantPrice(model, colorGroups) {
+        async function updateVariantPrice(model, colorGroups) {
+            // Получаем активные кнопки вариантов (могут отсутствовать для некоторых типов товаров)
             const activeColorButton = document.querySelector(`[data-model="${model}"][data-type="color"].active`);
             const activeMemoryButton = document.querySelector(`[data-model="${model}"][data-type="memory"].active`);
+            const activeRamButton = document.querySelector(`[data-model="${model}"][data-type="ram"].active`);
             const activeSimButton = document.querySelector(`[data-model="${model}"][data-type="sim"].active`);
             
-            if (!activeColorButton || !activeMemoryButton || !activeSimButton) return;
+            // Если нет ни одного варианта, не обновляем цену
+            if (!activeColorButton && !activeMemoryButton && !activeRamButton && !activeSimButton) {
+                console.log('⚠️ Нет активных вариантов для модели:', model);
+                return;
+            }
             
-            const selectedColor = activeColorButton.dataset.color;
-            const selectedMemory = activeMemoryButton.dataset.memory;
-            const selectedSim = activeSimButton.dataset.sim;
+            // Получаем выбранные значения (могут быть undefined для некоторых товаров)
+            const selectedColor = activeColorButton?.dataset.color || '';
+            const selectedMemory = activeMemoryButton?.dataset.memory || '';
+            const selectedRam = activeRamButton?.dataset.ram || '';
+            const selectedSim = activeSimButton?.dataset.sim || '';
             
-            // Находим соответствующий вариант
-            const variants = colorGroups[selectedColor] || [];
-            const matchedVariant = variants.find(v => 
-                v.memory === selectedMemory && v.sim_type === selectedSim
-            );
-            
-            // Если точное соответствие не найдено, берем первый доступный вариант этого цвета
-            const fallbackVariant = matchedVariant || variants[0];
-            
-            if (fallbackVariant) {
-                // Обновляем основную цену в карточке товара
-                const productCard = document.querySelector(`[data-model="${model}"]`).closest('.product-card');
-                const currentPriceElement = productCard.querySelector('.current-price');
+            // Если есть colorGroups, используем их для поиска варианта
+            if (colorGroups && Object.keys(colorGroups).length > 0) {
+                // Находим соответствующий вариант
+                const variants = colorGroups[selectedColor] || [];
+                const matchedVariant = variants.find(v => {
+                    // Сравниваем только те поля, которые есть
+                    // Для ноутбуков может быть disk вместо memory, для телефонов - memory
+                    const memoryMatch = !selectedMemory || 
+                        v.memory === selectedMemory || 
+                        v.disk === selectedMemory ||
+                        v.ssd === selectedMemory;
+                    // RAM для ноутбуков
+                    const ramMatch = !selectedRam || !v.ram || v.ram === selectedRam;
+                    // SIM только для телефонов, для ноутбуков может отсутствовать
+                    const simMatch = !selectedSim || !v.sim_type || v.sim_type === selectedSim;
+                    return memoryMatch && ramMatch && simMatch;
+                });
                 
-                if (currentPriceElement) {
-                    const price = Math.round(fallbackVariant.price).toLocaleString();
-                    currentPriceElement.textContent = `${price} ₽`;
-                }
+                // Если точное соответствие не найдено, берем первый доступный вариант этого цвета
+                const fallbackVariant = matchedVariant || variants[0];
                 
-                console.log('💱 Обновлена цена:', fallbackVariant.price, '₽');
-                
-                if (!matchedVariant) {
-                    console.log('ℹ️ Использован первый доступный вариант для цвета:', selectedColor);
-                }
-                
-                // Обновляем изображения для выбранного цвета если они есть
-                if (fallbackVariant.images && fallbackVariant.images.length > 0) {
-                    const productCard = document.querySelector(`[data-model="${model}"]`).closest('.product-card');
-                    if (productCard) {
-                        const carousel = productCard.querySelector('.product-image-carousel');
-                        if (carousel) {
-                            const mainImg = carousel.querySelector('.product-img');
-                            if (mainImg) {
-                                mainImg.src = fallbackVariant.images[0] + `?v=${Date.now()}`;
-                                console.log('🖼️ Обновлено изображение для цвета:', selectedColor);
-                            }
-                        }
+                if (fallbackVariant && fallbackVariant.price) {
+                    // Обновляем основную цену в карточке товара
+                    const productCard = document.querySelector(`[data-model="${model}"]`)?.closest('.product-card');
+                    const currentPriceElement = productCard?.querySelector('.current-price');
+                    
+                    if (currentPriceElement) {
+                        const price = Math.round(fallbackVariant.price).toLocaleString();
+                        currentPriceElement.textContent = `${price} ₽`;
+                        console.log('💱 Обновлена цена из colorGroups:', fallbackVariant.price, '₽');
                     }
+                    
+                    // Изображения обновляются только при изменении цвета, не при изменении других вариантов
+                    return;
                 }
-            } else {
-                console.warn('❌ Вариант не найден:', {selectedColor, selectedMemory, selectedSim});
+            }
+            
+            // Если colorGroups не помогли, загружаем варианты напрямую из API
+            try {
+                const response = await fetch(`/products/${encodeURIComponent(model)}/variants`);
+                if (!response.ok) {
+                    console.error('❌ Ошибка загрузки вариантов:', response.status);
+                    return;
+                }
+                
+                const data = await response.json();
+                if (!data.variants || data.variants.length === 0) {
+                    console.log('⚠️ Варианты не найдены для модели:', model);
+                    return;
+                }
+                
+                // Находим вариант, соответствующий выбранным параметрам
+                const matchedVariant = data.variants.find(variant => {
+                    const colorMatch = !selectedColor || variant.color === selectedColor;
+                    // Для ноутбуков может быть disk вместо memory, для телефонов - memory
+                    const memoryMatch = !selectedMemory || 
+                        variant.memory === selectedMemory || 
+                        variant.disk === selectedMemory ||
+                        variant.ssd === selectedMemory;
+                    // RAM для ноутбуков
+                    const ramMatch = !selectedRam || !variant.ram || variant.ram === selectedRam;
+                    // SIM только для телефонов, для ноутбуков может отсутствовать
+                    const simMatch = !selectedSim || !variant.sim_type || variant.sim_type === selectedSim;
+                    return colorMatch && memoryMatch && ramMatch && simMatch;
+                });
+                
+                // Если точное соответствие не найдено, берем первый вариант с подходящим цветом
+                let finalVariant = matchedVariant;
+                if (!finalVariant && selectedColor) {
+                    finalVariant = data.variants.find(v => v.color === selectedColor);
+                }
+                // Если и это не помогло, берем первый доступный вариант
+                if (!finalVariant) {
+                    finalVariant = data.variants[0];
+                }
+                
+                if (finalVariant && finalVariant.price) {
+                    // Обновляем основную цену в карточке товара
+                    const productCard = document.querySelector(`[data-model="${model}"]`)?.closest('.product-card');
+                    const currentPriceElement = productCard?.querySelector('.current-price');
+                    
+                    if (currentPriceElement) {
+                        const price = Math.round(finalVariant.price).toLocaleString();
+                        currentPriceElement.textContent = `${price} ₽`;
+                        console.log('💱 Обновлена цена из API:', finalVariant.price, '₽', 'для варианта:', finalVariant.sku);
+                    }
+                    
+                    // Изображения обновляются только при изменении цвета, не при изменении других вариантов
+                } else {
+                    console.warn('⚠️ Не найден вариант с ценой для модели:', model, 'выбранные параметры:', {selectedColor, selectedMemory, selectedRam, selectedSim});
+                }
+            } catch (error) {
+                console.error('❌ Ошибка при обновлении цены:', error);
             }
         }
         

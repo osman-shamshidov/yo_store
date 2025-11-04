@@ -1,0 +1,20 @@
+[Unit]
+Description=Yo Store Price Updater - обновление цен каждые 30 минут
+After=network.target
+
+[Service]
+Type=simple
+User=your-user
+WorkingDirectory=/path/to/yo_mini_app
+Environment="DATABASE_URL=sqlite:///electronics_store.db"
+Environment="PRICE_SERVICE_URL=https://your-price-service.com/api/prices"
+Environment="PRICE_SERVICE_TOKEN=your-token-here"
+ExecStart=/usr/bin/python3 /path/to/yo_mini_app/update_prices_from_service.py
+Restart=on-failure
+StandardOutput=append:/var/log/price_updater.log
+StandardError=append:/var/log/price_updater_error.log
+
+[Install]
+WantedBy=multi-user.target
+
+

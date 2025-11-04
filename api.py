@@ -489,6 +489,7 @@ async def get_model_variants(model: str, db: Session = Depends(get_db)):
                     "color": variant_specs.get('color', ''),
                     "memory": variant_specs.get('memory', ''),
                     "sim_type": variant_specs.get('sim_type', ''),
+                    "ram": variant_specs.get('ram', ''),  # RAM для ноутбуков
                     
                     # Изображения для этого цвета
                     "images": variant_images,
@@ -528,6 +529,7 @@ async def get_model_variants(model: str, db: Session = Depends(get_db)):
         color = product.color if product.color else specifications.get('color', '')
         memory = product.disk if product.disk else specifications.get('disk', specifications.get('memory', ''))
         sim_type = product.sim_config if product.sim_config else specifications.get('sim_config', specifications.get('sim_type', ''))
+        ram = specifications.get('ram', '')  # RAM для ноутбуков
         
         variant_data = {
             "sku": product.sku,
@@ -539,10 +541,11 @@ async def get_model_variants(model: str, db: Session = Depends(get_db)):
             "stock": product.stock,
             "is_available": product.is_available,
             
-            # Добавляем спецификации варианта (цвет, память, SIM)
+            # Добавляем спецификации варианта (цвет, память, SIM, RAM)
             "color": color,
             "memory": memory,
             "sim_type": sim_type,
+            "ram": ram,  # RAM для ноутбуков
             
             # Изображения для этого варианта (один цвет обычно)
             "images": images,
