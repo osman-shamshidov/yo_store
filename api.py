@@ -719,7 +719,28 @@ async def search_products(
 @app.get("/webapp")
 async def webapp():
     """Serve the web app"""
-    return FileResponse("webapp.html")
+    from fastapi.responses import FileResponse
+    from datetime import datetime
+    import os
+    
+    # Получаем время модификации файла для версионирования
+    file_path = "webapp.html"
+    if os.path.exists(file_path):
+        mtime = os.path.getmtime(file_path)
+        version = int(mtime)
+    else:
+        version = int(datetime.now().timestamp())
+    
+    response = FileResponse(
+        file_path,
+        headers={
+            "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0",
+            "Pragma": "no-cache",
+            "Expires": "0",
+            "X-Content-Version": str(version),  # Для отладки
+        }
+    )
+    return response
 
 @app.get("/login")
 async def login_page():

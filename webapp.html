@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Yo Store - Магазин электроники</title>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
+    <meta name="app-version" content="20241105-001">
     <style>
         * {
             margin: 0;
@@ -2627,6 +2628,43 @@
     <script>
         const API_BASE = window.location.origin;
         let currentView = 'categories';
+        
+        // Принудительное обновление кэша для Telegram Mini App
+        (function() {
+            // Отключаем service workers для предотвращения кэширования
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                    for(let registration of registrations) {
+                        registration.unregister();
+                    }
+                });
+            }
+            
+            // Проверка версии приложения для Telegram Mini App
+            if (window.Telegram && window.Telegram.WebApp) {
+                const currentVersion = document.querySelector('meta[name="app-version"]')?.content || Date.now().toString();
+                const storedVersion = sessionStorage.getItem('app-version');
+                
+                // Принудительная перезагрузка при изменении версии
+                if (storedVersion && storedVersion !== currentVersion) {
+                    sessionStorage.clear();
+                    localStorage.clear();
+                    // Принудительная перезагрузка с обходом кэша
+                    window.location.href = window.location.href.split('?')[0] + '?v=' + currentVersion + '&_=' + Date.now();
+                    return;
+                } else {
+                    sessionStorage.setItem('app-version', currentVersion);
+                }
+                
+                // Добавляем параметр версии к URL для обхода кэша
+                if (!window.location.search.includes('v=')) {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('v', currentVersion);
+                    url.searchParams.set('_', Date.now().toString());
+                    window.history.replaceState({}, '', url);
+                }
+            }
+        })();
         // Render category icon with overrides
         function renderCategoryIcon(name, fallbackIcon) {
             const n = String(name || '').toLowerCase();
