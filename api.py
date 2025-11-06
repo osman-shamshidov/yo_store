@@ -728,15 +728,17 @@ async def webapp():
     if os.path.exists(file_path):
         mtime = os.path.getmtime(file_path)
         version = int(mtime)
+        # ETag для кэширования с версионированием
+        etag = f'"{version}"'
     else:
         version = int(datetime.now().timestamp())
+        etag = f'"{version}"'
     
     response = FileResponse(
         file_path,
         headers={
-            "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0",
-            "Pragma": "no-cache",
-            "Expires": "0",
+            "Cache-Control": "public, max-age=3600",  # Кэш на 1 час
+            "ETag": etag,  # ETag для проверки версии
             "X-Content-Version": str(version),  # Для отладки
         }
     )

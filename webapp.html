@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Yo Store - Магазин электроники</title>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
     <meta name="app-version" content="20241105-001">
     <style>
         * {
@@ -2629,39 +2626,35 @@
         const API_BASE = window.location.origin;
         let currentView = 'categories';
         
-        // Принудительное обновление кэша для Telegram Mini App
+        // Проверка версии приложения и обновление при изменении
         (function() {
-            // Отключаем service workers для предотвращения кэширования
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.getRegistrations().then(function(registrations) {
-                    for(let registration of registrations) {
-                        registration.unregister();
-                    }
-                });
-            }
+            const currentVersion = document.querySelector('meta[name="app-version"]')?.content;
             
-            // Проверка версии приложения для Telegram Mini App
-            if (window.Telegram && window.Telegram.WebApp) {
-                const currentVersion = document.querySelector('meta[name="app-version"]')?.content || Date.now().toString();
+            if (currentVersion) {
                 const storedVersion = sessionStorage.getItem('app-version');
                 
-                // Принудительная перезагрузка при изменении версии
+                // Если версия изменилась, очищаем кэш и перезагружаем
                 if (storedVersion && storedVersion !== currentVersion) {
+                    console.log('Обнаружена новая версия приложения, обновляем...');
+                    // Очищаем кэш
                     sessionStorage.clear();
                     localStorage.clear();
-                    // Принудительная перезагрузка с обходом кэша
+                    
+                    // Очищаем кэш браузера через принудительную перезагрузку
+                    if ('caches' in window) {
+                        caches.keys().then(function(names) {
+                            for (let name of names) {
+                                caches.delete(name);
+                            }
+                        });
+                    }
+                    
+                    // Перезагружаем с обходом кэша
                     window.location.href = window.location.href.split('?')[0] + '?v=' + currentVersion + '&_=' + Date.now();
                     return;
-                } else {
+                } else if (!storedVersion) {
+                    // Первый запуск - сохраняем версию
                     sessionStorage.setItem('app-version', currentVersion);
-                }
-                
-                // Добавляем параметр версии к URL для обхода кэша
-                if (!window.location.search.includes('v=')) {
-                    const url = new URL(window.location.href);
-                    url.searchParams.set('v', currentVersion);
-                    url.searchParams.set('_', Date.now().toString());
-                    window.history.replaceState({}, '', url);
                 }
             }
         })();
