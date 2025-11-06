@@ -1736,12 +1736,17 @@ async def get_variant_schemes(model_key: str, db: Session = Depends(get_db)):
 # Новые endpoints для иерархической фильтрации
 
 @app.get("/hierarchy/brands")
-async def get_brands(db: Session = Depends(get_db)):
-    """Получить все доступные бренды"""
-    brands = db.query(Product.brand.distinct()).filter(
+async def get_brands(level0: Optional[str] = None, db: Session = Depends(get_db)):
+    """Получить бренды, опционально отфильтрованные по категории (level0)"""
+    filters = [
         Product.brand.isnot(None),
         Product.is_available == True
-    ).all()
+    ]
+    
+    if level0:
+        filters.append(Product.level_0 == level0)
+    
+    brands = db.query(Product.brand.distinct()).filter(*filters).all()
     return [brand[0] for brand in brands]
 
 @app.get("/hierarchy/levels")

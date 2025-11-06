@@ -60,23 +60,43 @@
                 width: 100vw;
                 overflow-x: hidden;
             }
+            
+            .header {
+                flex-direction: row;
+                align-items: center;
+                padding: 10px 15px;
+                gap: 10px;
+            }
+            
+            .search-bar {
+                max-width: none;
+                flex: 1;
+            }
+            
+            .logo {
+                width: 40px;
+                height: 40px;
+            }
         }
         
         .header {
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             color: #111827;
             background: #f3f4f6; /* светло-серая шапка */
             border-bottom: 1px solid #e5e7eb;
             border-radius: 0; /* прямоугольная */
             margin: 0 0 20px 0; /* примыкает к верхней линии */
-            padding: 10px 0; /* вертикальные отступы внутри */
+            padding: 10px 20px; /* вертикальные и горизонтальные отступы */
+            gap: 15px;
         }
         
         .header h1 {
             margin: 0;
             display: flex;
             align-items: center;
-            justify-content: center; /* логотип по центру */
+            justify-content: flex-start; /* логотип слева */
         }
         
         .logo {
@@ -103,10 +123,12 @@
             background: white;
             border-radius: 14px;
             padding: 6px 12px;
-            margin-bottom: 20px;
+            margin-bottom: 0; /* убираем нижний отступ, так как теперь в header */
             box-shadow: 0 2px 10px rgba(0,0,0,0.08);
             position: relative; /* для иконки справа */
             padding-right: 36px; /* место под кнопку */
+            flex: 1; /* занимает оставшееся пространство */
+            min-width: 0; /* позволяет сжиматься при необходимости */
         }
         
         .search-input {
@@ -136,7 +158,7 @@
         
         .categories {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 15px;
             margin-bottom: 30px;
         }
@@ -163,10 +185,7 @@
             border-radius: 10px;
             transition: background-color 0.2s ease;
             background-color: white !important;
-        }
-        
-        .category-header:hover {
-            background-color: rgba(102, 126, 234, 0.1) !important;
+            margin-bottom: 0;
         }
         
         /* Стили для контейнера брендов */
@@ -174,7 +193,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin-top: 15px;
+            margin-top: 0;
             padding: 12px;
             background: white;
             border-radius: 12px;
@@ -226,9 +245,23 @@
             opacity: 1;
         }
         
+        .brand-button img {
+            height: 28px;
+            width: auto;
+            object-fit: contain;
+            display: block;
+        }
+        
         .brand-name {
             font-weight: 500;
             letter-spacing: 0;
+        }
+        
+        .subcategory-name img {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+            display: block;
         }
         
         .brand-count {
@@ -293,6 +326,25 @@
 
         /* Mobile: 1 column for iPhone (including iPhone 16 Pro Max) */
         @media (max-width: 480px) {
+            .header {
+                padding: 8px 12px;
+                gap: 8px;
+            }
+            
+            .logo {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .search-bar {
+                padding: 5px 10px;
+                padding-right: 32px;
+            }
+            
+            .search-input {
+                font-size: 0.8rem;
+            }
+            
             .categories {
                 grid-template-columns: repeat(1, 1fr) !important; /* 1 card per row on mobile */
                 gap: 12px !important;
@@ -440,7 +492,7 @@
         
         .category-header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 0;
             padding: 1rem;
             background: white !important;
             border-radius: 15px;
@@ -822,7 +874,6 @@
             padding: 12px;
             border-radius: 8px;
         }
-        .about-footer h3 { margin: 0 0 8px 0; font-size: 14px; font-weight: 600; }
         .about-footer .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -2375,16 +2426,15 @@
                     <img src="/static/images/logo.jpg" alt="Yo Store" class="logo">
                 </a>
             </h1>
-        </div>
-        
-        <div class="search-bar">
-            <input type="text" class="search-input" placeholder="Например, 17 Pro Max" id="searchInput">
-            <button class="search-icon-btn" aria-label="Найти" onclick="searchFromIcon()">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
-                    <line x1="16.65" y1="16.65" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-            </button>
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="Например, 17 Pro Max" id="searchInput">
+                <button class="search-icon-btn" aria-label="Найти" onclick="searchFromIcon()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+                        <line x1="16.65" y1="16.65" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
         </div>
         
         <button class="cart-icon-btn" onclick="openCart()" aria-label="Корзина">
@@ -2405,7 +2455,6 @@
 
     <!-- About footer (bottom block) -->
     <footer class="about-footer">
-        <h3>О нас</h3>
         <div class="grid">
             <div>
                 <h4>Контакты</h4>
@@ -2493,8 +2542,8 @@
                                 <input type="radio" name="delivery_option" value="moscow" checked>
                                 <div class="shipping-option-box">
                                     <div class="shipping-option-title">По Москве</div>
-                                    <div class="shipping-option-desc">Собственный сервис</div>
-                                    <div class="shipping-option-price">Бесплатно</div>
+                                    <div class="shipping-option-desc">Курьером</div>
+                                    <div class="shipping-option-price">от 790 ₽</div>
                                 </div>
                             </label>
                             <label class="shipping-option-item">
@@ -2502,7 +2551,7 @@
                                 <div class="shipping-option-box">
                                     <div class="shipping-option-title">По России</div>
                                     <div class="shipping-option-desc">Доставка по всей России</div>
-                                    <div class="shipping-option-price">Рассчитывается отдельно</div>
+                                    <div class="shipping-option-price">от 790 ₽</div>
                                 </div>
                             </label>
                         </div>
@@ -2561,7 +2610,10 @@
                     </div>
                     <div class="cart-total-item">
                         <span class="cart-total-label">Доставка</span>
-                        <span class="cart-total-value">990 ₽</span>
+                        <span class="cart-total-value">⏤</span>
+                    </div>
+                    <div class="cart-total-note" style="font-size: 0.75rem; color: #6b7280; margin-top: -8px; margin-bottom: 8px; padding-left: 0;">
+                        Стоимость доставки не включена в итоговую сумму заказа
                     </div>
                     <div class="cart-total-item cart-total-final">
                         <span class="cart-total-label">Итого</span>
@@ -2589,12 +2641,48 @@
                 return `<img src="https://static.re-store.ru/upload/resize_cache/iblock/e03/100500_800_140cd750bba9870f18aada2478b24840a/2cv3sg5dbqinytvc3gcintdcokuemh3x.jpg" alt="Смартфоны" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">`;
             }
             
+            // Для категории "Аксессуары для консолей" используем изображение (проверяем ДО общей категории "Аксессуары")
+            if ((n.includes('аксессуар') && n.includes('консол')) || (n.includes('accessory') && n.includes('console'))) {
+                return `<img src="https://redstore.am/uploads/shop/products/large/1e7782964f731eefc47bd83e563989ea.jpg" alt="Аксессуары для консолей" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">`;
+            }
+            
+            // Для категории "Игровые приставки" используем изображение
+            if (n.includes('игров') || n.includes('приставк') || n.includes('консол') || n.includes('game') || n.includes('console')) {
+                return `<img src="https://img.mvideo.ru/Big/40079746bb.jpg" alt="Игровые приставки" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">`;
+            }
+            
+            // Для категории "Умные колонки" используем изображение (меньший масштаб)
+            if ((n.includes('умн') && n.includes('колонк')) || (n.includes('smart') && n.includes('speaker')) || n.includes('homepod')) {
+                return `<img src="https://rebro-store.ru/upload/iblock/0ef/8e1ur9ax61awjxhkk6impb61xecy5ty1.jpg" alt="Умные колонки" style="width: 70%; height: 70%; object-fit: contain; border-radius: 8px;">`;
+            }
+            
             // Для категории "Аксессуары" используем изображение
             if (n.includes('аксессуар') || n.includes('accessory') || n.includes('accessories')) {
                 return `<img src="https://static.re-store.ru/upload/resize_cache/iblock/d50/1120_560_140cd750bba9870f18aada2478b24840a/sk0o9i98co0nnws077to80jfukvw0rdd.jpg" alt="Аксессуары" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">`;
             }
             
             return fallbackIcon || '📦';
+        }
+        
+        // Get brand icon URL
+        function getBrandIcon(brandName) {
+            const brand = String(brandName || '').toLowerCase().trim();
+            const brandIcons = {
+                'apple': 'https://static.re-store.ru/upload/iblock/8cc/dsxngkggfd466t9owvtet1cpo5g8400h.svg',
+                'samsung': 'https://static.re-store.ru/upload/iblock/ce1/5x2fyj9a1phrp2v3lo5yklv0kxmk1aj8.svg',
+                'sony': 'https://static.re-store.ru/upload/iblock/211/5bzxi8nayu7le0145vlgy77qsqi9wyda.svg',
+                'yandex': 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Yandex_logo_en.svg/2560px-Yandex_logo_en.svg.png'
+            };
+            return brandIcons[brand] || null;
+        }
+        
+        // Render brand icon or name
+        function renderBrandIcon(brandName) {
+            const iconUrl = getBrandIcon(brandName);
+            if (iconUrl) {
+                return `<img src="${iconUrl}" alt="${brandName}" style="height: 28px; width: auto; object-fit: contain;">`;
+            }
+            return `<span class="brand-name">${brandName}</span>`;
         }
         
         // Глобальные переменные для фильтрации
@@ -2827,10 +2915,6 @@
                 }
                 const categories = await categoriesResponse.json();
                 
-                // Получаем все бренды
-                const brandsResponse = await fetch(`${API_BASE}/hierarchy/brands`);
-                const allBrands = await brandsResponse.json();
-                
                 currentView = 'categories';
                 
                 const content = document.getElementById('content');
@@ -2839,9 +2923,13 @@
                 for (const category of categories) {
                     console.log(`Processing category: ${category.name}`);
                     
-                    // Получаем бренды для этой категории
+                    // Получаем бренды для этой категории - уже отфильтрованные по категории
+                    const categoryBrandsResponse = await fetch(`${API_BASE}/hierarchy/brands?level0=${encodeURIComponent(category.level_0)}`);
+                    const categoryBrands = await categoryBrandsResponse.json();
+                    
+                    // Для каждого бренда получаем количество товаров в этой категории
                     const brandData = [];
-                    for (const brand of allBrands) {
+                    for (const brand of categoryBrands) {
                         try {
                             const countResponse = await fetch(`${API_BASE}/products?brand=${encodeURIComponent(brand)}&level0=${encodeURIComponent(category.level_0)}&limit=1`);
                             const products = await countResponse.json();
@@ -2876,7 +2964,7 @@
                         for (const brand of brandData) {
                             categoriesHtml += `
                                 <div class="brand-button" onclick="event.stopPropagation(); loadProductsByBrand('${brand.brand}', '${category.level_0}')">
-                                    <span class="brand-name">${brand.brand}</span>
+                                    ${renderBrandIcon(brand.brand)}
                                 </div>
                             `;
                         }
@@ -2915,19 +3003,19 @@
                     return;
                 }
                 
-                // Получаем бренды для этой категории (level_0)
-                const brandsResponse = await fetch(`${API_BASE}/hierarchy/brands`);
+                // Получаем бренды для этой категории (level_0) - уже отфильтрованные по категории
+                const brandsResponse = await fetch(`${API_BASE}/hierarchy/brands?level0=${encodeURIComponent(category.level_0)}`);
                 const allBrands = await brandsResponse.json();
                 
                 // Для каждого бренда получаем количество товаров в этой категории
                 const brandData = [];
                 for (const brand of allBrands) {
                     try {
-                        const countResponse = await fetch(`${API_BASE}/products?brand=${encodeURIComponent(brand)}&level_0=${encodeURIComponent(category.level_0)}&limit=1`);
+                        const countResponse = await fetch(`${API_BASE}/products?brand=${encodeURIComponent(brand)}&level0=${encodeURIComponent(category.level_0)}&limit=1`);
                         const products = await countResponse.json();
                         if (products && products.length > 0) {
                             // Получаем точное количество товаров
-                            const fullCountResponse = await fetch(`${API_BASE}/products?brand=${encodeURIComponent(brand)}&level_0=${encodeURIComponent(category.level_0)}&limit=1000`);
+                            const fullCountResponse = await fetch(`${API_BASE}/products?brand=${encodeURIComponent(brand)}&level0=${encodeURIComponent(category.level_0)}&limit=1000`);
                             const allProducts = await fullCountResponse.json();
                             
                             brandData.push({
@@ -2955,7 +3043,9 @@
                     <div class="subcategories-grid">
                         ${brandData.map(subcat => `
                             <div class="subcategory-card" onclick="loadProductsByBrandWithCategory('${subcat.brand}', ${categoryId}, '${category.name}')">
-                                <div class="subcategory-name">${subcat.brand}</div>
+                                <div class="subcategory-name" style="display: flex; align-items: center; justify-content: center;">
+                                    ${renderBrandIcon(subcat.brand)}
+                                </div>
                             </div>
                         `).join('')}
                     </div>
@@ -5695,8 +5785,8 @@
             `;
             
             const cartSubtotalPrice = document.getElementById('cartSubtotalPrice');
-            const deliveryPrice = 990; // Стоимость доставки
-            const finalTotal = total + deliveryPrice;
+            // Доставка не включается в итоговую сумму
+            const finalTotal = total;
             
             if (cartSubtotalPrice) {
                 cartSubtotalPrice.textContent = `${Math.round(total).toLocaleString()} ₽`;
@@ -6217,8 +6307,8 @@
             });
             
             // Формируем сообщение
-            const deliveryPrice = 990;
-            const finalTotal = totalPrice + deliveryPrice;
+            // Доставка не включается в итоговую сумму
+            const finalTotal = totalPrice;
             
             let message = `Привет! Хочу сделать заказ\n\n`;
             
@@ -6245,7 +6335,7 @@
             message += `Товары:\n${itemsText}`;
             
             message += `Сумма товаров: ${Math.round(totalPrice).toLocaleString()} ₽\n`;
-            message += `Доставка: ${Math.round(deliveryPrice).toLocaleString()} ₽\n`;
+            message += `Доставка: ⏤ (стоимость не включена в итоговую сумму)\n`;
             message += `Итого: ${Math.round(finalTotal).toLocaleString()} ₽\n`;
             
             if (shippingType) {
