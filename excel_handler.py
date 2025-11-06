@@ -202,13 +202,24 @@ class ExcelHandler:
             
             for index, row in df.iterrows():
                 try:
-                    # Пропускаем пустые строки (проверяем обязательные поля)
+                    # Пропускаем пустые строки (проверяем обязательные поля, кроме цены)
                     if (pd.isna(row['Название товара*']) or 
                         pd.isna(row['Основная категория (level0)*']) or 
                         pd.isna(row['Подкатегория (level1)*']) or 
-                        pd.isna(row['Детальная категория (level2)*']) or 
-                        pd.isna(row['Цена*'])):
+                        pd.isna(row['Детальная категория (level2)*'])):
                         continue
+                    
+                    # Обработка цены: если пустая, используем 0 или пропускаем строку
+                    price_value = row['Цена*']
+                    if pd.isna(price_value):
+                        # Пытаемся найти цену в других колонках или используем 0
+                        price_value = row.get('Цена', 0)
+                        if pd.isna(price_value):
+                            price_value = 0
+                    try:
+                        price = float(price_value)
+                    except (ValueError, TypeError):
+                        price = 0
                     
                     # Парсим характеристики
                     specifications = {}
@@ -232,7 +243,7 @@ class ExcelHandler:
                         'level1': str(row['Подкатегория (level1)*']).strip(),
                         'level2': str(row['Детальная категория (level2)*']).strip(),
                         'brand': str(row.get('Бренд', '')).strip() if not pd.isna(row.get('Бренд', '')) else '',
-                        'price': float(row['Цена*']),
+                        'price': price,
                         'currency': str(row.get('Валюта', 'RUB')).strip().upper() if not pd.isna(row.get('Валюта', 'RUB')) else 'RUB',
                         'stock': int(row.get('Количество на складе', 0)) if not pd.isna(row.get('Количество на складе', 0)) else 0,
                         'image_url': str(row.get('URL изображения (через запятую)', '')).strip() if not pd.isna(row.get('URL изображения (через запятую)', '')) else '',
