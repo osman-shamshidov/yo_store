@@ -659,6 +659,196 @@
         }
         .search-icon-btn:hover { color: #2d6cdf; background: #f3f4f6; }
         
+        .promo-banner {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin-bottom: 20px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            min-height: 120px;
+        }
+        
+        .promo-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.15) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        .promo-banner::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.3; }
+            50% { transform: scale(1.2) rotate(180deg); opacity: 0.6; }
+        }
+        
+        .promo-banner:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2);
+        }
+        
+        .promo-banner-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 15px 20px;
+            gap: 20px;
+        }
+        
+        .promo-text {
+            flex: 1;
+            max-width: 50%;
+        }
+        
+        .promo-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%);
+            backdrop-filter: blur(20px);
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .promo-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+        
+        .promo-subtitle {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            font-weight: 400;
+            line-height: 1.4;
+            color: rgba(255, 255, 255, 0.95);
+        }
+        
+        .promo-image {
+            flex: 1;
+            max-width: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .promo-image img {
+            max-width: 100%;
+            height: auto;
+            max-height: 140px;
+            object-fit: contain;
+            filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.4));
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .promo-banner:hover .promo-image img {
+            transform: scale(1.05) rotate(-2deg);
+        }
+        
+        @media (max-width: 968px) {
+            .promo-banner {
+                min-height: 110px;
+                border-radius: 14px;
+            }
+            
+            .promo-banner-content {
+                flex-direction: column;
+                padding: 15px;
+                gap: 10px;
+                text-align: center;
+            }
+            
+            .promo-text {
+                max-width: 100%;
+            }
+            
+            .promo-image {
+                max-width: 100%;
+            }
+            
+            .promo-title {
+                font-size: 1.25rem;
+            }
+            
+            .promo-subtitle {
+                font-size: 0.75rem;
+            }
+            
+            .promo-badge {
+                font-size: 0.55rem;
+                padding: 3px 10px;
+            }
+            
+            .promo-image img {
+                max-height: 120px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .promo-banner {
+                min-height: 100px;
+                border-radius: 12px;
+                margin-bottom: 15px;
+            }
+            
+            .promo-banner-content {
+                padding: 12px;
+                gap: 8px;
+            }
+            
+            .promo-title {
+                font-size: 1.1rem;
+            }
+            
+            .promo-subtitle {
+                font-size: 0.7rem;
+            }
+            
+            .promo-badge {
+                font-size: 0.5rem;
+                padding: 3px 8px;
+            }
+            
+            .promo-image img {
+                max-height: 100px;
+            }
+        }
+        
         .categories {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -3727,7 +3917,7 @@
             
             // Для категории "Смартфоны" используем изображение
             if (n.includes('смартфон') || n.includes('smartphone') || n.includes('phone')) {
-                return `<img src="https://static.re-store.ru/upload/resize_cache/iblock/e03/100500_800_140cd750bba9870f18aada2478b24840a/2cv3sg5dbqinytvc3gcintdcokuemh3x.jpg" alt="Смартфоны" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">`;
+                return `<img src="https://static.re-store.ru/upload/resize_cache/iblock/119/100500_800_140cd750bba9870f18aada2478b24840a/o97ih0va5sa2zx7a4qra1x3nnk10nfiy.jpg" alt="Смартфоны" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">`;
             }
             
             // Для категории "Аксессуары для консолей" используем изображение (проверяем ДО общей категории "Аксессуары")
@@ -4565,7 +4755,21 @@
                 currentView = 'categories';
                 
                 const content = document.getElementById('content');
-                let categoriesHtml = '<div class="categories">';
+                let categoriesHtml = `
+                    <div class="promo-banner" onclick="loadProductsWithFilters('Apple', 'Смартфоны', '17 Series', 'iPhone 17 Pro Max');">
+                        <div class="promo-banner-content">
+                            <div class="promo-text">
+                                <div class="promo-badge">Новинка</div>
+                                <div class="promo-title">17 Pro Max</div>
+                                <div class="promo-subtitle">Новейший iPhone с максимальными возможностями</div>
+                            </div>
+                            <div class="promo-image">
+                                <img src="https://cdsassets.apple.com/live/7WUAS350/images/tech-specs/iphone-17-pro-17-pro-max-hero.png" alt="iPhone 17 Pro Max" onerror="this.src='/static/images/products/iphone17promax/deep-blue/11ptutry3p2bjayjbb3gdshlawsw7qpk6f.jpg'">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="categories">
+                `;
                 
                 for (const category of categories) {
                     console.log(`Processing category: ${category.name}`);
@@ -4951,6 +5155,100 @@
                 
             } catch (error) {
                 console.error('Ошибка создания фильтров:', error);
+            }
+        }
+        
+        // Load products with hierarchical filters (brand, level0, level1, level2)
+        async function loadProductsWithFilters(brand, level0, level1, level2) {
+            try {
+                showLoading();
+                
+                // Сохраняем текущие фильтры
+                currentBrandFilter = brand;
+                currentLevel0Filter = level0;
+                currentLevel1Filter = level1 || null;
+                currentLevel2Filter = level2 || null;
+                currentProductId = null;
+                
+                // Сохраняем состояние
+                saveAppState();
+                
+                // Получаем товары с учетом всех фильтров
+                const params = new URLSearchParams();
+                params.append('brand', brand);
+                params.append('level0', level0);
+                if (level1) params.append('level1', level1);
+                if (level2) params.append('level2', level2);
+                params.append('limit', '50');
+                
+                const url = `${API_BASE}/products?${params.toString()}`;
+                console.log(`🔗 Запрашиваем товары с фильтрами: ${url}`);
+                
+                const response = await fetch(url);
+                const products = await response.json();
+                console.log(`📦 Получено товаров: ${products.length}`);
+                
+                currentView = 'brand_products';
+                
+                const content = document.getElementById('content');
+                content.innerHTML = `
+                    <div class="breadcrumbs" id="breadcrumbsContainer">
+                        ${createBreadcrumbs(brand)}
+                    </div>
+                    <div class="hierarchy-filters" id="hierarchyFilters">
+                        <!-- Фильтры будут добавлены динамически -->
+                    </div>
+                    <div class="products-grid">
+                        ${products.map(product => {
+                            storeProductImages(product);
+                            return createProductCard(product);
+                        }).join('')}
+                    </div>
+                `;
+                
+                // Создаем кнопки фильтрации
+                await createHierarchyFilters(brand, products);
+                
+                // Активируем кнопки фильтров после их создания
+                setTimeout(() => {
+                    // Активируем level1 фильтр
+                    if (currentLevel1Filter) {
+                        const allLevel1Btns = document.querySelectorAll('.filter-btn');
+                        allLevel1Btns.forEach(btn => {
+                            const onclick = btn.getAttribute('onclick') || '';
+                            if (onclick.includes(`applyLevelFilter('level1', '${currentLevel1Filter}')`) || 
+                                onclick.includes(`applyLevelFilter('level1', "${currentLevel1Filter}")`)) {
+                                btn.classList.add('active');
+                            }
+                        });
+                    }
+                    // Активируем level2 фильтр
+                    if (currentLevel2Filter) {
+                        const allLevel2Btns = document.querySelectorAll('.filter-btn');
+                        allLevel2Btns.forEach(btn => {
+                            const onclick = btn.getAttribute('onclick') || '';
+                            if (onclick.includes(`applyLevelFilter('level2', '${currentLevel2Filter}')`) || 
+                                onclick.includes(`applyLevelFilter('level2', "${currentLevel2Filter}")`)) {
+                                btn.classList.add('active');
+                            }
+                        });
+                    }
+                }, 300);
+                
+                // Инициализировать цвета по умолчанию после рендеринга
+                setTimeout(async () => {
+                    await initializeDefaultColors();
+                    await loadDefaultImages();
+                }, 100);
+                
+                // Обновляем хлебные крошки
+                updateBreadcrumbs();
+                
+                hideLoading();
+                
+            } catch (error) {
+                console.error('Ошибка загрузки товаров с фильтрами:', error);
+                hideLoading();
             }
         }
         
