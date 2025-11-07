@@ -57,6 +57,45 @@
                 margin-top: 20px;
                 margin-bottom: 0;
             }
+            
+            .catalog-btn {
+                padding: 8px;
+                font-size: 0;
+                gap: 0;
+                min-width: 40px;
+                width: 40px;
+                justify-content: center;
+            }
+            
+            .catalog-btn .dropdown-arrow {
+                display: none;
+            }
+            
+            .catalog-btn svg:first-of-type {
+                width: 20px;
+                height: 20px;
+            }
+            
+            .catalog-btn span,
+            .catalog-btn .catalog-text {
+                display: none;
+            }
+            
+            .catalog-dropdown-menu {
+                min-width: 200px;
+                max-height: 50vh;
+                left: 0;
+                right: auto;
+            }
+            
+            .catalog-dropdown-item {
+                padding: 10px 12px;
+            }
+            
+            .catalog-dropdown-item .category-icon {
+                width: 28px;
+                height: 28px;
+            }
         }
         
         /* Мобильные устройства */
@@ -77,11 +116,32 @@
                 overflow-x: hidden;
             }
             
+            .header-desktop {
+                display: none !important;
+            }
+            
+            .header-mobile {
+                display: block !important;
+            }
+            
             .header {
-                flex-direction: row;
-                align-items: center;
                 padding: 10px 0;
-                gap: 10px;
+            }
+            
+            .catalog-btn {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+                gap: 4px;
+            }
+            
+            .catalog-btn svg {
+                width: 16px;
+                height: 16px;
+            }
+            
+            .catalog-dropdown-menu {
+                min-width: 240px;
+                max-height: 60vh;
             }
             
             .search-bar {
@@ -93,19 +153,180 @@
                 width: 40px;
                 height: 40px;
             }
+            
+            .header-top-mobile {
+                position: relative;
+            }
+            
+            .header-top-mobile h1 {
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+                margin: 0;
+                z-index: 1;
+            }
+            
+            .header-top-mobile .catalog-dropdown {
+                flex-shrink: 0;
+                z-index: 2;
+            }
+            
+            .header-top-mobile .cart-icon-btn-header {
+                flex-shrink: 0;
+                margin-left: auto;
+                z-index: 2;
+            }
+            
+            
+            .cart-icon-btn {
+                top: 20px !important;
+                right: 15px !important;
+                left: auto !important;
+                width: 48px;
+                height: 48px;
+            }
+            
+            .cart-icon-btn svg {
+                width: 20px;
+                height: 20px;
+            }
+            
+            .search-bar-mobile {
+                width: 100%;
+            }
+            
+            .search-bar-mobile .search-input {
+                width: 100%;
+                border: none;
+                outline: none;
+                background: transparent;
+                font-size: 0.9rem;
+            }
+            
+            .search-bar-mobile .search-icon-btn {
+                position: absolute;
+                right: 8px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: transparent;
+                border: none;
+                cursor: pointer;
+                padding: 4px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
         }
         
         .header {
+            color: #111827;
+            background: transparent;
+            border-bottom: 1px solid #e5e7eb;
+            border-radius: 0;
+            margin: 20px 0;
+            padding: 10px 0;
+        }
+        
+        .header-desktop {
+            display: block;
+        }
+        
+        .header-mobile {
+            display: none;
+        }
+        
+        .header-top-links {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .header-top-links a {
+            font-size: 0.875rem;
+            color: #6b7280;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        
+        .header-top-links a:hover {
+            color: #2d6cdf;
+        }
+        
+        .header-main {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            color: #111827;
-            background: transparent; /* прозрачный фон */
-            border-bottom: 1px solid #e5e7eb;
-            border-radius: 0; /* прямоугольная */
-            margin: 20px 0; /* одинаковые отступы сверху и снизу */
-            padding: 10px 0; /* вертикальные отступы, без горизонтальных отступов */
             gap: 15px;
+        }
+        
+        .header-top-mobile {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .search-bar-mobile {
+            background: white;
+            border-radius: 14px;
+            padding: 6px 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            position: relative;
+            padding-right: 36px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .cart-icon-btn-header {
+            position: relative;
+            background: #f8f9fa;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+        }
+        
+        .cart-icon-btn-header:hover {
+            background: #2d6cdf;
+            border-color: #2d6cdf;
+            color: white;
+        }
+        
+        .cart-icon-btn-header svg {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .cart-icon-btn-header .cart-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #ef4444;
+            color: white;
+            border-radius: 10px;
+            padding: 2px 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            min-width: 18px;
+            text-align: center;
+        }
+        
+        /* Показываем старую кнопку корзины только когда верхняя не видна */
+        .cart-icon-btn.visible {
+            opacity: 1 !important;
+            pointer-events: auto !important;
         }
         
         .header h1 {
@@ -142,6 +363,130 @@
         
         .logo-link:hover {
             transform: scale(1.05);
+        }
+        
+        .catalog-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: #2d6cdf;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        
+        .catalog-btn:hover {
+            background: #1f56bf;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(45, 108, 223, 0.3);
+        }
+        
+        .catalog-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(45, 108, 223, 0.2);
+        }
+        
+        .catalog-btn svg {
+            flex-shrink: 0;
+        }
+        
+        .catalog-btn .dropdown-arrow {
+            margin-left: 4px;
+            transition: transform 0.2s ease;
+        }
+        
+        .catalog-dropdown {
+            position: relative;
+        }
+        
+        .catalog-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            min-width: 280px;
+            max-height: 70vh;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            padding: 8px 0;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .catalog-dropdown-menu.show {
+            display: block;
+        }
+        
+        .catalog-dropdown-loading {
+            padding: 20px;
+            text-align: center;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        .catalog-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #111827;
+            text-decoration: none;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+        
+        .catalog-dropdown-item:hover {
+            background: #f3f4f6;
+            color: #2d6cdf;
+        }
+        
+        .catalog-dropdown-item .category-icon {
+            width: 32px;
+            height: 32px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .catalog-dropdown-item .category-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 6px;
+        }
+        
+        .catalog-dropdown-item .category-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .catalog-dropdown-item .category-name {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+        
+        .catalog-dropdown-item .category-count {
+            font-size: 12px;
+            color: #6b7280;
+        }
+        
+        .catalog-dropdown.active .catalog-btn .dropdown-arrow {
+            transform: rotate(180deg);
         }
         
         .header p { display: none; }
@@ -224,34 +569,78 @@
         .brands-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
             margin-top: 0;
-            padding: 12px;
-            background: white;
+            padding: 8px;
+            background: transparent;
             border-radius: 12px;
             border: none;
             box-shadow: none;
+            max-height: 60px;
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
         
-        /* Стили для кнопок брендов */
+        .category-card.expanded .brands-container {
+            max-height: 500px;
+            padding: 20px;
+            gap: 15px;
+        }
+        
+        /* Стили для кнопок брендов - изначально маленькие */
         .brand-button {
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 8px 14px;
+            justify-content: center;
+            gap: 4px;
+            padding: 4px 8px;
             background: #f8f9fa;
             color: #333;
             border: 1px solid #e9ecef;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 0.875rem;
+            transition: all 0.3s ease;
+            font-size: 0.7rem;
             font-weight: 500;
             box-shadow: none;
             min-width: auto;
-            justify-content: center;
             position: relative;
             overflow: visible;
+            transform: scale(0.8);
+            opacity: 0.7;
+        }
+        
+        .brand-button img {
+            width: 16px;
+            height: 16px;
+        }
+        
+        /* При expanded - большие бренды */
+        .category-card.expanded .brand-button {
+            padding: 16px 24px;
+            font-size: 0.875rem;
+            border-radius: 12px;
+            transform: scale(1);
+            opacity: 1;
+            min-width: 120px;
+        }
+        
+        .category-card.expanded .brand-button img {
+            width: 28px;
+            height: 28px;
+        }
+        
+        .category-card.expanded .brand-button:hover {
+            transform: scale(1.05);
+            background: #2d6cdf;
+            color: white;
+            border-color: #2d6cdf;
+            box-shadow: 0 4px 12px rgba(45, 108, 223, 0.3);
+            z-index: 10;
+        }
+        
+        .category-card.expanded .brand-button:hover img {
+            filter: brightness(0) invert(1);
         }
         
         .brand-button:hover {
@@ -278,8 +667,9 @@
         }
         
         .brand-button img {
-            height: 36px;
+            height: 28px;
             width: auto;
+            max-width: 100px;
             object-fit: contain;
             display: block;
         }
@@ -1115,18 +1505,25 @@
         .about-footer a {
             transition: all 0.2s ease;
             position: relative;
+            display: inline-block;
         }
         .about-footer a:hover {
             color: #2d6cdf !important;
             text-decoration: none;
-        }
-        .about-footer a[href*="maps"]:hover {
             transform: translateX(2px);
         }
         .about-footer a[href*="maps"] svg {
             transition: transform 0.2s ease;
         }
         .about-footer a[href*="maps"]:hover svg {
+            transform: scale(1.1);
+        }
+        .about-footer a[href*="t.me"] svg,
+        .about-footer a[href*="mailto"] svg {
+            transition: transform 0.2s ease;
+        }
+        .about-footer a[href*="t.me"]:hover svg,
+        .about-footer a[href*="mailto"]:hover svg {
             transform: scale(1.1);
         }
         .about-footer .about-list a {
@@ -1596,8 +1993,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 30px;
-            height: 30px;
+            width: 20px;
+            height: 20px;
             margin: 0;
             background: transparent;
             animation: spin 1.5s linear infinite;
@@ -2012,10 +2409,13 @@
         /* Cart Styles */
         .cart-icon-btn {
             position: fixed;
-            bottom: 20px;
-            left: 20px;
+            top: 20px;
+            right: 20px;
+            left: auto;
             background: white;
             color: #333;
+            opacity: 0;
+            pointer-events: none;
             border: 1px solid #e5e7eb;
             border-radius: 50%;
             width: 56px;
@@ -2029,14 +2429,6 @@
             z-index: 1000;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             transition: all 0.3s ease;
-        }
-        
-        /* Для компьютерной версии корзина справа снизу */
-        @media (min-width: 769px) {
-            .cart-icon-btn {
-                left: auto;
-                right: 20px;
-            }
         }
         
         .cart-icon-btn:hover {
@@ -2708,14 +3100,72 @@
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>
-                <a href="#" onclick="goToHomePage()" class="logo-link">
-                    <img src="/static/images/logo.jpg" alt="Yo Store" class="logo">
-                </a>
-            </h1>
-            <div class="search-bar">
-                <input type="text" class="search-input" placeholder="Например, 17 Pro Max" id="searchInput">
+        <!-- Desktop header -->
+        <div class="header header-desktop">
+            <div class="header-top-links">
+                <a href="#" onclick="loadGuaranteePage(); return false;">Гарантия</a>
+                <a href="#" onclick="loadDeliveryPage(); return false;">Доставка и оплата</a>
+                <a href="#contacts" onclick="document.querySelector('.about-footer')?.scrollIntoView({behavior: 'smooth'}); return false;">Контакты</a>
+                <a href="https://t.me/yo_feedback" target="_blank">Отзывы</a>
+                <a href="https://t.me/yoo_manager" target="_blank">Telegram</a>
+            </div>
+            <div class="header-main">
+                <h1>
+                    <a href="#" onclick="goToHomePage()" class="logo-link">
+                        <img src="/static/images/logo.jpg" alt="Yo Store" class="logo">
+                    </a>
+                </h1>
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Например, 17 Pro Max" id="searchInput">
+                    <button class="search-icon-btn" aria-label="Найти" onclick="searchFromIcon()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+                            <line x1="16.65" y1="16.65" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                </div>
+                <button class="cart-icon-btn-header" onclick="openCart()" aria-label="Корзина">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                    <span class="cart-badge" id="cartBadge" style="display: none;">0</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile header -->
+        <div class="header header-mobile">
+            <div class="header-top-mobile">
+                <div class="catalog-dropdown">
+                    <button class="catalog-btn" onclick="toggleCatalogDropdown(event)">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                    <div class="catalog-dropdown-menu" id="catalogDropdownMenu">
+                        <div class="catalog-dropdown-loading">Загрузка...</div>
+                    </div>
+                </div>
+                <h1>
+                    <a href="#" onclick="goToHomePage()" class="logo-link">
+                        <img src="/static/images/logo.jpg" alt="Yo Store" class="logo">
+                    </a>
+                </h1>
+                <button class="cart-icon-btn-header" onclick="openCart()" aria-label="Корзина">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                    <span class="cart-badge" id="cartBadgeMobile" style="display: none;">0</span>
+                </button>
+            </div>
+            <div class="search-bar-mobile">
+                <input type="text" class="search-input" placeholder="Например, 17 Pro Max" id="searchInputMobile">
                 <button class="search-icon-btn" aria-label="Найти" onclick="searchFromIcon()">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                         <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
@@ -2731,7 +3181,7 @@
                 <line x1="3" y1="6" x2="21" y2="6"></line>
                 <path d="M16 10a4 4 0 0 1-8 0"></path>
             </svg>
-            <span class="cart-badge" id="cartBadge" style="display: none;">0</span>
+            <span class="cart-badge" id="cartBadgeFloating" style="display: none;">0</span>
         </button>
         
         <div id="content">
@@ -2802,6 +3252,7 @@
                 <ul class="about-list">
                     <li><a href="#" onclick="loadGuaranteePage(); return false;" style="color: #444; text-decoration: none;">Гарантия</a></li>
                     <li><a href="#" onclick="loadDeliveryPage(); return false;" style="color: #444; text-decoration: none;">Доставка и оплата</a></li>
+                    <li><a href="https://t.me/yo_feedback" target="_blank" style="color: #444; text-decoration: none;">Отзывы</a></li>
                 </ul>
             </div>
         </div>
@@ -3031,6 +3482,11 @@
                 return `<img src="https://static.re-store.ru/upload/resize_cache/iblock/d50/1120_560_140cd750bba9870f18aada2478b24840a/sk0o9i98co0nnws077to80jfukvw0rdd.jpg" alt="Аксессуары" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">`;
             }
             
+            // Для категории "Умные браслеты" используем изображение
+            if ((n.includes('умн') && n.includes('браслет')) || (n.includes('smart') && n.includes('band')) || n.includes('watch') || n.includes('часы')) {
+                return `<img src="https://avatars.mds.yandex.net/get-mpic/5234126/2a000001997d994413804a8fedefabad1ea8/optimize" alt="Умные браслеты" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">`;
+            }
+            
             return fallbackIcon || '📦';
         }
         
@@ -3042,7 +3498,8 @@
                 'samsung': 'https://static.re-store.ru/upload/iblock/ce1/5x2fyj9a1phrp2v3lo5yklv0kxmk1aj8.svg',
                 'sony': 'https://static.re-store.ru/upload/iblock/211/5bzxi8nayu7le0145vlgy77qsqi9wyda.svg',
                 'yandex': 'https://devgamm.com/moscow2019/wp-content/uploads/2019/04/yandex_sponsor.png',
-                'jbl': 'https://static.re-store.ru/upload/iblock/0a2/wg0529eswoa98mwho7h1nomf56evzjgi.svg'
+                'jbl': 'https://static.re-store.ru/upload/iblock/0a2/wg0529eswoa98mwho7h1nomf56evzjgi.svg',
+                'whoop': 'https://upload.wikimedia.org/wikipedia/commons/4/4c/WHOOP_Logo_Black.svg'
             };
             return brandIcons[brand] || null;
         }
@@ -3051,7 +3508,12 @@
         function renderBrandIcon(brandName) {
             const iconUrl = getBrandIcon(brandName);
             if (iconUrl) {
-                return `<img src="${iconUrl}" alt="${brandName}" style="height: 36px; width: auto; object-fit: contain;">`;
+                const brand = String(brandName || '').toLowerCase().trim();
+                // Специальный размер для whoop
+                if (brand === 'whoop') {
+                    return `<img src="${iconUrl}" alt="${brandName}" style="height: 24px; width: auto; max-width: 70px; object-fit: contain; display: block;">`;
+                }
+                return `<img src="${iconUrl}" alt="${brandName}" style="height: 28px; width: auto; max-width: 100px; object-fit: contain; display: block;">`;
             }
             return `<span class="brand-name">${brandName}</span>`;
         }
@@ -3123,6 +3585,48 @@
         }
         
         // Initialize app
+        // Отслеживание видимости корзины в header
+        function setupCartVisibilityObserver() {
+            const headerCartBtns = document.querySelectorAll('.cart-icon-btn-header');
+            const floatingCartBtn = document.querySelector('.cart-icon-btn');
+            
+            if (!headerCartBtns.length || !floatingCartBtn) return;
+            
+            // Храним состояние видимости каждой кнопки
+            const visibilityMap = new Map();
+            
+            // Используем Intersection Observer для отслеживания видимости всех кнопок корзины в header
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    // Сохраняем состояние видимости для каждой кнопки
+                    visibilityMap.set(entry.target, entry.isIntersecting);
+                });
+                
+                // Проверяем, видна ли хотя бы одна кнопка корзины в header
+                let anyVisible = false;
+                headerCartBtns.forEach(btn => {
+                    if (visibilityMap.get(btn)) {
+                        anyVisible = true;
+                    }
+                });
+                
+                // Если хотя бы одна кнопка корзины в header видна, скрываем плавающую кнопку
+                if (anyVisible) {
+                    floatingCartBtn.classList.remove('visible');
+                } else {
+                    floatingCartBtn.classList.add('visible');
+                }
+            }, {
+                threshold: 0.1, // Срабатывает когда видно хотя бы 10%
+                rootMargin: '0px'
+            });
+            
+            // Отслеживаем все кнопки корзины в header (десктопная и мобильная)
+            headerCartBtns.forEach(btn => {
+                observer.observe(btn);
+            });
+        }
+        
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM loaded, starting initialization...');
             
@@ -3161,6 +3665,7 @@
                 }
                 
                 setupSearch();
+                setupCartVisibilityObserver();
                 
                 // Инициализируем поддержку свайпов
                 initializeSwipeSupport();
@@ -3186,25 +3691,50 @@
         // Setup search functionality
         function setupSearch() {
             const searchInput = document.getElementById('searchInput');
+            const searchInputMobile = document.getElementById('searchInputMobile');
             let searchTimeout;
             
-            searchInput.addEventListener('input', function() {
+            function handleSearch(value) {
                 clearTimeout(searchTimeout);
                 searchTimeout = setTimeout(() => {
-                    const query = this.value.trim();
+                    const query = value.trim();
+                    // Синхронизируем значения между полями
+                    if (searchInput && searchInputMobile) {
+                        searchInput.value = query;
+                        searchInputMobile.value = query;
+                    }
                     if (query.length > 2) {
                         searchProducts(query);
                     } else if (query.length === 0 && currentView === 'search') {
                         loadCategories();
                     }
                 }, 500);
-            });
+            }
+            
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    handleSearch(this.value);
+                });
+            }
+            
+            if (searchInputMobile) {
+                searchInputMobile.addEventListener('input', function() {
+                    handleSearch(this.value);
+                });
+            }
         }
-
+        
         function searchFromIcon() {
-            const input = document.getElementById('searchInput');
+            const input = document.getElementById('searchInput') || document.getElementById('searchInputMobile');
             if (!input) return;
             const query = input.value.trim();
+            // Синхронизируем значения между полями
+            const searchInput = document.getElementById('searchInput');
+            const searchInputMobile = document.getElementById('searchInputMobile');
+            if (searchInput && searchInputMobile) {
+                searchInput.value = query;
+                searchInputMobile.value = query;
+            }
             if (query.length > 2) {
                 searchProducts(query);
             } else if (query.length === 0 && currentView === 'search') {
@@ -3234,8 +3764,82 @@
         }
         
         // Go to home page function
+        // Toggle catalog dropdown
+        function toggleCatalogDropdown(event) {
+            event.stopPropagation();
+            const dropdown = document.querySelector('.catalog-dropdown');
+            const menu = document.getElementById('catalogDropdownMenu');
+            
+            if (dropdown.classList.contains('active')) {
+                dropdown.classList.remove('active');
+                menu.classList.remove('show');
+            } else {
+                dropdown.classList.add('active');
+                menu.classList.add('show');
+                loadCatalogDropdown();
+            }
+        }
+        
+        // Load categories into dropdown menu
+        async function loadCatalogDropdown() {
+            const menu = document.getElementById('catalogDropdownMenu');
+            if (!menu) return;
+            
+            try {
+                menu.innerHTML = '<div class="catalog-dropdown-loading">Загрузка...</div>';
+                
+                const categoriesResponse = await fetch(`${API_BASE}/categories`);
+                if (!categoriesResponse.ok) {
+                    throw new Error(`HTTP ${categoriesResponse.status}: ${categoriesResponse.statusText}`);
+                }
+                const categories = await categoriesResponse.json();
+                
+                let menuHtml = '';
+                for (const category of categories) {
+                    const icon = renderCategoryIcon(category.name, category.icon);
+                    menuHtml += `
+                        <button class="catalog-dropdown-item" onclick="closeCatalogDropdown(); loadSubcategories(${category.id});">
+                            <div class="category-icon">${icon}</div>
+                            <div class="category-info">
+                                <div class="category-name">${category.name}</div>
+                                <div class="category-count">${category.product_count} товаров</div>
+                            </div>
+                        </button>
+                    `;
+                }
+                
+                menu.innerHTML = menuHtml;
+            } catch (error) {
+                console.error('Error loading catalog dropdown:', error);
+                menu.innerHTML = '<div class="catalog-dropdown-loading" style="color: #ef4444;">Ошибка загрузки</div>';
+            }
+        }
+        
+        // Close catalog dropdown
+        function closeCatalogDropdown() {
+            const dropdown = document.querySelector('.catalog-dropdown');
+            const menu = document.getElementById('catalogDropdownMenu');
+            if (dropdown) {
+                dropdown.classList.remove('active');
+            }
+            if (menu) {
+                menu.classList.remove('show');
+            }
+        }
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.querySelector('.catalog-dropdown');
+            if (dropdown && !dropdown.contains(event.target)) {
+                closeCatalogDropdown();
+            }
+        });
+        
         function goToHomePage() {
             console.log('🏠 Going to home page...');
+            
+            // Close catalog dropdown if open
+            closeCatalogDropdown();
             
             // Clear search input
             const searchInput = document.getElementById('searchInput');
@@ -3490,8 +4094,8 @@
                     }
                     
                     categoriesHtml += `
-                        <div class="category-card">
-                            <div class="category-header" onclick="loadSubcategories(${category.id})">
+                        <div class="category-card" id="category-${category.id}">
+                            <div class="category-header" onclick="toggleCategoryBrands(${category.id})">
                                 <div class="category-icon">${renderCategoryIcon(category.name, category.icon)}</div>
                                 <div class="category-name">${category.name}</div>
                                 <div class="category-count">${category.product_count} товаров</div>
@@ -3525,6 +4129,14 @@
             } catch (error) {
                 console.error('Error loading categories:', error);
                 showError('Ошибка загрузки категорий: ' + error.message);
+            }
+        }
+        
+        // Toggle category brands visibility
+        function toggleCategoryBrands(categoryId) {
+            const categoryCard = document.getElementById(`category-${categoryId}`);
+            if (categoryCard) {
+                categoryCard.classList.toggle('expanded');
             }
         }
         
@@ -3765,7 +4377,7 @@
                     console.log(`🔍 Автоопределен level0 из товаров: ${currentLevel0Filter}`);
                 }
                 
-                let filtersHtml = '<div class="hierarchy-filter-section"><div style="margin: 0 0 10px 0; font-size: 0.9rem; font-weight: normal; color: #666;">Фильтры</div>';
+                let filtersHtml = '<div class="hierarchy-filter-section"><div style="margin: 0 0 10px 0; display: flex; align-items: center; gap: 6px; color: #666;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg></div>';
                 
                 // Level1 фильтры (начинаем сразу с уровня 1, так как level0 уже выбран ранее)
                 let level1Values = [];
@@ -6386,6 +6998,8 @@
         
         function updateCartBadge() {
             const badge = document.getElementById('cartBadge');
+            const badgeMobile = document.getElementById('cartBadgeMobile');
+            const badgeFloating = document.getElementById('cartBadgeFloating');
             const totalQty = cart.reduce((sum, item) => sum + item.quantity, 0);
             if (badge) {
                 if (totalQty > 0) {
@@ -6393,6 +7007,22 @@
                     badge.style.display = 'flex';
                 } else {
                     badge.style.display = 'none';
+                }
+            }
+            if (badgeMobile) {
+                if (totalQty > 0) {
+                    badgeMobile.textContent = totalQty;
+                    badgeMobile.style.display = 'flex';
+                } else {
+                    badgeMobile.style.display = 'none';
+                }
+            }
+            if (badgeFloating) {
+                if (totalQty > 0) {
+                    badgeFloating.textContent = totalQty;
+                    badgeFloating.style.display = 'flex';
+                } else {
+                    badgeFloating.style.display = 'none';
                 }
             }
         }
