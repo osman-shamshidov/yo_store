@@ -981,12 +981,14 @@
             color: #4b5563;
             line-height: 1.8;
             margin-bottom: 12px;
+            font-size: 14px;
         }
         .about-list { 
             margin: 0; 
             padding-left: 20px; 
             color: #4b5563;
             line-height: 1.8;
+            font-size: 14px;
         }
         .about-list li {
             margin-bottom: 10px;
@@ -2798,8 +2800,8 @@
             <div>
                 <h4>Дополнительная информация</h4>
                 <ul class="about-list">
-                    <li><a href="#" onclick="openInfoModal('guarantee'); return false;" style="color: #444; text-decoration: none;">Гарантия</a></li>
-                    <li><a href="#" onclick="openInfoModal('delivery'); return false;" style="color: #444; text-decoration: none;">Доставка и оплата</a></li>
+                    <li><a href="#" onclick="loadGuaranteePage(); return false;" style="color: #444; text-decoration: none;">Гарантия</a></li>
+                    <li><a href="#" onclick="loadDeliveryPage(); return false;" style="color: #444; text-decoration: none;">Доставка и оплата</a></li>
                 </ul>
             </div>
         </div>
@@ -3073,6 +3075,7 @@
         // Сохранение и восстановление состояния
         function saveAppState() {
             const state = {
+                currentView: currentView,
                 currentCategoryId: currentCategoryId,
                 currentCategoryName: currentCategoryName,
                 currentBrandFilter: currentBrandFilter,
@@ -3101,6 +3104,7 @@
                 }
                 
                 // Восстанавливаем состояние
+                currentView = state.currentView || 'categories';
                 currentCategoryId = state.currentCategoryId;
                 currentCategoryName = state.currentCategoryName;
                 currentBrandFilter = state.currentBrandFilter;
@@ -3137,7 +3141,12 @@
                 // Пытаемся восстановить состояние
                 const stateRestored = restoreAppState();
                 
-                if (stateRestored && currentProductId) {
+                // Проверяем, нужно ли восстановить страницы "Гарантия" или "Доставка и оплата"
+                if (stateRestored && currentView === 'guarantee') {
+                    loadGuaranteePage();
+                } else if (stateRestored && currentView === 'delivery') {
+                    loadDeliveryPage();
+                } else if (stateRestored && currentProductId) {
                     // Если был открыт товар, загружаем его
                     showProductDetails(currentProductId);
                 } else if (stateRestored && currentBrandFilter) {
@@ -3259,6 +3268,168 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
             
             console.log('✅ Home page loaded');
+        }
+        
+        // Load guarantee page
+        function loadGuaranteePage() {
+            currentView = 'guarantee';
+            saveAppState();
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <button class="back-button" onclick="goToHomePage()">← Назад на главную</button>
+                <div style="max-width: 800px; margin: 0 auto; padding: 20px;">
+                    <h1 style="font-size: 28px; font-weight: 700; margin-bottom: 30px; text-align: center; color: #111827; display: flex; align-items: center; justify-content: center; gap: 12px;">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#2d6cdf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        Гарантия
+                    </h1>
+                    <div class="about-section">
+                        <h4 style="display: flex; align-items: center; gap: 10px;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2d6cdf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            </svg>
+                            Заводской брак
+                        </h4>
+                        <div class="info-card" style="margin-bottom: 16px;">
+                            <p style="margin: 0 0 12px 0; font-weight: 600; color: #111827;">Гарантия на всю технику — 1 год с момента приобретения товара, от магазина. Гарантия на аксессуары, не содержащие электронные элементы — 14 дней с момента приобретения товара, от магазина.</p>
+                            <p style="margin: 0 0 12px 0;">Гарантия распространяется на заводской брак. Причину возникновения дефектов оборудования, а также их характер определяют специалисты собственного гарантийного обслуживания в ходе диагностики; срок проведения диагностики — до 21 дня. При несогласии покупателя с заключением может быть произведена независимая экспертиза в соответствии с законом «О защите прав потребителей». В течение 14 дней с момента покупки покупатель имеет право на обмен товара на новый или возврат денежных средств, но только в том случае, если по результатам диагностики было подтверждено наличие заводского брака.</p>
+                            <p style="margin: 0;">По истечении 14 дней с момента покупки неисправное оборудование с заводским браком принимается в гарантийный ремонт, срок проведения ремонта — не более 45 дней. Доставка оборудования на диагностику и гарантийный ремонт осуществляется в офис продавца силами покупателя. Если вы находитесь в другом городе, вам необходимо отправить товар к нам курьерской службой CDEK (доставка до двери или до пункта выдачи). Доставка курьерскими службами не является услугой, связанной с заказом. Она не считается частью приобретаемого товара и заканчивается в момент получения товара. С момента передачи товара в курьерскую службу ответственность за сохранность товара также передается курьерской службе.</p>
+                        </div>
+                    </div>
+                    <div class="about-section">
+                        <h4 style="display: flex; align-items: center; gap: 10px;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2d6cdf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                <line x1="12" y1="9" x2="12" y2="13"></line>
+                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
+                            На что не распространяется гарантия?
+                        </h4>
+                        <div class="info-card">
+                            <ul class="about-list" style="margin: 0;">
+                                <li>со следами любого рода вмешательств (попыток вскрытия/разбора/ремонта и т. п.);</li>
+                                <li>со следами попадания внутрь посторонних веществ/предметов/жидкостей и т. п.;</li>
+                                <li>с механическими/тепловыми повреждениями;</li>
+                                <li>с неисправностями, возникшими вследствие появившихся в ходе эксплуатации устройства загрязнений;</li>
+                                <li>с повреждениями, вызванными неправильными подключением, эксплуатацией в нештатном режиме, либо в условиях, не предусмотренных производителем, а также произошедшими вследствие действия сторонних обстоятельств (скачков напряжения электропитания, стихийных бедствий и т. д.);</li>
+                                <li>с неисправностями, возникшими вследствие внесения покупателем в устройство конструкционных, программных и иных изменений;</li>
+                                <li>с «выпадением» точек ЖК-дисплея («битыми пикселями») количеством не более 4-х.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="about-section">
+                        <h4 style="display: flex; align-items: center; gap: 10px;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2d6cdf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                            Какие правила сдачи и приёма устройств на диагностику или ремонт?
+                        </h4>
+                        <div class="info-card">
+                            <p style="margin: 0 0 16px 0; color: #4b5563;">Пожалуйста, выполните перечисленные ниже действия. Если устройство не включается или не реагирует на команды, постарайтесь выполнить как можно больше из этих действий. По гиперссылкам есть все необходимые инструкции.</p>
+                            <ul class="about-list" style="margin: 0 0 16px 0;">
+                                <li>сохраните ваши данные* с устройства перед сдачей в ремонт, например, создайте резервную копию: <a href="https://support.apple.com/ru-ru/HT203977" target="_blank" style="color: #2d6cdf; text-decoration: none; font-weight: 600;">iPhone</a>, <a href="https://support.apple.com/ru-ru/HT203977" target="_blank" style="color: #2d6cdf; text-decoration: none; font-weight: 600;">iPad</a>, <a href="https://support.apple.com/ru-ru/HT201250" target="_blank" style="color: #2d6cdf; text-decoration: none; font-weight: 600;">Mac</a>, <a href="https://support.apple.com/ru-ru/HT205000" target="_blank" style="color: #2d6cdf; text-decoration: none; font-weight: 600;">Watch</a>.</li>
+                                <li>отключите функцию локатор на устройстве, для этого потребуется пароль Apple ID**.</li>
+                                <li>извлеките SIM-карту из устройства с iOS или устройства с iPadOS, если она есть, и храните её в надёжном месте.</li>
+                                <li>снимите с устройства все аксессуары, чехлы, держатели, зарядки, провода, дополнительные накопители и прочее, если они не требуются для диагностики неисправности.</li>
+                            </ul>
+                            <p style="margin: 0 0 8px 0; color: #4b5563; font-weight: 600;">*магазин и/или авторизованный сервисный центр не несут ответственность, если в ходе диагностики и ремонта данные, находящиеся на устройстве, будут утеряны.</p>
+                            <p style="margin: 0 0 16px 0; color: #4b5563;">**если не удается отключить функцию Find My, магазин и/или компания Apple в лице авторизованного сервисного центра не смогут выполнить обслуживание устройства. Это правило установлено для того, чтобы не допустить сторонних лиц к обслуживанию устройства без вашего разрешения. Если вы забыли свой идентификатор Apple ID и пароль, перейдите на веб-сайт <a href="https://iforgot.apple.com" target="_blank" style="color: #2d6cdf; text-decoration: none; font-weight: 600;">iForgot</a>.</p>
+                            <p style="margin: 0; font-weight: 600; color: #111827; text-align: center; padding-top: 16px; border-top: 1px solid #e5e7eb;">Совершение покупки означает согласие покупателя с настоящими правилами.</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Load delivery page
+        function loadDeliveryPage() {
+            currentView = 'delivery';
+            saveAppState();
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <button class="back-button" onclick="goToHomePage()">← Назад на главную</button>
+                <div style="max-width: 800px; margin: 0 auto; padding: 20px;">
+                    <h1 style="font-size: 28px; font-weight: 700; margin-bottom: 30px; text-align: center; color: #111827; display: flex; align-items: center; justify-content: center; gap: 12px;">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#2d6cdf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"></path>
+                            <path d="M5 8h10"></path>
+                        </svg>
+                        Доставка и оплата
+                    </h1>
+                    <div class="about-section">
+                        <h4 style="text-align: center; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                            С нами надежно
+                        </h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 24px;">
+                            <div class="info-card">
+                                <h5>
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                        <circle cx="12" cy="10" r="3"></circle>
+                                    </svg>
+                                    Самовывоз
+                                </h5>
+                                <p>Вы можете забрать свой заказ в нашем магазине с 10:00 до 21:00 ежедневно. Услуга действует при оформлении заказа с 10:00 до 20:00.</p>
+                            </div>
+                            <div class="info-card">
+                                <h5>
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"></path>
+                                        <path d="M5 8h10"></path>
+                                    </svg>
+                                    Доставка по Москве
+                                </h5>
+                                <p>Доставка заказа в день обращения собственными сотрудниками компании. Обычно все заказы доставляются за 1-2 часа после оформления. Бесплатная доставка от 30 тыс. р., в других случаях — 500 р. За МКАД — рассчитывается индивидуально.</p>
+                            </div>
+                            <div class="info-card">
+                                <h5>
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                                    </svg>
+                                    Доставка по России
+                                </h5>
+                                <p>Экспресс-доставка по России курьерской службой СДЭК. Бережная упаковка и возможность отслеживать заказ. Отправляем заказы при полной оплате. Стоимость доставки — от 500 р.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="about-section">
+                        <h4 style="text-align: center; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                            Варианты оплаты
+                        </h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 16px;">
+                            <div class="info-card">
+                                <h5>
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                                        <line x1="12" y1="1" x2="12" y2="23"></line>
+                                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                    </svg>
+                                    Наличный расчёт
+                                </h5>
+                                <p>На данный момент оплатить заказ как при самовывозе, так и при доставке по Москве и области можно только наличными. Рядом с нами есть много банкоматов (СБЕР, Альфа-Банк, Тинькофф, ВТБ, Русский Стандарт).</p>
+                            </div>
+                            <div class="info-card">
+                                <h5>
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                                    </svg>
+                                    Банковский перевод
+                                </h5>
+                                <p>Для клиентов из других регионов оплата возможна банковским переводом. Мы принимаем полную оплату до отправки заказа.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         
         // Load categories with brands inside
