@@ -196,7 +196,8 @@ def ensure_category_exists(db: Session, level0: Optional[str], level1: Optional[
 # API Routes
 @app.get("/")
 async def root():
-    return {"message": "Yo Store API", "version": "1.0.0"}
+    """Redirect root path to /webapp"""
+    return RedirectResponse(url="/webapp")
 
 @app.get("/test-products")
 async def test_products(db: Session = Depends(get_db)):
