@@ -2560,9 +2560,6 @@ async def create_order(order_data: OrderCreate, db: Session = Depends(get_db)):
         
         # Создаем товары заказа
         for item_data in order_data.items:
-            # Отладка: проверяем, что ram передается
-            print(f"DEBUG: Creating order item - ram: {item_data.ram}, type: {type(item_data.ram)}")
-            print(f"DEBUG: Full item_data: {item_data}")
             order_item = OrderItem(
                 order_id=order.id,
                 product_id=item_data.product_id,
@@ -2574,14 +2571,9 @@ async def create_order(order_data: OrderCreate, db: Session = Depends(get_db)):
                 sim=item_data.sim or None,
                 ram=item_data.ram or None
             )
-            print(f"DEBUG: OrderItem ram value: {order_item.ram}")
             db.add(order_item)
-            db.flush()  # Принудительно сохраняем, чтобы проверить
         
         db.commit()
-        # Проверяем, что ram сохранился
-        for item in order.items:
-            print(f"DEBUG: After commit - OrderItem id={item.id}, ram={item.ram}")
         db.refresh(order)
         
         return order
