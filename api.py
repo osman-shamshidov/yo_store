@@ -2491,6 +2491,7 @@ class OrderItemCreate(BaseModel):
     color: Optional[str] = None
     memory: Optional[str] = None
     sim: Optional[str] = None
+    ram: Optional[str] = None
 
 class CustomerInfo(BaseModel):
     name: str
@@ -2559,19 +2560,28 @@ async def create_order(order_data: OrderCreate, db: Session = Depends(get_db)):
         
         # Создаем товары заказа
         for item_data in order_data.items:
+            # Отладка: проверяем, что ram передается
+            print(f"DEBUG: Creating order item - ram: {item_data.ram}, type: {type(item_data.ram)}")
+            print(f"DEBUG: Full item_data: {item_data}")
             order_item = OrderItem(
                 order_id=order.id,
                 product_id=item_data.product_id,
                 product_name=item_data.name,
                 price=item_data.price,
                 quantity=item_data.quantity,
-                color=item_data.color,
-                memory=item_data.memory,
-                sim=item_data.sim
+                color=item_data.color or None,
+                memory=item_data.memory or None,
+                sim=item_data.sim or None,
+                ram=item_data.ram or None
             )
+            print(f"DEBUG: OrderItem ram value: {order_item.ram}")
             db.add(order_item)
+            db.flush()  # Принудительно сохраняем, чтобы проверить
         
         db.commit()
+        # Проверяем, что ram сохранился
+        for item in order.items:
+            print(f"DEBUG: After commit - OrderItem id={item.id}, ram={item.ram}")
         db.refresh(order)
         
         return order

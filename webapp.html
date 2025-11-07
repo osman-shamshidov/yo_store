@@ -82,10 +82,7 @@
             }
             
             .catalog-dropdown-menu {
-                min-width: 200px;
-                max-height: 50vh;
-                left: 0;
-                right: auto;
+                width: 85vw;
             }
             
             .catalog-dropdown-item {
@@ -140,8 +137,7 @@
             }
             
             .catalog-dropdown-menu {
-                min-width: 240px;
-                max-height: 60vh;
+                width: 85vw;
             }
             
             .search-bar {
@@ -191,6 +187,19 @@
                 height: 20px;
             }
             
+            .catalog-icon-btn {
+                top: 20px !important;
+                left: 15px !important;
+                right: auto !important;
+                width: 48px;
+                height: 48px;
+            }
+            
+            .catalog-icon-btn svg {
+                width: 20px;
+                height: 20px;
+            }
+            
             .search-bar-mobile {
                 width: 100%;
             }
@@ -221,7 +230,7 @@
         .header {
             color: #111827;
             background: transparent;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: none;
             border-radius: 0;
             margin: 20px 0;
             padding: 10px 0;
@@ -242,7 +251,7 @@
             gap: 20px;
             padding-bottom: 8px;
             margin-bottom: 8px;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 1px solid rgba(45, 108, 223, 0.2);
         }
         
         .header-top-links a {
@@ -281,6 +290,13 @@
             padding-right: 36px;
             display: flex;
             align-items: center;
+            border: 1.5px solid rgba(45, 108, 223, 0.4);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .search-bar-mobile:focus-within {
+            border-color: rgba(45, 108, 223, 0.6);
+            box-shadow: 0 2px 15px rgba(45, 108, 223, 0.15);
         }
         
         .cart-icon-btn-header {
@@ -405,24 +421,116 @@
             position: relative;
         }
         
-        .catalog-dropdown-menu {
-            position: absolute;
-            top: calc(100% + 8px);
+        .catalog-overlay {
+            position: fixed;
+            top: 0;
             left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .catalog-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+            .catalog-dropdown-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 320px;
+            max-width: 85vw;
+            height: 100vh;
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-            min-width: 280px;
-            max-height: 70vh;
-            overflow-y: auto;
+            box-shadow: 4px 0 24px rgba(0,0,0,0.15);
             z-index: 1000;
-            display: none;
-            padding: 8px 0;
-            border: 1px solid #e5e7eb;
+            padding: 0;
+            border: none;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
         
         .catalog-dropdown-menu.show {
-            display: block;
+            transform: translateX(0);
+        }
+        
+        .catalog-dropdown-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(45, 108, 223, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+        
+        .catalog-dropdown-header h2 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
+            color: #111827;
+        }
+        
+        .catalog-dropdown-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+            transition: color 0.2s ease;
+            border-radius: 8px;
+        }
+        
+        .catalog-dropdown-close:hover {
+            color: #111827;
+            background: #f3f4f6;
+        }
+        
+        .catalog-dropdown-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 0;
+        }
+        
+        .catalog-dropdown-menu:not(.show) .catalog-dropdown-item {
+            opacity: 1;
+            animation: none;
+        }
+        
+        .catalog-dropdown-menu.show .catalog-dropdown-item {
+            animation: slideInLeft 0.3s ease forwards;
+            opacity: 0;
+        }
+        
+        .catalog-dropdown-menu.show .catalog-dropdown-item:nth-child(1) { animation-delay: 0.05s; }
+        .catalog-dropdown-menu.show .catalog-dropdown-item:nth-child(2) { animation-delay: 0.1s; }
+        .catalog-dropdown-menu.show .catalog-dropdown-item:nth-child(3) { animation-delay: 0.15s; }
+        .catalog-dropdown-menu.show .catalog-dropdown-item:nth-child(4) { animation-delay: 0.2s; }
+        .catalog-dropdown-menu.show .catalog-dropdown-item:nth-child(5) { animation-delay: 0.25s; }
+        .catalog-dropdown-menu.show .catalog-dropdown-item:nth-child(6) { animation-delay: 0.3s; }
+        .catalog-dropdown-menu.show .catalog-dropdown-item:nth-child(7) { animation-delay: 0.35s; }
+        .catalog-dropdown-menu.show .catalog-dropdown-item:nth-child(8) { animation-delay: 0.4s; }
+        .catalog-dropdown-menu.show .catalog-dropdown-item:nth-child(n+9) { animation-delay: 0.45s; }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
         
         .catalog-dropdown-loading {
@@ -445,6 +553,7 @@
             background: none;
             width: 100%;
             text-align: left;
+                opacity: 1;
         }
         
         .catalog-dropdown-item:hover {
@@ -485,8 +594,18 @@
             color: #6b7280;
         }
         
-        .catalog-dropdown.active .catalog-btn .dropdown-arrow {
-            transform: rotate(180deg);
+        .catalog-section-item {
+            padding: 8px 16px !important;
+        }
+        
+        .catalog-section-item .category-icon {
+            width: 20px !important;
+            height: 20px !important;
+        }
+        
+        .catalog-section-item .category-name {
+            font-size: 13px !important;
+            font-weight: 500 !important;
         }
         
         .header p { display: none; }
@@ -503,6 +622,13 @@
             min-width: 0; /* позволяет сжиматься при необходимости */
             display: flex;
             align-items: center;
+            border: 1.5px solid rgba(45, 108, 223, 0.4);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .search-bar:focus-within {
+            border-color: rgba(45, 108, 223, 0.6);
+            box-shadow: 0 2px 15px rgba(45, 108, 223, 0.15);
         }
         
         .search-input {
@@ -1597,26 +1723,41 @@
         
         /* Стили для иерархических фильтров */
         .hierarchy-filters {
-            margin: 12px 0 8px 0;
-            padding: 10px 16px;
-            background: #f8f9fa;
+            margin: 12px 0;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
             border-radius: 12px;
-            border: 1px solid #e9ecef;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.08);
         }
         
         .hierarchy-filter-section {
             margin-bottom: 0;
         }
         
+        .hierarchy-filter-section > div:first-child {
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .hierarchy-filter-section > div:first-child svg {
+            color: #2d6cdf;
+        }
+        
         .filter-group {
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .filter-group:last-child {
+            margin-bottom: 0;
         }
         
         .filter-group h4 {
             margin: 0 0 6px 0;
-            font-size: 13px;
-            font-weight: 600;
-            color: #495057;
+            font-size: 11px;
+            font-weight: 700;
+            color: #6b7280;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -1624,71 +1765,76 @@
         .filter-buttons {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
         }
         
         .filter-btn {
-            padding: 6px 12px;
-            background: #ffffff;
-            border: 1px solid #dee2e6;
+            padding: 6px 14px;
+            background: white;
+            border: 2px solid #e5e7eb;
             border-radius: 16px;
             font-size: 13px;
-            font-weight: 400;
-            color: #495057;
+            font-weight: 500;
+            color: #374151;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             white-space: nowrap;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
         
         .filter-btn:hover {
-            background: #007bff;
-            border-color: #007bff;
+            background: linear-gradient(135deg, #2d6cdf 0%, #1e4dd8 100%);
+            border-color: #2d6cdf;
             color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(45, 108, 223, 0.3);
         }
         
         .filter-btn.active {
-            background: #007bff;
-            border-color: #007bff;
+            background: linear-gradient(135deg, #2d6cdf 0%, #1e4dd8 100%);
+            border-color: #2d6cdf;
             color: white;
-            box-shadow: 0 2px 8px rgba(0,123,255,0.4);
+            box-shadow: 0 3px 8px rgba(45, 108, 223, 0.4);
+            font-weight: 600;
         }
         
         .filter-reset {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #dee2e6;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 2px solid #e5e7eb;
         }
         
         .reset-btn {
-            padding: 6px 12px;
-            background: #dc3545;
+            padding: 6px;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
             color: white;
             border: none;
-            border-radius: 4px;
-            font-size: 13px;
-            font-weight: 400;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+        }
+        
+        .reset-btn svg {
+            width: 12px;
+            height: 12px;
         }
         
         .reset-btn:hover {
-            background: #c82333;
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
             transform: translateY(-1px);
-            box-shadow: 0 2px 6px rgba(220,53,69,0.2);
+            box-shadow: 0 3px 8px rgba(239, 68, 68, 0.4);
         }
         
         /* Стили для индикатора загрузки товаров */
         .loading-products {
             text-align: center;
             padding: 40px 20px;
-            color: #007bff;
-            font-size: 16px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border: 2px dashed #dee2e6;
-            animation: pulse 1.5s ease-in-out infinite alternate;
         }
         
         @keyframes pulse {
@@ -1708,6 +1854,23 @@
         .product-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        /* Отключаем кликабельность карточек товаров на мобильных устройствах */
+        @media screen and (max-width: 768px) {
+            .product-card {
+                pointer-events: none;
+            }
+            
+            .product-card * {
+                pointer-events: auto;
+            }
+            
+            /* Отключаем hover эффект на мобильных */
+            .product-card:hover {
+                transform: none;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            }
         }
         
         .product-image {
@@ -2381,7 +2544,7 @@
             
             /* Улучшения для свайпа на мобильных устройствах */
             .product-image-carousel {
-                touch-action: pan-x;
+                touch-action: pan-x pan-y;
                 -webkit-overflow-scrolling: touch;
             }
             
@@ -2464,8 +2627,64 @@
             border: 2px solid white;
         }
         
+        /* Catalog Floating Button */
+        .catalog-icon-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            right: auto;
+            background: #2d6cdf;
+            color: white;
+            opacity: 0;
+            pointer-events: none;
+            border: none;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            padding: 0;
+            font-size: 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(45, 108, 223, 0.3);
+            transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .catalog-icon-btn:hover {
+            background: #1f56bf;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(45, 108, 223, 0.4);
+        }
+        
+        .catalog-icon-btn svg {
+            width: 24px;
+            height: 24px;
+            stroke: white;
+        }
+        
+        .catalog-icon-btn.visible {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+        
+        /* Скрываем кнопку каталога на десктопе */
+        @media screen and (min-width: 769px) {
+            .catalog-icon-btn {
+                display: none !important;
+                opacity: 0 !important;
+                pointer-events: none !important;
+            }
+            
+            .catalog-icon-btn.visible {
+                display: none !important;
+                opacity: 0 !important;
+                pointer-events: none !important;
+            }
+        }
+        
         .cart-modal {
-            display: none;
             position: fixed;
             top: 0;
             left: 0;
@@ -2474,13 +2693,18 @@
             background: rgba(0,0,0,0.5);
             z-index: 2000;
             overflow-y: auto;
-        }
-        
-        .cart-modal.active {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
             display: flex;
             align-items: flex-start;
             justify-content: center;
             padding: 20px;
+        }
+        
+        .cart-modal.active {
+            opacity: 1;
+            pointer-events: auto;
         }
         
         .cart-container {
@@ -2498,6 +2722,14 @@
             overflow-x: hidden;
             scrollbar-width: none; /* Firefox */
             -ms-overflow-style: none; /* IE and Edge */
+            transform: scale(0.95) translateY(-20px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        
+        .cart-modal.active .cart-container {
+            transform: scale(1) translateY(0);
+            opacity: 1;
         }
         
         .cart-container::-webkit-scrollbar {
@@ -2766,18 +2998,20 @@
         
         .cart-item-left {
             flex: 1;
+            min-width: 0;
             display: flex;
             flex-direction: column;
             gap: 4px;
+            max-width: calc(100% - 120px);
         }
         
         .cart-item-name {
             font-size: 0.9rem;
             font-weight: 600;
             color: #111827;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            word-wrap: break-word;
+            word-break: break-word;
+            line-height: 1.4;
         }
         
         .cart-item-specs {
@@ -2791,7 +3025,8 @@
             flex-direction: column;
             align-items: flex-end;
             gap: 8px;
-            width: 100%;
+            flex-shrink: 0;
+            min-width: 100px;
         }
         
         .cart-item-price-per-unit {
@@ -3092,6 +3327,19 @@
                 width: 24px;
                 height: 24px;
             }
+            
+            .catalog-icon-btn {
+                bottom: 20px;
+                right: 20px;
+                left: auto;
+                width: 52px;
+                height: 52px;
+            }
+            
+            .catalog-icon-btn svg {
+                width: 24px;
+                height: 24px;
+            }
         }
     </style>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -3107,7 +3355,7 @@
                 <a href="#" onclick="loadDeliveryPage(); return false;">Доставка и оплата</a>
                 <a href="#contacts" onclick="document.querySelector('.about-footer')?.scrollIntoView({behavior: 'smooth'}); return false;">Контакты</a>
                 <a href="https://t.me/yo_feedback" target="_blank">Отзывы</a>
-                <a href="https://t.me/yoo_manager" target="_blank">Telegram</a>
+                <a href="https://t.me/yo_price" target="_blank">Telegram</a>
             </div>
             <div class="header-main">
                 <h1>
@@ -3146,8 +3394,20 @@
                             <line x1="3" y1="18" x2="21" y2="18"></line>
                         </svg>
                     </button>
+                    <div class="catalog-overlay" id="catalogOverlay" onclick="closeCatalogDropdown()"></div>
                     <div class="catalog-dropdown-menu" id="catalogDropdownMenu">
+                        <div class="catalog-dropdown-header">
+                            <h2>Каталог</h2>
+                            <button class="catalog-dropdown-close" onclick="closeCatalogDropdown()" aria-label="Закрыть каталог">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="catalog-dropdown-content" id="catalogDropdownContent">
                         <div class="catalog-dropdown-loading">Загрузка...</div>
+                        </div>
                     </div>
                 </div>
                 <h1>
@@ -3174,6 +3434,14 @@
                 </button>
             </div>
         </div>
+        
+        <button class="catalog-icon-btn" onclick="toggleCatalogDropdown(event)" aria-label="Каталог">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
         
         <button class="cart-icon-btn" onclick="openCart()" aria-label="Корзина">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -3627,6 +3895,48 @@
             });
         }
         
+        // Floating catalog button visibility
+        function initFloatingCatalogButton() {
+            const headerCatalogBtns = document.querySelectorAll('.catalog-btn');
+            const floatingCatalogBtn = document.querySelector('.catalog-icon-btn');
+            
+            if (!headerCatalogBtns.length || !floatingCatalogBtn) return;
+            
+            // Храним состояние видимости каждой кнопки
+            const visibilityMap = new Map();
+            
+            // Используем Intersection Observer для отслеживания видимости всех кнопок каталога в header
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    // Сохраняем состояние видимости для каждой кнопки
+                    visibilityMap.set(entry.target, entry.isIntersecting);
+                });
+                
+                // Проверяем, видна ли хотя бы одна кнопка каталога в header
+                let anyVisible = false;
+                headerCatalogBtns.forEach(btn => {
+                    if (visibilityMap.get(btn)) {
+                        anyVisible = true;
+                    }
+                });
+                
+                // Если хотя бы одна кнопка каталога в header видна, скрываем плавающую кнопку
+                if (anyVisible) {
+                    floatingCatalogBtn.classList.remove('visible');
+                } else {
+                    floatingCatalogBtn.classList.add('visible');
+                }
+            }, {
+                threshold: 0.1, // Срабатывает когда видно хотя бы 10%
+                rootMargin: '0px'
+            });
+            
+            // Отслеживаем все кнопки каталога в header (мобильная версия)
+            headerCatalogBtns.forEach(btn => {
+                observer.observe(btn);
+            });
+        }
+        
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM loaded, starting initialization...');
             
@@ -3666,6 +3976,7 @@
                 
                 setupSearch();
                 setupCartVisibilityObserver();
+                initFloatingCatalogButton();
                 
                 // Инициализируем поддержку свайпов
                 initializeSwipeSupport();
@@ -3769,24 +4080,38 @@
             event.stopPropagation();
             const dropdown = document.querySelector('.catalog-dropdown');
             const menu = document.getElementById('catalogDropdownMenu');
+            const overlay = document.getElementById('catalogOverlay');
+            const floatingCatalogBtn = document.querySelector('.catalog-icon-btn');
             
             if (dropdown.classList.contains('active')) {
-                dropdown.classList.remove('active');
-                menu.classList.remove('show');
+                closeCatalogDropdown();
             } else {
                 dropdown.classList.add('active');
                 menu.classList.add('show');
+                if (overlay) overlay.classList.add('show');
+                // Скрываем всплывающую кнопку каталога при открытии меню
+                if (floatingCatalogBtn) {
+                    floatingCatalogBtn.classList.remove('visible');
+                }
+                // Предотвращаем прокрутку body и html при открытом каталоге
+                document.body.style.overflow = 'hidden';
+                document.documentElement.style.overflow = 'hidden';
+                // Сохраняем текущую позицию прокрутки
+                const scrollY = window.scrollY;
+                document.body.style.position = 'fixed';
+                document.body.style.top = `-${scrollY}px`;
+                document.body.style.width = '100%';
                 loadCatalogDropdown();
             }
         }
         
         // Load categories into dropdown menu
         async function loadCatalogDropdown() {
-            const menu = document.getElementById('catalogDropdownMenu');
-            if (!menu) return;
+            const content = document.getElementById('catalogDropdownContent');
+            if (!content) return;
             
             try {
-                menu.innerHTML = '<div class="catalog-dropdown-loading">Загрузка...</div>';
+                content.innerHTML = '<div class="catalog-dropdown-loading">Загрузка...</div>';
                 
                 const categoriesResponse = await fetch(`${API_BASE}/categories`);
                 if (!categoriesResponse.ok) {
@@ -3798,20 +4123,148 @@
                 for (const category of categories) {
                     const icon = renderCategoryIcon(category.name, category.icon);
                     menuHtml += `
-                        <button class="catalog-dropdown-item" onclick="closeCatalogDropdown(); loadSubcategories(${category.id});">
+                        <button class="catalog-dropdown-item" onclick="event.stopPropagation(); loadCategoryBrands(${category.id}, '${category.level_0}');">
                             <div class="category-icon">${icon}</div>
                             <div class="category-info">
                                 <div class="category-name">${category.name}</div>
                                 <div class="category-count">${category.product_count} товаров</div>
                             </div>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: auto;">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
                         </button>
                     `;
                 }
                 
-                menu.innerHTML = menuHtml;
+                // Добавляем разделы для мобильной версии
+                const isMobile = window.innerWidth <= 768;
+                if (isMobile) {
+                    menuHtml += `
+                        <div style="border-top: 1px solid #e5e7eb; margin: 8px 0;"></div>
+                        <button class="catalog-dropdown-item catalog-section-item" onclick="event.stopPropagation(); closeCatalogDropdown(); loadGuaranteePage();">
+                            <div class="category-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                </svg>
+                            </div>
+                            <div class="category-info">
+                                <div class="category-name">Гарантия</div>
+                            </div>
+                        </button>
+                        <button class="catalog-dropdown-item catalog-section-item" onclick="event.stopPropagation(); closeCatalogDropdown(); loadDeliveryPage();">
+                            <div class="category-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"></path>
+                                    <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                    <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                                </svg>
+                            </div>
+                            <div class="category-info">
+                                <div class="category-name">Доставка и оплата</div>
+                            </div>
+                        </button>
+                        <button class="catalog-dropdown-item catalog-section-item" onclick="event.stopPropagation(); closeCatalogDropdown(); document.querySelector('.about-footer')?.scrollIntoView({behavior: 'smooth'});">
+                            <div class="category-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                            </div>
+                            <div class="category-info">
+                                <div class="category-name">Контакты</div>
+                            </div>
+                        </button>
+                        <button class="catalog-dropdown-item catalog-section-item" onclick="event.stopPropagation(); closeCatalogDropdown(); window.open('https://t.me/yo_feedback', '_blank');">
+                            <div class="category-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                </svg>
+                            </div>
+                            <div class="category-info">
+                                <div class="category-name">Отзывы</div>
+                            </div>
+                        </button>
+                        <button class="catalog-dropdown-item catalog-section-item" onclick="event.stopPropagation(); closeCatalogDropdown(); window.open('https://t.me/yo_price', '_blank');">
+                            <div class="category-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.12l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+                                </svg>
+                            </div>
+                            <div class="category-info">
+                                <div class="category-name">Telegram</div>
+                            </div>
+                        </button>
+                    `;
+                }
+                
+                content.innerHTML = menuHtml;
+                // Принудительно перерисовываем для применения анимации
+                void content.offsetHeight;
             } catch (error) {
                 console.error('Error loading catalog dropdown:', error);
-                menu.innerHTML = '<div class="catalog-dropdown-loading" style="color: #ef4444;">Ошибка загрузки</div>';
+                content.innerHTML = '<div class="catalog-dropdown-loading" style="color: #ef4444;">Ошибка загрузки</div>';
+            }
+        }
+        
+        // Load brands for category in dropdown
+        async function loadCategoryBrands(categoryId, level0) {
+            const content = document.getElementById('catalogDropdownContent');
+            if (!content) return;
+            
+            try {
+                content.innerHTML = '<div class="catalog-dropdown-loading">Загрузка...</div>';
+                
+                // Получаем категорию для названия
+                const categoriesResponse = await fetch(`${API_BASE}/categories`);
+                const categories = await categoriesResponse.json();
+                const category = categories.find(cat => cat.id === categoryId);
+                
+                // Получаем бренды для этой категории
+                const categoryBrandsResponse = await fetch(`${API_BASE}/hierarchy/brands?level0=${encodeURIComponent(level0)}`);
+                const categoryBrands = await categoryBrandsResponse.json();
+                
+                // Для каждого бренда проверяем наличие товаров
+                const brandData = [];
+                for (const brand of categoryBrands) {
+                    try {
+                        const countResponse = await fetch(`${API_BASE}/products?brand=${encodeURIComponent(brand)}&level0=${encodeURIComponent(level0)}&limit=1`);
+                        const products = await countResponse.json();
+                        if (products && products.length > 0) {
+                            brandData.push(brand);
+                        }
+                    } catch (error) {
+                        console.warn(`Ошибка получения товаров для бренда ${brand}:`, error);
+                    }
+                }
+                
+                let menuHtml = `
+                    <button class="catalog-dropdown-item" onclick="event.stopPropagation(); loadCatalogDropdown();" style="border-bottom: 1px solid #e5e7eb;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                        <div class="category-info">
+                            <div class="category-name">${category ? category.name : 'Назад'}</div>
+                        </div>
+                    </button>
+                `;
+                
+                for (const brand of brandData) {
+                    menuHtml += `
+                        <button class="catalog-dropdown-item" onclick="event.stopPropagation(); closeCatalogDropdown(); loadProductsByBrand('${brand}', '${level0}');">
+                            <div class="category-icon">${renderBrandIcon(brand)}</div>
+                            <div class="category-info">
+                                <div class="category-name">${brand}</div>
+                            </div>
+                        </button>
+                    `;
+                }
+                
+                content.innerHTML = menuHtml;
+                // Принудительно перерисовываем для применения анимации
+                void content.offsetHeight;
+            } catch (error) {
+                console.error('Error loading category brands:', error);
+                content.innerHTML = '<div class="catalog-dropdown-loading" style="color: #ef4444;">Ошибка загрузки</div>';
             }
         }
         
@@ -3819,19 +4272,69 @@
         function closeCatalogDropdown() {
             const dropdown = document.querySelector('.catalog-dropdown');
             const menu = document.getElementById('catalogDropdownMenu');
+            const overlay = document.getElementById('catalogOverlay');
+            const floatingCatalogBtn = document.querySelector('.catalog-icon-btn');
+            
             if (dropdown) {
                 dropdown.classList.remove('active');
             }
             if (menu) {
                 menu.classList.remove('show');
             }
+            if (overlay) {
+                overlay.classList.remove('show');
+            }
+            // Восстанавливаем прокрутку body и html
+            const scrollY = document.body.style.top;
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.width = '';
+            document.body.style.overflow = '';
+            document.documentElement.style.overflow = '';
+            // Восстанавливаем позицию прокрутки
+            if (scrollY) {
+                window.scrollTo(0, parseInt(scrollY || '0') * -1);
+            }
+            
+            // Проверяем видимость кнопки каталога в header и показываем всплывающую кнопку, если нужно
+            if (floatingCatalogBtn) {
+                // Небольшая задержка, чтобы Intersection Observer успел обновиться
+                setTimeout(() => {
+                    const headerCatalogBtns = document.querySelectorAll('.catalog-btn');
+                    let anyVisible = false;
+                    
+                    // Проверяем видимость кнопок каталога в header
+                    headerCatalogBtns.forEach(btn => {
+                        const rect = btn.getBoundingClientRect();
+                        const isVisible = rect.top >= 0 && rect.bottom <= window.innerHeight && 
+                                         rect.left >= 0 && rect.right <= window.innerWidth;
+                        if (isVisible) {
+                            anyVisible = true;
+                        }
+                    });
+                    
+                    // Если ни одна кнопка каталога в header не видна, показываем всплывающую кнопку
+                    if (!anyVisible) {
+                        floatingCatalogBtn.classList.add('visible');
+                    }
+                }, 100);
+            }
         }
         
-        // Close dropdown when clicking outside
+        // Close dropdown when clicking outside (overlay handles its own clicks)
         document.addEventListener('click', function(event) {
             const dropdown = document.querySelector('.catalog-dropdown');
-            if (dropdown && !dropdown.contains(event.target)) {
+            const overlay = document.getElementById('catalogOverlay');
+            const menu = document.getElementById('catalogDropdownMenu');
+            
+            // Закрываем только если клик не на каталоге, не на overlay и каталог открыт
+            if (dropdown && menu && menu.classList.contains('show')) {
+                if (!dropdown.contains(event.target) && 
+                    event.target !== overlay && 
+                    !overlay?.contains(event.target) &&
+                    !menu.contains(event.target)) {
                 closeCatalogDropdown();
+                }
             }
         });
         
@@ -4191,7 +4694,6 @@
                 
                 const content = document.getElementById('content');
                 content.innerHTML = `
-                    <button class="back-button" onclick="loadCategories()">← Назад к категориям</button>
                     <div class="subcategories-grid">
                         ${brandData.map(subcat => `
                             <div class="subcategory-card" onclick="loadProductsByBrandWithCategory('${subcat.brand}', ${categoryId}, '${category.name}')">
@@ -4229,7 +4731,6 @@
                 
                 const content = document.getElementById('content');
                 content.innerHTML = `
-                    <button class="back-button" onclick="loadCategories()">← Назад к категориям</button>
                     <div class="products-grid">
                         ${products.map(product => {
                             storeProductImages(product);
@@ -4278,7 +4779,6 @@
                 
                 const content = document.getElementById('content');
                 content.innerHTML = `
-                    <button class="back-button" onclick="loadCategories()">← Назад к категориям</button>
                     <div class="breadcrumbs" id="breadcrumbsContainer">
                         ${createBreadcrumbs(brand)}
                     </div>
@@ -4328,7 +4828,6 @@
                     `;
                 } else {
                     content.innerHTML = `
-                        <button class="back-button" onclick="loadCategories()">← Назад к категориям</button>
                         <div class="products-grid">
                             ${products.map(product => {
                                 storeProductImages(product);
@@ -4438,7 +4937,12 @@
                 if (currentLevel1Filter || currentLevel2Filter) {
                     filtersHtml += `
                         <div class="filter-reset">
-                            <button class="reset-btn" onclick="resetFilters()">Сбросить фильтры</button>
+                            <button class="reset-btn" onclick="resetFilters()" aria-label="Сбросить фильтры">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
                         </div>
                     `;
                 }
@@ -4491,8 +4995,14 @@
                     return;
                 }
                 
+                // Сохраняем текущую высоту контейнера, чтобы footer не поднимался
+                const currentHeight = productsContainer.offsetHeight;
+                if (currentHeight > 0) {
+                    productsContainer.style.minHeight = currentHeight + 'px';
+                }
+                
                 // Показываем спиннер загрузки
-                productsContainer.innerHTML = '<div class="loading-products">Обновление товаров...</div>';
+                productsContainer.innerHTML = '<div class="loading-products"></div>';
                 
                 // Строим URL с текущими фильтрами
                 const params = new URLSearchParams();
@@ -4511,6 +5021,9 @@
                     storeProductImages(product);
                     return createProductCard(product);
                 }).join('');
+                
+                // Убираем minHeight после загрузки товаров
+                productsContainer.style.minHeight = '';
                 
                 // Инициализировать цвета по умолчанию и загрузить изображения
                 setTimeout(async () => {
@@ -5516,6 +6029,31 @@
                     const memoryOptions = [...new Set(data.variants
                         .map(v => v.memory)
                         .filter(memory => memory && memory.trim() !== ''))];
+                    
+                    // Функция для сортировки памяти: 128, 256, 512, 1TB, 2TB
+                    const sortMemory = (a, b) => {
+                        const parseMemory = (mem) => {
+                            if (!mem) return 0;
+                            const memStr = mem.toString().toUpperCase().trim();
+                            // Обработка TB
+                            if (memStr.includes('TB')) {
+                                const num = parseFloat(memStr);
+                                return num * 1000; // 1TB = 1000, 2TB = 2000
+                            }
+                            // Обработка GB
+                            if (memStr.includes('GB')) {
+                                return parseFloat(memStr);
+                            }
+                            // Если просто число, предполагаем GB
+                            return parseFloat(memStr);
+                        };
+                        
+                        return parseMemory(a) - parseMemory(b);
+                    };
+                    
+                    // Сортируем варианты памяти
+                    memoryOptions.sort(sortMemory);
+                    
                     const memoryButtons = memoryOptions.map((memory, index) => {
                         const activeClass = index === 0 ? 'active' : '';
                         return `
@@ -6516,8 +7054,14 @@
                         const deltaY = Math.abs(endY - startY);
                         
                         // Определяем, что это горизонтальный свайп
-                        if (deltaX > deltaY && deltaX > 30) {
+                        // Только если горизонтальное движение значительно больше вертикального
+                        if (deltaX > deltaY * 2 && deltaX > 30) {
                             isSwipe = true;
+                        } else if (deltaY > deltaX * 2) {
+                            // Если вертикальное движение значительно больше горизонтального,
+                            // это явно вертикальная прокрутка - не обрабатываем
+                            isSwipe = false;
+                            return;
                         }
                     }
                 };
@@ -6932,6 +7476,8 @@
             const modal = document.getElementById('cartModal');
             if (modal) {
                 modal.classList.add('active');
+                // Предотвращаем прокрутку body при открытой корзине
+                document.body.style.overflow = 'hidden';
                 renderCart();
             }
         }
@@ -6940,14 +7486,28 @@
             const modal = document.getElementById('cartModal');
             if (modal) {
                 modal.classList.remove('active');
+                // Восстанавливаем прокрутку body
+                document.body.style.overflow = '';
             }
         }
         
         function addToCart(productId, product) {
-            const existingItem = cart.find(item => item.id === productId && 
-                item.color === product.selectedColor &&
-                item.memory === product.selectedMemory &&
-                item.sim === product.selectedSim);
+            // Сравниваем все варианты товара
+            const existingItem = cart.find(item => {
+                if (item.id !== productId) return false;
+                
+                // Сравниваем все варианты
+                const variantsMatch = 
+                    (item.color || '') === (product.selectedColor || '') &&
+                    (item.memory || '') === (product.selectedMemory || '') &&
+                    (item.sim || '') === (product.selectedSim || '') &&
+                    (item.ram || '') === (product.selectedRam || '') &&
+                    (item.ssd || '') === (product.selectedSsd || '') &&
+                    (item.screen || '') === (product.selectedScreen || '') &&
+                    (item.capacity || '') === (product.selectedCapacity || '');
+                
+                return variantsMatch;
+            });
             
             if (existingItem) {
                 existingItem.quantity += 1;
@@ -6963,6 +7523,10 @@
                     color: product.selectedColor || '',
                     memory: product.selectedMemory || '',
                     sim: product.selectedSim || '',
+                    ram: product.selectedRam || '',
+                    ssd: product.selectedSsd || '',
+                    screen: product.selectedScreen || '',
+                    capacity: product.selectedCapacity || '',
                     quantity: 1,
                     specs: product.specs || {}
                 });
@@ -7057,7 +7621,8 @@
                 const specsText = [
                     item.color ? item.color : '',
                     item.memory ? item.memory : '',
-                    item.sim ? item.sim : ''
+                    item.sim ? item.sim : '',
+                    item.ram ? item.ram : ''
                 ].filter(s => s).join(', ');
                 
                 return `
@@ -7184,9 +7749,10 @@
                     name: item.name,
                     price: item.price,
                     quantity: item.quantity,
-                    color: item.color,
-                    memory: item.memory,
-                    sim: item.sim
+                    color: item.color || null,
+                    memory: item.memory || null,
+                    sim: item.sim || null,
+                    ram: item.ram || null
                 })),
                 total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)
             };
@@ -7266,32 +7832,60 @@
             }, 5000);
         }
         
-        // Helper function to get selected variants from product card
+        // Helper function to get selected variants from product card or details page
         function getSelectedVariants(productId) {
-            const productCard = document.querySelector(`[data-product-id="${productId}"]`)?.closest('.product-card');
-            if (!productCard) return { color: '', memory: '', sim: '' };
+            // Сначала пытаемся найти в карточке товара
+            let productCard = document.querySelector(`[data-product-id="${productId}"]`)?.closest('.product-card');
+            
+            // Если не найдено в карточке, ищем на странице деталей
+            if (!productCard) {
+                productCard = document.querySelector(`#product-details-${productId}`) || 
+                             document.querySelector(`[data-product-id="${productId}"]`)?.closest('.product-details') ||
+                             document.querySelector(`.product-details[data-product-id="${productId}"]`);
+            }
+            
+            if (!productCard) return { color: '', memory: '', sim: '', ram: '', ssd: '', screen: '', capacity: '' };
             
             const variantsContainer = productCard.querySelector('.product-variants');
-            if (!variantsContainer) return { color: '', memory: '', sim: '' };
+            if (!variantsContainer) return { color: '', memory: '', sim: '', ram: '', ssd: '', screen: '', capacity: '' };
             
             const selectedVariants = {};
             const activeButtons = variantsContainer.querySelectorAll('.variant-btn.active');
             activeButtons.forEach(btn => {
                 const type = btn.dataset.type;
-                const value = btn.dataset.value || btn.dataset.color;
+                // Получаем значение в зависимости от типа варианта
+                let value = '';
                 if (type === 'color') {
-                    selectedVariants.color = value || '';
+                    value = btn.dataset.color || btn.dataset.value || '';
                 } else if (type === 'memory') {
-                    selectedVariants.memory = value || '';
+                    value = btn.dataset.memory || btn.dataset.value || '';
                 } else if (type === 'sim') {
-                    selectedVariants.sim = value || '';
+                    value = btn.dataset.sim || btn.dataset.value || '';
+                } else if (type === 'ram') {
+                    value = btn.dataset.ram || btn.dataset.value || '';
+                } else if (type === 'ssd') {
+                    value = btn.dataset.ssd || btn.dataset.value || '';
+                } else if (type === 'screen') {
+                    value = btn.dataset.screen || btn.dataset.value || '';
+                } else if (type === 'capacity') {
+                    value = btn.dataset.capacity || btn.dataset.value || '';
+                } else {
+                    value = btn.dataset.value || '';
+                }
+                
+                if (type && value) {
+                    selectedVariants[type] = value;
                 }
             });
             
             return {
                 color: selectedVariants.color || '',
                 memory: selectedVariants.memory || '',
-                sim: selectedVariants.sim || ''
+                sim: selectedVariants.sim || '',
+                ram: selectedVariants.ram || '',
+                ssd: selectedVariants.ssd || '',
+                screen: selectedVariants.screen || '',
+                capacity: selectedVariants.capacity || ''
             };
         }
         
@@ -7358,9 +7952,13 @@
                     name: product.name,
                     image: productImage,
                     price: currentPrice,
-                    selectedColor: variants.color,
-                    selectedMemory: variants.memory,
-                    selectedSim: variants.sim,
+                    selectedColor: variants.color || '',
+                    selectedMemory: variants.memory || '',
+                    selectedSim: variants.sim || '',
+                    selectedRam: variants.ram || '',
+                    selectedSsd: variants.ssd || '',
+                    selectedScreen: variants.screen || '',
+                    selectedCapacity: variants.capacity || '',
                     specs: {}
                 };
                 
@@ -7484,9 +8082,13 @@
                     name: product.name,
                     image: productImage,
                     price: currentPrice,
-                    selectedColor: variants.color,
-                    selectedMemory: variants.memory,
-                    selectedSim: variants.sim,
+                    selectedColor: variants.color || '',
+                    selectedMemory: variants.memory || '',
+                    selectedSim: variants.sim || '',
+                    selectedRam: variants.ram || '',
+                    selectedSsd: variants.ssd || '',
+                    selectedScreen: variants.screen || '',
+                    selectedCapacity: variants.capacity || '',
                     specs: {}
                 };
                 

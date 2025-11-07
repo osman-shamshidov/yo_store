@@ -191,6 +191,7 @@ class OrderItem(Base):
     color = Column(String(50))
     memory = Column(String(50))
     sim = Column(String(50))
+    ram = Column(String(50))
     created_at = Column(DateTime, default=datetime.utcnow)
     
     # Связи
