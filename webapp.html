@@ -502,35 +502,8 @@
             padding: 8px 0;
         }
         
-        .catalog-dropdown-menu:not(.show) .catalog-dropdown-item {
+        .catalog-dropdown-menu .catalog-dropdown-item {
             opacity: 1;
-            animation: none;
-        }
-        
-        .catalog-dropdown-menu.show .catalog-dropdown-item {
-            animation: slideInLeft 0.3s ease forwards;
-            opacity: 0;
-        }
-        
-        .catalog-dropdown-menu.show .catalog-dropdown-item:nth-child(1) { animation-delay: 0.05s; }
-        .catalog-dropdown-menu.show .catalog-dropdown-item:nth-child(2) { animation-delay: 0.1s; }
-        .catalog-dropdown-menu.show .catalog-dropdown-item:nth-child(3) { animation-delay: 0.15s; }
-        .catalog-dropdown-menu.show .catalog-dropdown-item:nth-child(4) { animation-delay: 0.2s; }
-        .catalog-dropdown-menu.show .catalog-dropdown-item:nth-child(5) { animation-delay: 0.25s; }
-        .catalog-dropdown-menu.show .catalog-dropdown-item:nth-child(6) { animation-delay: 0.3s; }
-        .catalog-dropdown-menu.show .catalog-dropdown-item:nth-child(7) { animation-delay: 0.35s; }
-        .catalog-dropdown-menu.show .catalog-dropdown-item:nth-child(8) { animation-delay: 0.4s; }
-        .catalog-dropdown-menu.show .catalog-dropdown-item:nth-child(n+9) { animation-delay: 0.45s; }
-        
-        @keyframes slideInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
         }
         
         .catalog-dropdown-loading {
@@ -659,11 +632,18 @@
         }
         .search-icon-btn:hover { color: #2d6cdf; background: #f3f4f6; }
         
+        .promo-banners-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+            background: transparent;
+        }
+        
         .promo-banner {
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            border-radius: 16px;
+            border-radius: 12px;
             padding: 0;
-            margin-bottom: 20px;
             color: white;
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -675,7 +655,48 @@
             animation: fadeInUp 0.6s ease 0.1s forwards;
             display: flex;
             align-items: center;
-            min-height: 120px;
+            min-height: 90px;
+        }
+        
+        .promo-banner-2 {
+            background: linear-gradient(135deg, #2d1b3d 0%, #1a0f2e 50%, #0f0819 100%);
+        }
+        
+        .promo-banner-2::before {
+            background: radial-gradient(circle, rgba(147, 51, 234, 0.15) 0%, transparent 70%);
+        }
+        
+        .promo-banner-2::after {
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.1) 0%, transparent 50%);
+        }
+        
+        .promo-banner-2:hover {
+            box-shadow: 0 20px 60px rgba(147, 51, 234, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2);
+        }
+        
+        .promo-banner-2 .promo-image {
+            border-radius: 0 12px 12px 0;
+        }
+        
+        .promo-banner-2 .promo-text {
+            color: white;
+        }
+        
+        .promo-banner-2 .promo-title {
+            background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .promo-banner-2 .promo-subtitle {
+            color: rgba(255, 255, 255, 0.95);
+        }
+        
+        .promo-banner-2 .promo-badge {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
         
         .promo-banner::before {
@@ -714,27 +735,29 @@
             position: relative;
             z-index: 2;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: space-between;
             width: 100%;
-            padding: 15px 20px;
-            gap: 20px;
+            padding: 10px 15px;
+            gap: 15px;
         }
         
         .promo-text {
             flex: 1;
             max-width: 50%;
+            align-self: flex-start;
+            padding-top: 0;
         }
         
         .promo-badge {
             display: inline-block;
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%);
             backdrop-filter: blur(20px);
-            padding: 4px 12px;
-            border-radius: 16px;
-            font-size: 0.6rem;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.5rem;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             text-transform: uppercase;
             letter-spacing: 1px;
             border: 1px solid rgba(255, 255, 255, 0.3);
@@ -742,9 +765,9 @@
         }
         
         .promo-title {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: 800;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
             text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
             -webkit-background-clip: text;
@@ -754,7 +777,7 @@
         }
         
         .promo-subtitle {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             opacity: 0.9;
             font-weight: 400;
             line-height: 1.4;
@@ -773,7 +796,7 @@
         .promo-image img {
             max-width: 100%;
             height: auto;
-            max-height: 140px;
+            max-height: 100px;
             object-fit: contain;
             filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.4));
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -783,21 +806,97 @@
             transform: scale(1.05) rotate(-2deg);
         }
         
+        /* Карусель для мобильной версии */
+        .promo-carousel-wrapper {
+            position: relative;
+            margin-bottom: 15px;
+            background: transparent;
+        }
+        
+        .promo-carousel-indicators {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            padding: 0;
+            position: absolute;
+            bottom: 8px;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            pointer-events: none;
+        }
+        
+        .promo-carousel-indicator {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            padding: 0;
+            pointer-events: auto;
+        }
+        
+        .promo-carousel-indicator.active {
+            background: rgba(255, 255, 255, 0.9);
+            width: 16px;
+            border-radius: 3px;
+        }
+        
         @media (max-width: 968px) {
+            .promo-banners-container {
+                display: flex;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                scroll-behavior: smooth;
+                gap: 12px;
+                background: transparent;
+                -webkit-overflow-scrolling: touch;
+                padding: 0;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+            
+            .promo-banners-container::-webkit-scrollbar {
+                display: none;
+            }
+            
+            .promo-carousel-indicators {
+                display: flex;
+            }
+            
             .promo-banner {
-                min-height: 110px;
-                border-radius: 14px;
+                min-width: 100%;
+                width: 100%;
+                flex-shrink: 0;
+                scroll-snap-align: start;
+                min-height: 240px;
+                border-radius: 12px;
+                margin-right: 0;
+                box-shadow: none;
+                position: relative;
+            }
+            
+            .promo-banner::before,
+            .promo-banner::after {
+                display: none;
             }
             
             .promo-banner-content {
                 flex-direction: column;
-                padding: 15px;
-                gap: 10px;
+                align-items: center;
+                justify-content: center;
+                padding: 10px 12px;
+                gap: 8px;
                 text-align: center;
             }
             
             .promo-text {
                 max-width: 100%;
+                align-self: center;
+                text-align: center;
             }
             
             .promo-image {
@@ -823,23 +922,65 @@
         }
         
         @media (max-width: 768px) {
+            .promo-banners-container {
+                display: flex;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                scroll-behavior: smooth;
+                gap: 12px;
+                background: transparent;
+                -webkit-overflow-scrolling: touch;
+                padding: 0;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+            
+            .promo-banners-container::-webkit-scrollbar {
+                display: none;
+            }
+            
+            .promo-carousel-indicators {
+                display: flex;
+            }
+            
             .promo-banner {
-                min-height: 100px;
-                border-radius: 12px;
-                margin-bottom: 15px;
+                min-width: 100%;
+                width: 100%;
+                flex-shrink: 0;
+                scroll-snap-align: start;
+                min-height: 220px;
+                border-radius: 10px;
+                margin-bottom: 0;
+                box-shadow: none;
+                position: relative;
+            }
+            
+            .promo-banner::before,
+            .promo-banner::after {
+                display: none;
             }
             
             .promo-banner-content {
-                padding: 12px;
-                gap: 8px;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 8px 10px;
+                gap: 6px;
+                text-align: center;
+            }
+            
+            .promo-text {
+                max-width: 100%;
+                align-self: center;
+                text-align: center;
             }
             
             .promo-title {
-                font-size: 1.1rem;
+                font-size: 1rem;
             }
             
             .promo-subtitle {
-                font-size: 0.7rem;
+                font-size: 0.65rem;
             }
             
             .promo-badge {
@@ -855,14 +996,14 @@
         .categories {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
+            gap: 12px;
             margin-bottom: 30px;
         }
         
         .category-card {
             background: white;
-            border-radius: 15px;
-            padding: 12px 20px 20px 20px;
+            border-radius: 12px;
+            padding: 8px 12px 12px 12px;
             text-align: center;
             cursor: pointer;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -894,8 +1035,8 @@
         /* Стили для заголовка категории */
         .category-header {
             cursor: pointer;
-            padding: 10px;
-            border-radius: 10px;
+            padding: 0;
+            border-radius: 8px;
             transition: background-color 0.2s ease;
             background-color: white !important;
             margin-bottom: 0;
@@ -907,7 +1048,7 @@
             flex-wrap: wrap;
             gap: 6px;
             margin-top: 0;
-            padding: 8px;
+            padding: 6px;
             background: transparent;
             border-radius: 12px;
             border: none;
@@ -919,8 +1060,8 @@
         
         .category-card.expanded .brands-container {
             max-height: 500px;
-            padding: 20px;
-            gap: 15px;
+            padding: 16px;
+            gap: 12px;
         }
         
         /* Стили для кнопок брендов - изначально маленькие */
@@ -1916,14 +2057,13 @@
         }
         
         .category-icon {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            width: 170px;
-            height: 170px;
+            font-size: 2.2rem;
+            width: 160px;
+            height: 160px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 10px;
+            margin: 0 auto 6px;
         }
         .category-icon svg { width: 28px; height: 28px; display: inline-block; vertical-align: middle; }
         .category-icon img {
@@ -1936,11 +2076,12 @@
         .category-name {
             font-weight: 600;
             color: #333;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
+            font-size: 0.95rem;
         }
         
         .category-count {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #666;
         }
         
@@ -4841,17 +4982,34 @@
                 
                 const content = document.getElementById('content');
                 let categoriesHtml = `
-                    <div class="promo-banner" onclick="loadProductsWithFilters('Apple', 'Смартфоны', '17 Series', 'iPhone 17 Pro Max');">
-                        <div class="promo-banner-content">
-                            <div class="promo-text">
-                                <div class="promo-badge">Новинка</div>
-                                <div class="promo-title">17 Pro Max</div>
-                                <div class="promo-subtitle">Новейший iPhone с максимальными возможностями</div>
+                    <div class="promo-carousel-wrapper">
+                        <div class="promo-banners-container" id="promoCarousel">
+                            <div class="promo-banner" onclick="loadProductsWithFilters('Apple', 'Смартфоны', '17 Series', 'iPhone 17 Pro Max');">
+                                <div class="promo-banner-content">
+                                    <div class="promo-text">
+                                        <div class="promo-badge">Новинка</div>
+                                        <div class="promo-title">17 Pro Max</div>
+                                        <div class="promo-subtitle">Новейший iPhone с максимальными возможностями</div>
+                                    </div>
+                                    <div class="promo-image">
+                                        <img src="https://cdsassets.apple.com/live/7WUAS350/images/tech-specs/iphone-17-pro-17-pro-max-hero.png" alt="iPhone 17 Pro Max" onerror="this.src='/static/images/products/iphone17promax/deep-blue/11ptutry3p2bjayjbb3gdshlawsw7qpk6f.jpg'">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="promo-image">
-                                <img src="https://cdsassets.apple.com/live/7WUAS350/images/tech-specs/iphone-17-pro-17-pro-max-hero.png" alt="iPhone 17 Pro Max" onerror="this.src='/static/images/products/iphone17promax/deep-blue/11ptutry3p2bjayjbb3gdshlawsw7qpk6f.jpg'">
+                            <div class="promo-banner promo-banner-2" onclick="loadProductsWithFilters('Apple', 'Наушники', null, 'AirPods Pro 3');">
+                                <div class="promo-banner-content">
+                                    <div class="promo-text">
+                                        <div class="promo-badge">Новинка</div>
+                                        <div class="promo-title">AirPods Pro 3</div>
+                                        <div class="promo-subtitle">Превосходное качество звука и комфорт</div>
+                                    </div>
+                                    <div class="promo-image">
+                                        <img src="https://www.apple.com/v/airpods-pro/r/images/overview/battery/case__b87ou7jna9de_large.png" alt="AirPods Pro 3" onerror="this.src='/static/images/products/airpodspro2/white/1.jpg'">
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <div class="promo-carousel-indicators" id="promoCarouselIndicators"></div>
                     </div>
                     <div class="categories">
                 `;
@@ -4913,6 +5071,9 @@
                 content.innerHTML = categoriesHtml;
                 console.log('Categories HTML generated and displayed');
                 
+                // Инициализируем карусель промо-блоков
+                initPromoCarousel();
+                
                 // Добавляем плавную анимацию появления для категорий
                 setTimeout(() => {
                     const categoryCards = document.querySelectorAll('.category-card');
@@ -4936,6 +5097,182 @@
             if (categoryCard) {
                 categoryCard.classList.toggle('expanded');
             }
+        }
+        
+        // Инициализация карусели промо-блоков
+        function initPromoCarousel() {
+            const carousel = document.getElementById('promoCarousel');
+            const indicatorsContainer = document.getElementById('promoCarouselIndicators');
+            
+            if (!carousel || !indicatorsContainer) return;
+            
+            const banners = carousel.querySelectorAll('.promo-banner');
+            if (banners.length <= 1) return; // Не нужна карусель, если только один блок
+            
+            // Создаем индикаторы
+            indicatorsContainer.innerHTML = '';
+            banners.forEach((_, index) => {
+                const indicator = document.createElement('button');
+                indicator.className = 'promo-carousel-indicator';
+                if (index === 0) indicator.classList.add('active');
+                indicator.setAttribute('aria-label', `Перейти к слайду ${index + 1}`);
+                indicator.addEventListener('click', () => goToSlide(index));
+                indicatorsContainer.appendChild(indicator);
+            });
+            
+            let currentIndex = 0;
+            let autoScrollInterval = null;
+            let isPaused = false;
+            let isUserInteracting = false;
+            
+            // Функция перехода к слайду
+            function goToSlide(index) {
+                if (index < 0 || index >= banners.length) return;
+                
+                const banner = banners[index];
+                if (!banner) return;
+                
+                currentIndex = index;
+                const scrollLeft = banner.offsetLeft - carousel.offsetLeft;
+                carousel.scrollTo({
+                    left: scrollLeft,
+                    behavior: 'smooth'
+                });
+                
+                // Обновляем индикаторы
+                const indicators = indicatorsContainer.querySelectorAll('.promo-carousel-indicator');
+                indicators.forEach((ind, i) => {
+                    if (i === index) {
+                        ind.classList.add('active');
+                    } else {
+                        ind.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Функция автопрокрутки
+            function startAutoScroll() {
+                if (autoScrollInterval) clearInterval(autoScrollInterval);
+                if (isPaused || isUserInteracting) return;
+                
+                autoScrollInterval = setInterval(() => {
+                    if (isPaused || isUserInteracting) return;
+                    
+                    currentIndex = (currentIndex + 1) % banners.length;
+                    goToSlide(currentIndex);
+                }, 4000); // Автопрокрутка каждые 4 секунды
+            }
+            
+            // Остановка автопрокрутки
+            function stopAutoScroll() {
+                if (autoScrollInterval) {
+                    clearInterval(autoScrollInterval);
+                    autoScrollInterval = null;
+                }
+            }
+            
+            // Пауза автопрокрутки
+            function pauseAutoScroll() {
+                isPaused = true;
+                stopAutoScroll();
+            }
+            
+            // Возобновление автопрокрутки
+            function resumeAutoScroll() {
+                isPaused = false;
+                if (!isUserInteracting) {
+                    startAutoScroll();
+                }
+            }
+            
+            // Обработка прокрутки для обновления индикаторов
+            let scrollTimeout;
+            
+            carousel.addEventListener('scroll', () => {
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(() => {
+                    const scrollLeft = carousel.scrollLeft;
+                    
+                    // Находим ближайший баннер
+                    let closestIndex = 0;
+                    let closestDistance = Infinity;
+                    
+                    banners.forEach((banner, index) => {
+                        const distance = Math.abs(banner.offsetLeft - scrollLeft - carousel.offsetLeft);
+                        if (distance < closestDistance) {
+                            closestDistance = distance;
+                            closestIndex = index;
+                        }
+                    });
+                    
+                    currentIndex = closestIndex;
+                    
+                    const indicators = indicatorsContainer.querySelectorAll('.promo-carousel-indicator');
+                    indicators.forEach((ind, i) => {
+                        if (i === closestIndex) {
+                            ind.classList.add('active');
+                        } else {
+                            ind.classList.remove('active');
+                        }
+                    });
+                }, 100);
+            });
+            
+            // Остановка при взаимодействии пользователя
+            carousel.addEventListener('mouseenter', () => {
+                isUserInteracting = true;
+                pauseAutoScroll();
+            });
+            
+            carousel.addEventListener('mouseleave', () => {
+                isUserInteracting = false;
+                resumeAutoScroll();
+            });
+            
+            // Поддержка свайпов на мобильных устройствах
+            let touchStartX = 0;
+            let touchEndX = 0;
+            let touchEndTimeout = null;
+            
+            carousel.addEventListener('touchstart', (e) => {
+                isUserInteracting = true;
+                pauseAutoScroll();
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+            
+            carousel.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+                
+                // Возобновляем через 3 секунды после окончания взаимодействия
+                if (touchEndTimeout) clearTimeout(touchEndTimeout);
+                touchEndTimeout = setTimeout(() => {
+                    isUserInteracting = false;
+                    resumeAutoScroll();
+                }, 3000);
+            }, { passive: true });
+            
+            function handleSwipe() {
+                const swipeThreshold = 50;
+                const diff = touchStartX - touchEndX;
+                
+                if (Math.abs(diff) > swipeThreshold) {
+                    let newIndex;
+                    
+                    if (diff > 0) {
+                        // Свайп влево - следующий слайд
+                        newIndex = Math.min(currentIndex + 1, banners.length - 1);
+                    } else {
+                        // Свайп вправо - предыдущий слайд
+                        newIndex = Math.max(currentIndex - 1, 0);
+                    }
+                    
+                    goToSlide(newIndex);
+                }
+            }
+            
+            // Запускаем автопрокрутку
+            startAutoScroll();
         }
         
         // Load subcategories for category
