@@ -3331,7 +3331,19 @@
         }
         
         .shipping-icon {
-            font-size: 1.2rem;
+            width: 18px;
+            height: 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .shipping-icon svg {
+            width: 100%;
+            height: 100%;
+            stroke: currentColor;
+            fill: none;
         }
         
         .shipping-text {
@@ -3367,7 +3379,7 @@
         
         .shipping-option-item input[type="radio"]:checked + .shipping-option-box {
             border-color: #007AFF;
-            background: #f0f7ff;
+            background: rgba(0, 122, 255, 0.03);
         }
         
         .shipping-option-title {
@@ -4026,14 +4038,26 @@
                             <label class="shipping-option">
                                 <input type="radio" name="shipping_type" value="delivery" checked>
                                 <span class="shipping-label">
-                                    <span class="shipping-icon">🚚</span>
+                                    <span class="shipping-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="1" y="3" width="15" height="13"></rect>
+                                            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                                            <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                            <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                                        </svg>
+                                    </span>
                                     <span class="shipping-text">Доставка</span>
                                 </span>
                             </label>
                             <label class="shipping-option">
                                 <input type="radio" name="shipping_type" value="pickup">
                                 <span class="shipping-label">
-                                    <span class="shipping-icon">📍</span>
+                                    <span class="shipping-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                            <circle cx="12" cy="10" r="3"></circle>
+                                        </svg>
+                                    </span>
                                     <span class="shipping-text">Самовывоз</span>
                                 </span>
                             </label>
@@ -4061,9 +4085,29 @@
                         </div>
                     </div>
                     <div class="form-group shipping-pickup" id="shippingPickup" style="display: none;">
-                        <label class="form-group-title">Адрес самовывоза</label>
-                        <div class="pickup-address">г. Москва, ул. Примерная, 10, офис 5</div>
-                        <div class="pickup-hours">Пн–Вс: 10:00–20:00</div>
+                        <label class="form-group-title">Самовывоз</label>
+                        <div class="shipping-option-box" style="border-color: #007AFF; background: rgba(0, 122, 255, 0.03);">
+                            <div class="shipping-option-title">Наш магазин</div>
+                            <div class="shipping-option-desc" style="margin-top: 8px; margin-bottom: 12px;">
+                                Вы можете получить ваш заказ в нашем уютном магазине в центре Москвы. Для всех клиентов есть собственная бесплатная парковка.
+                            </div>
+                            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e5e7eb;">
+                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #6b7280; flex-shrink: 0;">
+                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                        <circle cx="12" cy="10" r="3"></circle>
+                                    </svg>
+                                    <div style="font-size: 0.875rem; color: #111827; font-weight: 500;">г. Москва, ул. Примерная, 10, офис 5</div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #6b7280; flex-shrink: 0;">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    </svg>
+                                    <div style="font-size: 0.875rem; color: #6b7280;">Пн–Вс: 10:00–20:00</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <textarea id="customerAddress" name="address" rows="2" placeholder="Адрес доставки"></textarea>
@@ -4190,7 +4234,7 @@
                     </div>
                     <div class="cart-total-item cart-total-final">
                         <span class="cart-total-label">Итого</span>
-                        <span class="cart-total-price" id="cartTotalPrice">0</span>
+                        <span class="cart-total-price" id="cartTotalPrice">0 ₽</span>
                     </div>
                 </div>
             </div>
@@ -8923,7 +8967,7 @@
                 cartSubtotalPrice.textContent = `${Math.round(total).toLocaleString()} ₽`;
             }
             if (cartTotalPrice) {
-                cartTotalPrice.textContent = Math.round(finalTotal).toLocaleString();
+                cartTotalPrice.textContent = `${Math.round(finalTotal).toLocaleString()} ₽`;
             }
         }
         
