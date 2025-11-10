@@ -1621,6 +1621,109 @@ async def update_single_price(
         db.rollback()
         raise HTTPException(status_code=400, detail=f"Ошибка обновления цены: {str(e)}")
 
+@app.get("/api/orders")
+async def get_all_orders(db: Session = Depends(get_db)):
+    """Получить все заказы с товарами"""
+    try:
+        orders = db.query(Order).order_by(Order.created_at.desc()).all()
+        
+        result = []
+        for order in orders:
+            # Получаем товары заказа
+            order_items = db.query(OrderItem).filter(OrderItem.order_id == order.id).all()
+            
+            items = []
+            for item in order_items:
+                items.append({
+                    "id": item.id,
+                    "product_id": item.product_id,
+                    "name": item.product_name,
+                    "price": item.price,
+                    "quantity": item.quantity,
+                    "color": item.color,
+                    "memory": item.memory,
+                    "sim": item.sim,
+                    "ram": item.ram
+                })
+            
+            result.append({
+                "id": order.id,
+                "order_number": order.order_number,
+                "customer_name": order.customer_name,
+                "contact_method": order.contact_method,
+                "contact_value": order.contact_value,
+                "address": order.address,
+                "comment": order.comment,
+                "shipping_type": order.shipping_type,
+                "delivery_option": order.delivery_option,
+                "pickup_address": order.pickup_address,
+                "delivery_datetime": order.delivery_datetime.isoformat() if order.delivery_datetime else None,
+                "total": order.total,
+                "promo_code": order.promo_code,
+                "discount_amount": order.discount_amount,
+                "final_total": order.final_total,
+                "status": order.status,
+                "created_at": order.created_at.isoformat() if order.created_at else None,
+                "updated_at": order.updated_at.isoformat() if order.updated_at else None,
+                "items": items
+            })
+        
+        return {"success": True, "orders": result, "total": len(result)}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ошибка получения заказов: {str(e)}")
+
+@app.post("/update-price")
+async def update_price_by_sku(price_data: dict, db: Session = Depends(get_db)):
+    """Обновить цену товара по SKU"""
+    try:
+        sku = price_data.get('sku')
+        new_price = price_data.get('price')
+        old_price = price_data.get('old_price', new_price)
+        
+        if not sku or new_price is None:
+            raise HTTPException(status_code=400, detail="SKU и цена обязательны")
+        
+        # Найти товар по SKU
+        product = db.query(Product).filter(Product.sku == sku).first()
+        
+        if not product:
+            raise HTTPException(status_code=404, detail=f"Товар с SKU '{sku}' не найден")
+        
+        # Обновить или создать цену
+        current_price = db.query(CurrentPrice).filter(CurrentPrice.sku == sku).first()
+        
+        if current_price:
+            # Обновить существующую цену
+            current_price.price = float(new_price)
+            current_price.old_price = float(old_price) if old_price else float(new_price)
+            current_price.discount_percentage = ((float(old_price) - float(new_price)) / float(old_price) * 100) if old_price and float(old_price) > float(new_price) else 0
+            current_price.updated_at = datetime.utcnow()
+        else:
+            # Создать новую цену
+            new_price_obj = CurrentPrice(
+                sku=sku,
+                price=float(new_price),
+                old_price=float(old_price) if old_price else float(new_price),
+                discount_percentage=((float(old_price) - float(new_price)) / float(old_price) * 100) if old_price and float(old_price) > float(new_price) else 0,
+                currency='RUB'
+            )
+            db.add(new_price_obj)
+        
+        db.commit()
+        
+        return {
+            "message": f"Цена для товара {sku} успешно обновлена",
+            "sku": sku,
+            "price": float(new_price),
+            "old_price": float(old_price) if old_price else float(new_price)
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Ошибка обновления цены: {str(e)}")
+
 @app.get("/product-images/{model_key}/{color}")
 async def get_product_images_by_color(model_key: str, color: str, db: Session = Depends(get_db)):
     """Get images for a specific product color from ProductImage table"""
@@ -2750,6 +2853,183 @@ async def create_order(order_data: OrderCreate, db: Session = Depends(get_db)):
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Ошибка создания заказа: {str(e)}")
+
+# --- Image Management API Endpoints ---
+
+class ImageUpdateRequest(BaseModel):
+    level_2: str
+    color: str
+    images: List[str]  # Список URL изображений
+
+@app.get("/api/images")
+async def get_all_images(db: Session = Depends(get_db)):
+    """Получить все изображения товаров"""
+    try:
+        product_images = db.query(ProductImage).all()
+        result = []
+        
+        for img in product_images:
+            try:
+                images_data = json.loads(img.img_list) if img.img_list else []
+                image_urls = []
+                
+                for img_data in images_data:
+                    if isinstance(img_data, dict):
+                        image_urls.append(img_data.get("url", ""))
+                    elif isinstance(img_data, str):
+                        image_urls.append(img_data)
+                
+                result.append({
+                    "id": img.id,
+                    "level_2": img.level_2,
+                    "color": img.color,
+                    "images": image_urls,
+                    "created_at": img.created_at.isoformat() if img.created_at else None,
+                    "updated_at": img.updated_at.isoformat() if img.updated_at else None
+                })
+            except (json.JSONDecodeError, TypeError):
+                result.append({
+                    "id": img.id,
+                    "level_2": img.level_2,
+                    "color": img.color,
+                    "images": [],
+                    "created_at": img.created_at.isoformat() if img.created_at else None,
+                    "updated_at": img.updated_at.isoformat() if img.updated_at else None
+                })
+        
+        return {"success": True, "images": result}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ошибка получения изображений: {str(e)}")
+
+@app.get("/api/images/{level_2}/{color}")
+async def get_images_by_product(level_2: str, color: str, db: Session = Depends(get_db)):
+    """Получить изображения для конкретного товара"""
+    try:
+        product_image = db.query(ProductImage).filter(
+            ProductImage.level_2 == level_2,
+            ProductImage.color == color
+        ).first()
+        
+        if not product_image:
+            return {"success": True, "images": []}
+        
+        try:
+            images_data = json.loads(product_image.img_list) if product_image.img_list else []
+            image_urls = []
+            
+            for img_data in images_data:
+                if isinstance(img_data, dict):
+                    image_urls.append(img_data.get("url", ""))
+                elif isinstance(img_data, str):
+                    image_urls.append(img_data)
+            
+            return {
+                "success": True,
+                "id": product_image.id,
+                "level_2": product_image.level_2,
+                "color": product_image.color,
+                "images": image_urls
+            }
+        except (json.JSONDecodeError, TypeError):
+            return {"success": True, "images": []}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ошибка получения изображений: {str(e)}")
+
+@app.put("/api/images/{level_2}/{color}")
+async def update_images(level_2: str, color: str, request: ImageUpdateRequest, db: Session = Depends(get_db)):
+    """Обновить изображения для товара"""
+    try:
+        product_image = db.query(ProductImage).filter(
+            ProductImage.level_2 == level_2,
+            ProductImage.color == color
+        ).first()
+        
+        # Формируем JSON массив изображений
+        images_json = json.dumps([{"url": url} for url in request.images])
+        
+        if product_image:
+            # Обновляем существующую запись
+            product_image.img_list = images_json
+            product_image.updated_at = datetime.utcnow()
+        else:
+            # Создаем новую запись
+            product_image = ProductImage(
+                level_2=level_2,
+                color=color,
+                img_list=images_json
+            )
+            db.add(product_image)
+        
+        db.commit()
+        db.refresh(product_image)
+        
+        return {
+            "success": True,
+            "message": "Изображения успешно обновлены",
+            "id": product_image.id
+        }
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Ошибка обновления изображений: {str(e)}")
+
+@app.post("/api/images")
+async def create_images(request: ImageUpdateRequest, db: Session = Depends(get_db)):
+    """Создать новую запись изображений"""
+    try:
+        # Проверяем, существует ли уже запись
+        existing = db.query(ProductImage).filter(
+            ProductImage.level_2 == request.level_2,
+            ProductImage.color == request.color
+        ).first()
+        
+        if existing:
+            raise HTTPException(status_code=400, detail="Изображения для этого товара уже существуют. Используйте PUT для обновления.")
+        
+        # Формируем JSON массив изображений
+        images_json = json.dumps([{"url": url} for url in request.images])
+        
+        product_image = ProductImage(
+            level_2=request.level_2,
+            color=request.color,
+            img_list=images_json
+        )
+        
+        db.add(product_image)
+        db.commit()
+        db.refresh(product_image)
+        
+        return {
+            "success": True,
+            "message": "Изображения успешно созданы",
+            "id": product_image.id
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Ошибка создания изображений: {str(e)}")
+
+@app.delete("/api/images/{image_id}")
+async def delete_image(image_id: int, db: Session = Depends(get_db)):
+    """Удалить запись изображений"""
+    try:
+        product_image = db.query(ProductImage).filter(ProductImage.id == image_id).first()
+        
+        if not product_image:
+            raise HTTPException(status_code=404, detail="Изображения не найдены")
+        
+        db.delete(product_image)
+        db.commit()
+        
+        return {
+            "success": True,
+            "message": "Изображения успешно удалены"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Ошибка удаления изображений: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn

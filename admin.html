@@ -16,9 +16,9 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
             min-height: 100vh;
-            color: #fff;
+            color: #111827;
         }
         
         .container {
@@ -35,11 +35,12 @@
         .header h1 {
             font-size: 2.5rem;
             margin-bottom: 10px;
-            color: #f39c12;
+            color: #111827;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 15px;
+            font-weight: 700;
         }
         
         .logo {
@@ -50,42 +51,63 @@
         }
         
         .admin-nav {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
             display: flex;
-            gap: 10px;
+            gap: 8px;
             justify-content: center;
             flex-wrap: wrap;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
         
         .admin-nav button {
             padding: 10px 20px;
-            border: none;
+            border: 1px solid #e5e7eb;
             border-radius: 8px;
-            background: #3498db;
-            color: white;
+            background: white;
+            color: #374151;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
         
         .admin-nav button:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
+            background: #f9fafb;
+            border-color: #d1d5db;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
         
         .admin-nav button.active {
-            background: #e74c3c;
+            background: #007AFF;
+            color: white;
+            border-color: #007AFF;
+            box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
         }
         
         .admin-content {
             display: none;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 10px;
-            padding: 20px;
-            color: #333;
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            color: #111827;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .admin-content h2 {
+            color: #111827;
+            font-weight: 700;
+            font-size: 1.75rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
         .admin-content.active {
@@ -104,10 +126,19 @@
         
         .form-group input, .form-group select, .form-group textarea {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding: 10px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
             font-size: 14px;
+            transition: all 0.2s ease;
+            background: white;
+            color: #111827;
+        }
+        
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #007AFF;
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
         }
         
         .form-group textarea {
@@ -125,30 +156,46 @@
         }
         
         .btn-primary {
-            background: #3498db;
+            background: #007AFF;
             color: white;
+            border: none;
         }
         
         .btn-primary:hover {
-            background: #2980b9;
+            background: #0051D5;
+            box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
         }
         
         .btn-success {
-            background: #27ae60;
+            background: #10b981;
             color: white;
+            border: none;
         }
         
         .btn-success:hover {
-            background: #229954;
+            background: #059669;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
         }
         
         .btn-danger {
-            background: #e74c3c;
+            background: #ef4444;
             color: white;
+            border: none;
         }
         
         .btn-danger:hover {
-            background: #c0392b;
+            background: #dc2626;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .btn-secondary:hover {
+            background: #e5e7eb;
         }
         
         .product-grid {
@@ -159,35 +206,59 @@
         }
         
         .product-card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
             background: white;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .product-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
         }
         
         .product-card h3 {
-            margin-bottom: 10px;
-            color: #2c3e50;
+            margin-bottom: 12px;
+            color: #111827;
+            font-weight: 600;
+            font-size: 1.1rem;
         }
         
         .product-card p {
-            margin-bottom: 5px;
-            color: #666;
+            margin-bottom: 8px;
+            color: #6b7280;
+            font-size: 0.9rem;
         }
         
         .status-success {
-            color: #27ae60;
+            color: #10b981;
             font-weight: 600;
         }
         
         .status-warning {
-            color: #f39c12;
+            color: #f59e0b;
             font-weight: 600;
         }
         
         .status-error {
-            color: #e74c3c;
+            color: #ef4444;
             font-weight: 600;
+        }
+        
+        .draggable-image {
+            user-select: none;
+        }
+        
+        .draggable-image.dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+        
+        .draggable-image.drag-over {
+            border: 2px dashed #007AFF !important;
+            background: rgba(0, 122, 255, 0.1);
         }
         
         @media (max-width: 768px) {
@@ -213,33 +284,120 @@
     <div class="container">
         <div class="header">
             <h1>
-                🛠️ Yo Store Admin
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #007AFF;">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="9" y1="3" x2="9" y2="21"></line>
+                    <line x1="15" y1="3" x2="15" y2="21"></line>
+                    <line x1="3" y1="9" x2="21" y2="9"></line>
+                    <line x1="3" y1="15" x2="21" y2="15"></line>
+                </svg>
+                Yo Store Admin
                 <img src="/static/images/logo.jpg" alt="Yo Store" class="logo">
             </h1>
-            <p style="color: #bdc3c7;">Панель администратора магазина электроники</p>
+            <p style="color: #6b7280; font-size: 1.1rem; margin-top: 5px;">Панель администратора магазина электроники</p>
         </div>
         
         <div class="admin-nav">
-            <button onclick="showSection('dashboard')" class="active">Обзор</button>
-            <button onclick="showSection('products')">Товары</button>
-            <button onclick="showSection('categories')">Категории</button>
-            <button onclick="showSection('prices')">Цены</button>
-            <button onclick="showSection('upload')">Загрузка Excel</button>
-            <button onclick="showSection('export')">Экспорт</button>
-            <button onclick="showSection('manual')">Ручное управление</button>
+            <button onclick="showSection('orders')" class="active">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                    <path d="M9 14l2 2 4-4"></path>
+                </svg>
+                Заказы
+            </button>
+            <button onclick="showSection('products')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
+                    <path d="M3 6h18"></path>
+                    <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+                Товары
+            </button>
+            <button onclick="showSection('categories')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 7h16"></path>
+                    <path d="M4 12h16"></path>
+                    <path d="M4 17h16"></path>
+                </svg>
+                Категории
+            </button>
+            <button onclick="showSection('prices')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="1" x2="12" y2="23"></line>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+                Цены
+            </button>
+            <button onclick="showSection('images')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                </svg>
+                Изображения
+            </button>
+            <button onclick="showSection('upload')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                Загрузка Excel
+            </button>
+            <button onclick="showSection('export')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Экспорт
+            </button>
+            <button onclick="showSection('manual')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M12 16v-4"></path>
+                    <path d="M12 8h.01"></path>
+                </svg>
+                Ручное управление
+            </button>
         </div>
         
-        <!-- Dashboard Section -->
-        <div id="dashboard" class="admin-content active">
-            <h2>📊 Обзор магазина</h2>
-            <div id="stats-content">
-                <p style="color: #666;">Загрузка статистики...</p>
+        <!-- Orders Section -->
+        <div id="orders" class="admin-content active">
+            <h2>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                    <path d="M9 14l2 2 4-4"></path>
+                </svg>
+                Заказы
+            </h2>
+            <div class="form-group" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+                <button onclick="loadOrders()" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 500;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <polyline points="1 20 1 14 7 14"></polyline>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
+                    Обновить список
+                </button>
+            </div>
+            <div id="orders-content">
+                <p style="color: #666;">Загрузка заказов...</p>
             </div>
         </div>
         
         <!-- Products Section -->
         <div id="products" class="admin-content">
-            <h2>📦 Управление товарами</h2>
+            <h2>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
+                    <path d="M3 6h18"></path>
+                    <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+                Управление товарами
+            </h2>
             <div class="form-group" style="display: flex; gap: 10px; flex-wrap: wrap;">
                 <button onclick="showAddProductForm()" class="btn btn-success">➕ Добавить товар</button>
                 <button onclick="downloadCurrentProducts()" class="btn btn-primary">📥 Скачать текущие товары</button>
@@ -252,7 +410,14 @@
         
         <!-- Categories Section -->
         <div id="categories" class="admin-content">
-            <h2>📂 Управление категориями</h2>
+            <h2>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 7h16"></path>
+                    <path d="M4 12h16"></path>
+                    <path d="M4 17h16"></path>
+                </svg>
+                Управление категориями
+            </h2>
             <div class="form-group">
                 <button onclick="showAddCategoryForm()" class="btn btn-success">Добавить категорию</button>
             </div>
@@ -263,7 +428,13 @@
         
         <!-- Prices Section -->
         <div id="prices" class="admin-content">
-            <h2>💰 Управление ценами</h2>
+            <h2>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="1" x2="12" y2="23"></line>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+                Управление ценами
+            </h2>
             
             <div class="form-group">
                 <h3>📊 Массовое обновление через Excel</h3>
@@ -293,27 +464,40 @@ IPHONE17PROMAX   | 129990     | 149990
             <hr style="margin: 30px 0;">
             
             <div class="form-group">
-                <h3>✏️ Ручное обновление одной цены</h3>
-                <label for="price-sku">Выберите товар:</label>
-                <select id="price-sku">
-                    <option value="">Выберите товар...</option>
-                </select>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="margin: 0; display: flex; align-items: center; gap: 8px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Ручное обновление цен
+                    </h3>
+                    <button onclick="loadPricesTable()" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 500;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="23 4 23 10 17 10"></polyline>
+                            <polyline points="1 20 1 14 7 14"></polyline>
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                        </svg>
+                        Обновить список
+                    </button>
             </div>
-            <div class="form-group">
-                <label for="new-price">Новая цена (руб.):</label>
-                <input type="number" id="new-price" step="0.01" placeholder="0.00">
+                <div id="prices-table-container">
+                    <p style="color: #666;">Загрузка цен...</p>
             </div>
-            <div class="form-group">
-                <label for="old-price">Старая цена (руб.):</label>
-                <input type="number" id="old-price" step="0.01" placeholder="0.00">
+                <div id="price-result" style="margin-top: 20px;"></div>
             </div>
-            <button onclick="updatePrice()" class="btn btn-primary">Обновить цену</button>
-            <div id="price-result"></div>
         </div>
         
         <!-- Upload Section -->
         <div id="upload" class="admin-content">
-            <h2>📤 Загрузка данных из Excel</h2>
+            <h2>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                Загрузка данных из Excel
+            </h2>
             
             <div class="form-group">
                 <h3>📋 Шаблоны для загрузки</h3>
@@ -369,7 +553,14 @@ IPHONE17PROMAX   | 129990     | 149990
         
         <!-- Export Section -->
         <div id="export" class="admin-content">
-            <h2>📤 Экспорт данных</h2>
+            <h2>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Экспорт данных
+            </h2>
             
             <div class="form-group">
                 <h3>📊 Полный ассортимент</h3>
@@ -402,9 +593,35 @@ IPHONE17PROMAX   | 129990     | 149990
             </div>
         </div>
         
+        <!-- Images Section -->
+        <div id="images" class="admin-content">
+            <h2>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                </svg>
+                Управление изображениями
+            </h2>
+            <div class="form-group" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+                <button onclick="loadAllImages()" class="btn btn-primary">🔄 Обновить список</button>
+                <button onclick="showAddImageForm()" class="btn btn-success">➕ Добавить изображения</button>
+            </div>
+            <div id="images-content">
+                <p style="color: #666;">Загрузка изображений...</p>
+            </div>
+        </div>
+        
         <!-- Manual Management Section -->
         <div id="manual" class="admin-content">
-            <h2>🔧 Ручное управление ценами</h2>
+            <h2>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M12 16v-4"></path>
+                    <path d="M12 8h.01"></path>
+                </svg>
+                Ручное управление ценами
+            </h2>
             <div class="form-group">
                 <button onclick="openManualPriceManager()" class="btn btn-primary">Открыть менеджер цен</button>
             </div>
@@ -435,66 +652,162 @@ IPHONE17PROMAX   | 129990     | 149990
                 loadProducts();
             } else if (sectionId === 'categories') {
                 loadCategories();
-            } else if (sectionId === 'dashboard') {
-                loadStats();
+            } else if (sectionId === 'orders') {
+                loadOrders();
+            } else if (sectionId === 'images') {
+                loadAllImages();
+            } else if (sectionId === 'prices') {
+                loadPricesTable();
             }
         }
         
-        function loadStats() {
-            const content = document.getElementById('stats-content');
-            content.innerHTML = '<p>Загрузка статистики...</p>';
+        function loadOrders() {
+            const content = document.getElementById('orders-content');
+            content.innerHTML = '<p style="color: #666;">Загрузка заказов...</p>';
             
-            // Загружаем статистику параллельно
-               Promise.all([
-                   fetch('/categories').then(r => r.json()),
-                   fetch('/all-products').then(r => r.json()),
-                   fetch('/api/prices/current').then(r => r.json())
-               ])
-            .then(([categories, products, prices]) => {
-                // Подсчитываем статистику
-                const totalProducts = products.length;
-                const totalCategories = categories.length;
-                const totalPrices = prices.length;
-                const productsWithSKU = products.filter(p => p.sku).length;
-                const productsWithoutSKU = products.filter(p => !p.sku).length;
-                
-                // Группируем по категориям
-                const categoryStats = {};
-                products.forEach(product => {
-                    const cat = product.level_0 || 'Без категории';
-                    categoryStats[cat] = (categoryStats[cat] || 0) + 1;
-                });
-                
-                let categoryHtml = '';
-                Object.entries(categoryStats).forEach(([cat, count]) => {
-                    categoryHtml += `<p><strong>${cat}:</strong> ${count} товаров</p>`;
-                });
-                
-                content.innerHTML = `
-                    <div class="product-card">
-                        <h3>📊 Статистика магазина</h3>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                            <div>
-                                <h4>Общая информация</h4>
-                                <p><strong>Всего товаров:</strong> ${totalProducts}</p>
-                                <p><strong>С SKU:</strong> ${productsWithSKU}</p>
-                                <p><strong>Без SKU (общие карточки):</strong> ${productsWithoutSKU}</p>
-                                <p><strong>Категорий:</strong> ${totalCategories}</p>
-                                <p><strong>Цен:</strong> ${totalPrices}</p>
+            fetch('/api/orders')
+            .then(response => response.json())
+            .then(result => {
+                if (result.success && result.orders) {
+                    if (result.orders.length === 0) {
+                        content.innerHTML = '<p style="color: #666;">Заказы не найдены</p>';
+                        return;
+                    }
+                    
+                    let html = `<div style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                        <h4>📊 Всего заказов: ${result.orders.length}</h4>
+                    </div>`;
+                    
+                    html += '<div style="display: flex; flex-direction: column; gap: 16px;">';
+                    
+                    result.orders.forEach(order => {
+                        const statusColors = {
+                            'new': '#007AFF',
+                            'processing': '#f59e0b',
+                            'completed': '#10b981',
+                            'cancelled': '#ef4444'
+                        };
+                        const statusLabels = {
+                            'new': 'Новый',
+                            'processing': 'В обработке',
+                            'completed': 'Завершен',
+                            'cancelled': 'Отменен'
+                        };
+                        const statusColor = statusColors[order.status] || '#6b7280';
+                        const statusLabel = statusLabels[order.status] || order.status;
+                        
+                        const shippingTypeLabel = order.shipping_type === 'delivery' ? 'Доставка' : 'Самовывоз';
+                        const contactMethodLabels = {
+                            'phone': 'Телефон',
+                            'email': 'Email',
+                            'telegram': 'Telegram',
+                            'whatsapp': 'WhatsApp'
+                        };
+                        const contactMethodLabel = contactMethodLabels[order.contact_method] || order.contact_method;
+                        
+                        const createdDate = order.created_at ? new Date(order.created_at).toLocaleString('ru-RU') : 'Не указано';
+                        
+                        html += `
+                            <div class="product-card" style="position: relative;">
+                                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                                    <div>
+                                        <h3 style="margin: 0 0 8px 0; color: #111827;">Заказ #${order.order_number}</h3>
+                                        <p style="margin: 0; color: #6b7280; font-size: 0.875rem;">${createdDate}</p>
+                                    </div>
+                                    <span style="padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; background: ${statusColor}20; color: ${statusColor};">
+                                        ${statusLabel}
+                                    </span>
+                                </div>
+                                
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 12px;">
+                                    <div>
+                                        <p style="margin: 0 0 4px 0; color: #6b7280; font-size: 0.875rem;"><strong>Клиент:</strong> ${order.customer_name}</p>
+                                        <p style="margin: 0 0 4px 0; color: #6b7280; font-size: 0.875rem;"><strong>${contactMethodLabel}:</strong> ${order.contact_value}</p>
+                                        <p style="margin: 0; color: #6b7280; font-size: 0.875rem;"><strong>Тип доставки:</strong> ${shippingTypeLabel}</p>
+                                    </div>
+                                    <div>
+                                        <p style="margin: 0 0 4px 0; color: #6b7280; font-size: 0.875rem;"><strong>Сумма товаров:</strong> ${order.total.toLocaleString()} ₽</p>
+                                        ${order.discount_amount > 0 ? `<p style="margin: 0 0 4px 0; color: #10b981; font-size: 0.875rem;"><strong>Скидка:</strong> -${order.discount_amount.toLocaleString()} ₽</p>` : ''}
+                                        ${order.promo_code ? `<p style="margin: 0 0 4px 0; color: #6b7280; font-size: 0.875rem;"><strong>Промокод:</strong> ${order.promo_code}</p>` : ''}
+                                        <p style="margin: 0; color: #111827; font-size: 1rem; font-weight: 600;"><strong>Итого:</strong> ${order.final_total.toLocaleString()} ₽</p>
+                                    </div>
+                                </div>
+                                
+                                ${order.address ? `<p style="margin: 0 0 12px 0; color: #6b7280; font-size: 0.875rem;"><strong>Адрес:</strong> ${order.address}</p>` : ''}
+                                ${order.comment ? `<p style="margin: 0 0 12px 0; color: #6b7280; font-size: 0.875rem;"><strong>Комментарий:</strong> ${order.comment}</p>` : ''}
+                                
+                                <div style="margin-top: 12px;">
+                                    <button onclick="toggleOrderItems(${order.id})" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 500; padding: 8px 16px; font-size: 0.875rem;">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="order-arrow-${order.id}">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
+                                        Товары (${order.items.length})
+                                    </button>
+                                </div>
+                                
+                                <div id="order-items-${order.id}" style="display: none; margin-top: 16px; padding: 16px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+                                    <table style="width: 100%; border-collapse: collapse;">
+                                        <thead>
+                                            <tr style="border-bottom: 1px solid #e5e7eb;">
+                                                <th style="padding: 8px; text-align: left; font-weight: 600; color: #111827; font-size: 0.875rem;">Товар</th>
+                                                <th style="padding: 8px; text-align: right; font-weight: 600; color: #111827; font-size: 0.875rem;">Цена</th>
+                                                <th style="padding: 8px; text-align: center; font-weight: 600; color: #111827; font-size: 0.875rem;">Кол-во</th>
+                                                <th style="padding: 8px; text-align: right; font-weight: 600; color: #111827; font-size: 0.875rem;">Сумма</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                        `;
+                        
+                        order.items.forEach(item => {
+                            const itemTotal = item.price * item.quantity;
+                            html += `
+                                <tr style="border-bottom: 1px solid #e5e7eb;">
+                                    <td style="padding: 8px;">
+                                        <div style="font-weight: 500; color: #111827; font-size: 0.875rem;">${item.name}</div>
+                                        ${item.color ? `<div style="color: #6b7280; font-size: 0.75rem;">Цвет: ${item.color}</div>` : ''}
+                                        ${item.memory ? `<div style="color: #6b7280; font-size: 0.75rem;">Память: ${item.memory}</div>` : ''}
+                                        ${item.sim ? `<div style="color: #6b7280; font-size: 0.75rem;">SIM: ${item.sim}</div>` : ''}
+                                        ${item.ram ? `<div style="color: #6b7280; font-size: 0.75rem;">RAM: ${item.ram}</div>` : ''}
+                                    </td>
+                                    <td style="padding: 8px; text-align: right; color: #6b7280; font-size: 0.875rem;">${item.price.toLocaleString()} ₽</td>
+                                    <td style="padding: 8px; text-align: center; color: #6b7280; font-size: 0.875rem;">${item.quantity}</td>
+                                    <td style="padding: 8px; text-align: right; font-weight: 500; color: #111827; font-size: 0.875rem;">${itemTotal.toLocaleString()} ₽</td>
+                                </tr>
+                            `;
+                        });
+                        
+                        html += `
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-                            <div>
-                                <h4>По категориям</h4>
-                                ${categoryHtml}
-                            </div>
-                        </div>
-                        <p style="margin-top: 15px;"><strong>Статус:</strong> <span class="status-success">✅ Система работает корректно</span></p>
-                        <p><strong>Последнее обновление:</strong> ${new Date().toLocaleString('ru-RU')}</p>
-                    </div>
-                `;
+                        `;
+                    });
+                    
+                    html += '</div>';
+                    content.innerHTML = html;
+                } else {
+                    content.innerHTML = '<p class="status-error">❌ Ошибка загрузки заказов</p>';
+                }
             })
             .catch(error => {
-                content.innerHTML = `<p class="status-error">❌ Ошибка загрузки статистики: ${error.message}</p>`;
+                content.innerHTML = `<p class="status-error">❌ Ошибка загрузки заказов: ${error.message}</p>`;
             });
+        }
+        
+        function toggleOrderItems(orderId) {
+            const itemsDiv = document.getElementById(`order-items-${orderId}`);
+            const arrow = document.getElementById(`order-arrow-${orderId}`);
+            
+            if (!itemsDiv || !arrow) return;
+            
+            if (itemsDiv.style.display === 'none' || !itemsDiv.style.display) {
+                itemsDiv.style.display = 'block';
+                arrow.style.transform = 'rotate(180deg)';
+            } else {
+                itemsDiv.style.display = 'none';
+                arrow.style.transform = 'rotate(0deg)';
+            }
         }
         
         function loadProducts() {
@@ -528,11 +841,21 @@ IPHONE17PROMAX   | 129990     | 149990
                                 <p><strong>Цена:</strong> ${product.price} ${product.currency}</p>
                                 <p><strong>Доступность:</strong> ${product.is_available ? '✅ В наличии' : '❌ Нет в наличии'}</p>
                                 <div style="margin-top: 15px; display: flex; gap: 10px;">
-                                    <button onclick="showEditProductForm(${product.id})" class="btn btn-primary" style="flex: 1; padding: 8px 16px;">
-                                        ✏️ Редактировать
+                                    <button onclick="showEditProductForm(${product.id})" class="btn btn-primary" style="flex: 1; padding: 10px 16px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 500;">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                        </svg>
+                                        Редактировать
                                     </button>
-                                    <button onclick="deleteProduct(${product.id}, '${product.name}')" class="btn btn-danger" style="flex: 1; padding: 8px 16px;">
-                                        🗑️ Удалить
+                                    <button onclick="deleteProduct(${product.id}, '${product.name}')" class="btn btn-danger" style="flex: 1; padding: 10px 16px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 500;">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                                        </svg>
+                                        Удалить
                                     </button>
                                 </div>
                             </div>
@@ -776,58 +1099,211 @@ IPHONE17PROMAX   | 129990     | 149990
             });
         }
         
-        function loadPriceSKUs() {
-            const select = document.getElementById('price-sku');
-            select.innerHTML = '<option value="">Выберите товар...</option>';
+        function loadPricesTable() {
+            const container = document.getElementById('prices-table-container');
+            container.innerHTML = '<p style="color: #666;">Загрузка цен...</p>';
             
                fetch('/all-products')
                 .then(response => response.json())
                 .then(products => {
-                    products.forEach(product => {
-                        const option = document.createElement('option');
-                        option.value = product.sku;
-                        option.textContent = `${product.brand} ${product.model} (${product.sku})`;
-                        select.appendChild(option);
-                    });
+                // Фильтруем товары с SKU и извлекаем цены
+                const productsWithPrices = products
+                    .filter(p => p.sku)
+                    .map(product => {
+                        return {
+                            sku: product.sku,
+                            name: product.name,
+                            brand: product.brand,
+                            model: product.model,
+                            current_price: product.price || 0,
+                            old_price: product.old_price || product.price || 0
+                        };
+                    })
+                    .sort((a, b) => a.sku.localeCompare(b.sku));
+                
+                if (productsWithPrices.length === 0) {
+                    container.innerHTML = '<p style="color: #666;">Товары с ценами не найдены</p>';
+                    return;
+                }
+                
+                let html = `
+                    <div style="overflow-x: auto; margin-bottom: 20px;">
+                        <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                            <thead>
+                                <tr style="background: #f9fafb; border-bottom: 2px solid #e5e7eb;">
+                                    <th style="padding: 12px; text-align: left; font-weight: 600; color: #111827; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.5px;">SKU</th>
+                                    <th style="padding: 12px; text-align: left; font-weight: 600; color: #111827; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.5px;">Товар</th>
+                                    <th style="padding: 12px; text-align: right; font-weight: 600; color: #111827; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.5px;">Текущая цена</th>
+                                    <th style="padding: 12px; text-align: right; font-weight: 600; color: #111827; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.5px;">Старая цена</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                productsWithPrices.forEach((item, index) => {
+                    html += `
+                        <tr style="border-bottom: 1px solid #e5e7eb; transition: background 0.2s;" onmouseenter="this.style.background='#f9fafb'" onmouseleave="this.style.background='white'">
+                            <td style="padding: 12px; font-weight: 500; color: #111827; font-size: 0.875rem;">${item.sku}</td>
+                            <td style="padding: 12px; color: #6b7280; font-size: 0.875rem;">
+                                <div style="font-weight: 500; color: #111827;">${item.name || `${item.brand} ${item.model}`}</div>
+                            </td>
+                            <td style="padding: 12px; text-align: right;">
+                                <input type="number" 
+                                       id="price-${item.sku}" 
+                                       value="${item.current_price}" 
+                                       step="0.01" 
+                                       min="0"
+                                       data-sku="${item.sku}"
+                                       data-original-price="${item.current_price}"
+                                       style="width: 120px; padding: 6px 10px; border: 1px solid #e5e7eb; border-radius: 6px; text-align: right; font-size: 0.875rem; transition: all 0.2s;"
+                                       onfocus="this.style.borderColor='#007AFF'; this.style.boxShadow='0 0 0 3px rgba(0,122,255,0.1)'"
+                                       onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'"
+                                       onchange="markPriceChanged('${item.sku}')">
+                            </td>
+                            <td style="padding: 12px; text-align: right;">
+                                <input type="number" 
+                                       id="old-price-${item.sku}" 
+                                       value="${item.old_price}" 
+                                       step="0.01" 
+                                       min="0"
+                                       data-sku="${item.sku}"
+                                       data-original-old-price="${item.old_price}"
+                                       style="width: 120px; padding: 6px 10px; border: 1px solid #e5e7eb; border-radius: 6px; text-align: right; font-size: 0.875rem; transition: all 0.2s;"
+                                       onfocus="this.style.borderColor='#007AFF'; this.style.boxShadow='0 0 0 3px rgba(0,122,255,0.1)'"
+                                       onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'"
+                                       onchange="markPriceChanged('${item.sku}')">
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                html += `
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                        <button onclick="saveAllPrices()" class="btn btn-success" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 500; padding: 10px 24px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                <polyline points="7 3 7 8 15 8"></polyline>
+                            </svg>
+                            Сохранить все изменения
+                        </button>
+                    </div>
+                `;
+                
+                container.innerHTML = html;
                 })
                 .catch(error => {
-                    console.error('Error loading products for price update:', error);
-                });
+                container.innerHTML = `<p class="status-error">❌ Ошибка загрузки цен: ${error.message}</p>`;
+            });
         }
         
-        function updatePrice() {
-            const sku = document.getElementById('price-sku').value;
-            const newPrice = parseFloat(document.getElementById('new-price').value);
-            const oldPrice = parseFloat(document.getElementById('old-price').value);
+        const changedPrices = new Set();
+        
+        function markPriceChanged(sku) {
+            changedPrices.add(sku);
+        }
+        
+        function saveAllPrices() {
+            const resultDiv = document.getElementById('price-result');
+            resultDiv.innerHTML = '<p style="color: #666;">Сохранение изменений...</p>';
             
-            if (!sku || !newPrice) {
-                document.getElementById('price-result').innerHTML = '<p class="status-error">❌ Заполните все обязательные поля</p>';
+            const pricesToUpdate = [];
+            const allInputs = document.querySelectorAll('input[id^="price-"]');
+            
+            // Собираем только измененные цены
+            allInputs.forEach(input => {
+                if (input.id.startsWith('price-') && !input.id.startsWith('old-price-')) {
+                    const sku = input.dataset.sku;
+                    const originalPrice = parseFloat(input.dataset.originalPrice || 0);
+                    const newPrice = parseFloat(input.value);
+                    const oldPriceInput = document.getElementById(`old-price-${sku}`);
+                    const originalOldPrice = oldPriceInput ? parseFloat(oldPriceInput.dataset.originalOldPrice || 0) : originalPrice;
+                    const oldPrice = oldPriceInput ? parseFloat(oldPriceInput.value) : newPrice;
+                    
+                    // Проверяем, изменилась ли цена
+                    const priceChanged = Math.abs(newPrice - originalPrice) > 0.01;
+                    const oldPriceChanged = oldPriceInput && Math.abs(oldPrice - originalOldPrice) > 0.01;
+                    
+                    if ((priceChanged || oldPriceChanged) && !isNaN(newPrice) && newPrice >= 0) {
+                        pricesToUpdate.push({
+                            sku: sku,
+                            price: newPrice,
+                            old_price: oldPrice || newPrice
+                        });
+                    }
+                }
+            });
+            
+            if (pricesToUpdate.length === 0) {
+                resultDiv.innerHTML = '<p class="status-warning">⚠️ Нет изменений для сохранения</p>';
                 return;
             }
             
-            const priceData = {
-                sku: sku,
-                price: newPrice,
-                old_price: oldPrice || newPrice
-            };
+            // Сохраняем только измененные цены
+            let saved = 0;
+            let errors = 0;
+            const errorMessages = [];
             
-            fetch('/update-price', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(priceData)
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.message && result.message.includes('успешно')) {
-                    document.getElementById('price-result').innerHTML = '<p class="status-success">✅ Цена успешно обновлена!</p>';
+            Promise.all(
+                pricesToUpdate.map(priceData => 
+                    fetch('/update-price', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(priceData)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(err => {
+                                throw new Error(err.detail || err.message || 'Ошибка обновления');
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(result => {
+                        if (result.message && result.message.includes('успешно')) {
+                            saved++;
+                        } else {
+                            errors++;
+                            errorMessages.push(`${priceData.sku}: ${result.detail || result.message || 'Неизвестная ошибка'}`);
+                        }
+                    })
+                    .catch(error => {
+                        errors++;
+                        const errorMsg = error.message || error.toString();
+                        errorMessages.push(`${priceData.sku}: ${errorMsg}`);
+                    })
+                )
+            )
+            .then(() => {
+                if (errors === 0) {
+                    resultDiv.innerHTML = `<p class="status-success">✅ Успешно обновлено ${saved} цен!</p>`;
+                    changedPrices.clear();
+                    // Обновляем original значения после успешного сохранения
+                    pricesToUpdate.forEach(priceData => {
+                        const priceInput = document.getElementById(`price-${priceData.sku}`);
+                        const oldPriceInput = document.getElementById(`old-price-${priceData.sku}`);
+                        if (priceInput) {
+                            priceInput.dataset.originalPrice = priceData.price;
+                        }
+                        if (oldPriceInput) {
+                            oldPriceInput.dataset.originalOldPrice = priceData.old_price;
+                        }
+                    });
                 } else {
-                    document.getElementById('price-result').innerHTML = `<p class="status-error">❌ ${result.detail || result.message}</p>`;
+                    const errorList = errorMessages.length > 20 
+                        ? errorMessages.slice(0, 20).map(msg => `<li>${msg}</li>`).join('') + `<li>... и еще ${errorMessages.length - 20} ошибок</li>`
+                        : errorMessages.map(msg => `<li>${msg}</li>`).join('');
+                    
+                    resultDiv.innerHTML = `
+                        <p class="status-warning">⚠️ Обновлено ${saved} цен, ошибок: ${errors}</p>
+                        ${errorMessages.length > 0 ? `<div style="margin-top: 10px; padding: 10px; background: #fef2f2; border-radius: 6px; font-size: 0.875rem; max-height: 300px; overflow-y: auto;"><strong>Ошибки:</strong><ul style="margin: 5px 0 0 20px;">${errorList}</ul></div>` : ''}
+                    `;
                 }
-            })
-            .catch(error => {
-                document.getElementById('price-result').innerHTML = `<p class="status-error">❌ Ошибка обновления цены: ${error.message}</p>`;
             });
         }
         
@@ -1003,7 +1479,13 @@ IPHONE17PROMAX   | 129990     | 149990
                     const content = document.getElementById('products-content');
                     content.innerHTML = `
                         <div class="product-card">
-                            <h3>✏️ Редактировать товар</h3>
+                            <h3 style="display: flex; align-items: center; gap: 8px;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                                Редактировать товар
+                            </h3>
                             <form id="editProductForm" onsubmit="updateProduct(event, ${productId})">
                                 <div class="form-group">
                                     <label>Название товара*</label>
@@ -1083,8 +1565,21 @@ IPHONE17PROMAX   | 129990     | 149990
                                 </div>
                                 
                                 <div style="display: flex; gap: 10px; margin-top: 20px;">
-                                    <button type="submit" class="btn btn-success" style="flex: 1;">💾 Сохранить изменения</button>
-                                    <button type="button" onclick="loadProducts()" class="btn btn-secondary" style="flex: 1;">❌ Отмена</button>
+                                    <button type="submit" class="btn btn-success" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 500;">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                            <polyline points="7 3 7 8 15 8"></polyline>
+                                        </svg>
+                                        Сохранить изменения
+                                    </button>
+                                    <button type="button" onclick="loadProducts()" class="btn btn-secondary" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 500;">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                        Отмена
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -1138,7 +1633,7 @@ IPHONE17PROMAX   | 129990     | 149990
                 } else {
                     alert(`❌ Ошибка: ${result.detail || result.message}`);
                     submitBtn.disabled = false;
-                    submitBtn.textContent = '💾 Сохранить изменения';
+                    submitBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> Сохранить изменения';
                 }
             })
             .catch(error => {
@@ -1419,11 +1914,413 @@ IPHONE17PROMAX   | 129990     | 149990
             });
         }
         
-        // Load price SKUs when prices section is selected
-        document.getElementById('price-sku').addEventListener('focus', loadPriceSKUs);
+        // Load orders on page load
+        document.addEventListener('DOMContentLoaded', loadOrders);
         
-        // Load stats on page load
-        document.addEventListener('DOMContentLoaded', loadStats);
+        // --- Image Management Functions ---
+        
+        function loadAllImages() {
+            const content = document.getElementById('images-content');
+            content.innerHTML = '<p>Загрузка изображений...</p>';
+            
+            fetch('/api/images')
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success && result.images) {
+                        if (result.images.length === 0) {
+                            content.innerHTML = '<p style="color: #666;">Изображения не найдены. Добавьте изображения для товаров.</p>';
+                            return;
+                        }
+                        
+                        let html = `<div style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                            <h4>📊 Всего изображений: ${result.images.length}</h4>
+                        </div>`;
+                        
+                        html += '<div class="product-grid">';
+                        result.images.forEach(img => {
+                            html += `
+                                <div class="product-card">
+                                    <h3>${img.level_2 || 'Не указано'}</h3>
+                                    <p><strong>Цвет:</strong> ${img.color || 'Не указан'}</p>
+                                    <p><strong>Количество изображений:</strong> ${img.images ? img.images.length : 0}</p>
+                                    ${img.images && img.images.length > 0 ? `
+                                        <div style="margin-top: 10px; display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px;">
+                                            ${img.images.slice(0, 4).map(url => `
+                                                <img src="${url}" alt="Preview" style="width: 100%; height: 80px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd;" onerror="this.src='/static/images/placeholder.jpg'">
+                                            `).join('')}
+                                            ${img.images.length > 4 ? `<div style="text-align: center; line-height: 80px; color: #666;">+${img.images.length - 4}</div>` : ''}
+                                        </div>
+                                    ` : '<p style="color: #999; font-style: italic;">Нет изображений</p>'}
+                                    <div style="margin-top: 15px;">
+                                        <button onclick="showEditImageForm('${img.level_2}', '${img.color}', ${img.id})" class="btn btn-primary" style="width: 100%; padding: 10px 16px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 500;">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                            </svg>
+                                            Редактировать
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        html += '</div>';
+                        content.innerHTML = html;
+                    } else {
+                        content.innerHTML = '<p class="status-error">❌ Ошибка загрузки изображений</p>';
+                    }
+                })
+                .catch(error => {
+                    content.innerHTML = `<p class="status-error">❌ Ошибка загрузки изображений: ${error.message}</p>`;
+                });
+        }
+        
+        function showAddImageForm() {
+            const content = document.getElementById('images-content');
+            content.innerHTML = `
+                <div class="product-card">
+                    <h3>➕ Добавить изображения для товара</h3>
+                    <form id="addImageForm" onsubmit="saveNewImages(event)">
+                        <div class="form-group">
+                            <label for="image-level2">Модель (level_2) *:</label>
+                            <input type="text" id="image-level2" placeholder="iPhone 16 Pro" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="image-color">Цвет *:</label>
+                            <input type="text" id="image-color" placeholder="Black, White, Blue" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="image-urls">URL изображений (по одному на строку) *:</label>
+                            <textarea id="image-urls" rows="5" placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg" required></textarea>
+                            <small style="color: #666;">Каждый URL с новой строки. Первое изображение будет основным.</small>
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 20px;">
+                            <button type="submit" class="btn btn-success" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 500;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                    <polyline points="7 3 7 8 15 8"></polyline>
+                                </svg>
+                                Сохранить
+                            </button>
+                            <button type="button" onclick="loadAllImages()" class="btn btn-secondary" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 500;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                                Отмена
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            `;
+        }
+        
+        function showEditImageForm(level_2, color, imageId) {
+            const content = document.getElementById('images-content');
+            
+            // Загружаем текущие изображения
+            fetch(`/api/images/${encodeURIComponent(level_2)}/${encodeURIComponent(color)}`)
+                .then(response => response.json())
+                .then(result => {
+                    const currentImages = result.images || [];
+                    const imagesText = currentImages.join('\n');
+                    
+                    content.innerHTML = `
+                        <div class="product-card">
+                            <h3 style="display: flex; align-items: center; gap: 8px;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                                Редактировать изображения
+                            </h3>
+                            <p><strong>Модель:</strong> ${level_2}</p>
+                            <p><strong>Цвет:</strong> ${color}</p>
+                            <form id="editImageForm" onsubmit="saveImages(event, '${level_2}', '${color}')">
+                                <div class="form-group">
+                                    <label>URL изображений (по одному на строку):</label>
+                                    <textarea id="edit-image-urls" rows="8" placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg">${imagesText}</textarea>
+                                    <small style="color: #666;">Каждый URL с новой строки. Первое изображение будет основным.</small>
+                                </div>
+                                ${currentImages.length > 0 ? `
+                                    <div class="form-group">
+                                        <label>Текущие изображения (предпросмотр):</label>
+                                        <small style="color: #666; display: block; margin-bottom: 10px;">💡 Перетащите изображения для изменения порядка</small>
+                                        <div id="image-preview-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 10px;">
+                                            ${currentImages.map((url, index) => `
+                                                <div class="draggable-image" draggable="true" data-index="${index}" style="position: relative; cursor: move; transition: transform 0.2s; background: #f8f9fa; border-radius: 8px; padding: 8px; border: 1px solid #ddd;" 
+                                                     ondragstart="handleDragStart(event, ${index})" 
+                                                     ondragover="handleDragOver(event)" 
+                                                     ondragleave="handleDragLeave(event)"
+                                                     ondrop="handleDrop(event, ${index})" 
+                                                     ondragend="handleDragEnd(event)"
+                                                     onmouseenter="this.style.transform='scale(1.02)'"
+                                                     onmouseleave="this.style.transform='scale(1)'">
+                                                    <img src="${url}" alt="Image ${index + 1}" style="width: 100%; height: auto; max-height: 300px; object-fit: contain; border-radius: 4px; display: block;" onerror="this.src='/static/images/placeholder.jpg'">
+                                                    <div style="position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.7); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">${index + 1}</div>
+                                                    <button type="button" onclick="removeImageFromList(${index})" class="btn btn-danger" style="position: absolute; top: 12px; right: 12px; padding: 6px; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                ` : ''}
+                                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                                    <button type="submit" class="btn btn-success" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 500;">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                            <polyline points="7 3 7 8 15 8"></polyline>
+                                        </svg>
+                                        Сохранить изменения
+                                    </button>
+                                    <button type="button" onclick="loadAllImages()" class="btn btn-secondary" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 500;">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                        Отмена
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    `;
+                })
+                .catch(error => {
+                    content.innerHTML = `<p class="status-error">❌ Ошибка загрузки изображений: ${error.message}</p>`;
+                });
+        }
+        
+        function saveNewImages(event) {
+            event.preventDefault();
+            
+            const level_2 = document.getElementById('image-level2').value.trim();
+            const color = document.getElementById('image-color').value.trim();
+            const urlsText = document.getElementById('image-urls').value.trim();
+            
+            if (!level_2 || !color || !urlsText) {
+                alert('❌ Пожалуйста, заполните все поля');
+                return;
+            }
+            
+            const imageUrls = urlsText.split('\n')
+                .map(url => url.trim())
+                .filter(url => url && url.startsWith('http'));
+            
+            if (imageUrls.length === 0) {
+                alert('❌ Пожалуйста, укажите хотя бы одно валидное URL изображения');
+                return;
+            }
+            
+            const button = event.target.querySelector('button[type="submit"]');
+            const originalText = button.innerHTML;
+            button.innerHTML = '⏳ Сохранение...';
+            button.disabled = true;
+            
+            fetch('/api/images', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    level_2: level_2,
+                    color: color,
+                    images: imageUrls
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    alert(`✅ Изображения успешно добавлены!`);
+                    loadAllImages();
+                } else {
+                    alert(`❌ Ошибка: ${result.detail || result.message}`);
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                }
+            })
+            .catch(error => {
+                alert(`❌ Ошибка сохранения изображений: ${error.message}`);
+                button.innerHTML = originalText;
+                button.disabled = false;
+            });
+        }
+        
+        function saveImages(event, level_2, color) {
+            event.preventDefault();
+            
+            const urlsText = document.getElementById('edit-image-urls').value.trim();
+            const imageUrls = urlsText.split('\n')
+                .map(url => url.trim())
+                .filter(url => url && url.startsWith('http'));
+            
+            const button = event.target.querySelector('button[type="submit"]');
+            const originalText = button.innerHTML;
+            button.innerHTML = '⏳ Сохранение...';
+            button.disabled = true;
+            
+            fetch(`/api/images/${encodeURIComponent(level_2)}/${encodeURIComponent(color)}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    level_2: level_2,
+                    color: color,
+                    images: imageUrls
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    alert(`✅ Изображения успешно обновлены!`);
+                    loadAllImages();
+                } else {
+                    alert(`❌ Ошибка: ${result.detail || result.message}`);
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                }
+            })
+            .catch(error => {
+                alert(`❌ Ошибка сохранения изображений: ${error.message}`);
+                button.innerHTML = originalText;
+                button.disabled = false;
+            });
+        }
+        
+        function deleteImage(imageId, level_2, color) {
+            if (!confirm(`Вы уверены, что хотите удалить изображения для "${level_2}" (${color})?\n\nЭто действие необратимо!`)) {
+                return;
+            }
+            
+            fetch(`/api/images/${imageId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    alert(`✅ Изображения успешно удалены!`);
+                    loadAllImages();
+                } else {
+                    alert(`❌ Ошибка: ${result.detail || result.message}`);
+                }
+            })
+            .catch(error => {
+                alert(`❌ Ошибка удаления изображений: ${error.message}`);
+            });
+        }
+        
+        // --- Drag and Drop Functions ---
+        let draggedIndex = null;
+        
+        function handleDragStart(event, index) {
+            draggedIndex = index;
+            event.dataTransfer.effectAllowed = 'move';
+            event.currentTarget.classList.add('dragging');
+            event.currentTarget.style.opacity = '0.5';
+        }
+        
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.dataTransfer.dropEffect = 'move';
+            const target = event.currentTarget;
+            if (target.classList.contains('draggable-image') && target.dataset.index != draggedIndex) {
+                target.classList.add('drag-over');
+            }
+        }
+        
+        function handleDragLeave(event) {
+            event.currentTarget.classList.remove('drag-over');
+        }
+        
+        function handleDragEnd(event) {
+            event.currentTarget.style.opacity = '1';
+            event.currentTarget.classList.remove('dragging');
+            // Убираем подсветку со всех элементов
+            document.querySelectorAll('.draggable-image').forEach(el => {
+                el.classList.remove('drag-over');
+                el.style.border = '';
+            });
+        }
+        
+        function handleDrop(event, dropIndex) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            const target = event.currentTarget;
+            target.style.border = '';
+            
+            if (draggedIndex === null || draggedIndex === dropIndex) {
+                return;
+            }
+            
+            const textarea = document.getElementById('edit-image-urls');
+            if (!textarea) return;
+            
+            const lines = textarea.value.split('\n').filter(line => line.trim());
+            if (draggedIndex >= 0 && draggedIndex < lines.length && dropIndex >= 0 && dropIndex < lines.length) {
+                // Перемещаем элемент
+                const draggedItem = lines.splice(draggedIndex, 1)[0];
+                lines.splice(dropIndex, 0, draggedItem);
+                
+                // Обновляем textarea
+                textarea.value = lines.join('\n');
+                
+                // Обновляем предпросмотр
+                updateImagePreview(lines);
+            }
+            
+            draggedIndex = null;
+        }
+        
+        function updateImagePreview(imageUrls) {
+            const previewContainer = document.getElementById('image-preview-container');
+            if (!previewContainer) return;
+            
+            const validUrls = imageUrls.filter(url => url.trim().startsWith('http'));
+            
+            if (validUrls.length > 0) {
+                previewContainer.innerHTML = validUrls.map((url, index) => `
+                    <div class="draggable-image" draggable="true" data-index="${index}" style="position: relative; cursor: move; transition: transform 0.2s; background: #f8f9fa; border-radius: 8px; padding: 8px; border: 1px solid #ddd;" 
+                         ondragstart="handleDragStart(event, ${index})" 
+                         ondragover="handleDragOver(event)" 
+                         ondragleave="handleDragLeave(event)"
+                         ondrop="handleDrop(event, ${index})" 
+                         ondragend="handleDragEnd(event)"
+                         onmouseenter="this.style.transform='scale(1.02)'"
+                         onmouseleave="this.style.transform='scale(1)'">
+                        <img src="${url}" alt="Image ${index + 1}" style="width: 100%; height: auto; max-height: 300px; object-fit: contain; border-radius: 4px; display: block;" onerror="this.src='/static/images/placeholder.jpg'">
+                        <div style="position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.7); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">${index + 1}</div>
+                        <button type="button" onclick="removeImageFromList(${index})" class="btn btn-danger" style="position: absolute; top: 12px; right: 12px; padding: 6px; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+                `).join('');
+            } else {
+                previewContainer.parentElement.innerHTML = '<p style="color: #999; font-style: italic;">Нет изображений</p>';
+            }
+        }
+        
+        function removeImageFromList(index) {
+            const textarea = document.getElementById('edit-image-urls');
+            if (!textarea) return;
+            
+            const lines = textarea.value.split('\n').filter(line => line.trim());
+            if (index >= 0 && index < lines.length) {
+                lines.splice(index, 1);
+                textarea.value = lines.join('\n');
+                
+                // Обновляем предпросмотр
+                updateImagePreview(lines);
+            }
+        }
     </script>
     <!-- Admin panel updated: 2024-01-20 15:30:00 -->
 </body>
