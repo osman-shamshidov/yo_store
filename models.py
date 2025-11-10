@@ -151,6 +151,28 @@ class Level2Description(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
+class PromoCode(Base):
+    """
+    Промокоды для скидок
+    """
+    __tablename__ = "promo_codes"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    code = Column(String(50), unique=True, nullable=False, index=True)  # Код промокода
+    discount_type = Column(String(20), nullable=False)  # fixed, percentage, free_item
+    discount_value = Column(Float)  # Значение скидки (рубли для fixed, проценты для percentage)
+    min_order_amount = Column(Float)  # Минимальная сумма заказа для применения
+    free_item_sku = Column(String(50))  # SKU бесплатного товара (для discount_type=free_item)
+    free_item_condition = Column(Text)  # JSON условие для бесплатного товара (например, {"category": "Смартфоны"})
+    is_active = Column(Boolean, default=True)
+    usage_limit = Column(Integer)  # Лимит использований (None = безлимит)
+    used_count = Column(Integer, default=0)  # Количество использований
+    valid_from = Column(DateTime)
+    valid_until = Column(DateTime)
+    description = Column(Text)  # Описание промокода
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
 class Order(Base):
     """
     Заказы пользователей
@@ -168,7 +190,10 @@ class Order(Base):
     delivery_option = Column(String(100))  # moscow, spb, etc.
     pickup_address = Column(Text)
     delivery_datetime = Column(DateTime)
-    total = Column(Float, nullable=False)
+    total = Column(Float, nullable=False)  # Сумма товаров до скидки
+    promo_code = Column(String(50))  # Примененный промокод
+    discount_amount = Column(Float, default=0.0)  # Сумма скидки
+    final_total = Column(Float, nullable=False)  # Конечная цена заказа (total - discount_amount)
     status = Column(String(50), default="new")  # new, processing, completed, cancelled
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

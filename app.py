@@ -13,6 +13,7 @@ import time
 from config import Config
 from database import init_database
 from init_db_for_production import create_full_product_catalog
+from init_promo_codes import init_promo_codes
 # from telegram_bot import ElectronicsStoreBot  # Отключено для тестирования
 import uvicorn
 from api import app
@@ -126,6 +127,10 @@ class ElectronicsStoreApp:
         # Create full product catalog for production
         print("Creating full product catalog...")
         create_full_product_catalog()
+        
+        # Initialize promo codes
+        print("Initializing promo codes...")
+        init_promo_codes()
         
         # Start components
         api_thread = self.start_api_server()

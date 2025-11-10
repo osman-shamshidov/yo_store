@@ -4,7 +4,7 @@ from fastapi.responses import HTMLResponse, FileResponse, StreamingResponse, Red
 from sqlalchemy.orm import Session
 from sqlalchemy import and_, func
 from database import get_db
-from models import Product, Category, CurrentPrice, ProductImage, Level2Description, Order, OrderItem
+from models import Product, Category, CurrentPrice, ProductImage, Level2Description, Order, OrderItem, PromoCode
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
@@ -2512,6 +2512,8 @@ class OrderCreate(BaseModel):
     delivery_datetime: Optional[str] = None
     items: List[OrderItemCreate]
     total: float
+    promo_code: Optional[str] = None
+    discount_amount: Optional[float] = 0.0
 
 class OrderResponse(BaseModel):
     id: int
@@ -2523,6 +2525,159 @@ class OrderResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+# Pydantic models for promo codes
+class PromoCodeCheckRequest(BaseModel):
+    code: str
+    cart_total: float
+    items: List[OrderItemCreate]  # Товары в корзине для проверки условий
+
+class PromoCodeCheckResponse(BaseModel):
+    valid: bool
+    discount_type: Optional[str] = None
+    discount_value: Optional[float] = None
+    discount_amount: Optional[float] = None  # Рассчитанная сумма скидки
+    min_order_amount: Optional[float] = None
+    description: Optional[str] = None
+    free_item_sku: Optional[str] = None
+    free_item_name: Optional[str] = None
+    message: Optional[str] = None
+
+@app.post("/promo-codes/check", response_model=PromoCodeCheckResponse)
+async def check_promo_code(request: PromoCodeCheckRequest, db: Session = Depends(get_db)):
+    """Проверить и применить промокод"""
+    try:
+        # Ищем промокод
+        promo_code = db.query(PromoCode).filter(
+            PromoCode.code == request.code.upper(),
+            PromoCode.is_active == True
+        ).first()
+        
+        if not promo_code:
+            return PromoCodeCheckResponse(
+                valid=False,
+                message="Промокод не найден или неактивен"
+            )
+        
+        # Проверяем срок действия
+        now = datetime.utcnow()
+        if promo_code.valid_from and promo_code.valid_from > now:
+            return PromoCodeCheckResponse(
+                valid=False,
+                message="Промокод еще не действует"
+            )
+        
+        if promo_code.valid_until and promo_code.valid_until < now:
+            return PromoCodeCheckResponse(
+                valid=False,
+                message="Промокод истек"
+            )
+        
+        # Проверяем лимит использований
+        if promo_code.usage_limit and promo_code.used_count >= promo_code.usage_limit:
+            return PromoCodeCheckResponse(
+                valid=False,
+                message="Промокод исчерпан"
+            )
+        
+        # Проверяем минимальную сумму заказа
+        if promo_code.min_order_amount and request.cart_total < promo_code.min_order_amount:
+            return PromoCodeCheckResponse(
+                valid=False,
+                message=f"Минимальная сумма заказа для этого промокода: {promo_code.min_order_amount:,.0f} ₽"
+            )
+        
+        # Рассчитываем скидку в зависимости от типа
+        discount_amount = 0.0
+        free_item_sku = None
+        free_item_name = None
+        
+        if promo_code.discount_type == 'fixed':
+            # Фиксированная скидка
+            discount_amount = min(promo_code.discount_value, request.cart_total)
+            
+        elif promo_code.discount_type == 'percentage':
+            # Процентная скидка
+            discount_amount = request.cart_total * (promo_code.discount_value / 100)
+            
+        elif promo_code.discount_type == 'free_item':
+            # Бесплатный товар
+            # Проверяем условие (например, есть ли смартфон в корзине)
+            if promo_code.free_item_condition:
+                try:
+                    condition = json.loads(promo_code.free_item_condition) if isinstance(promo_code.free_item_condition, str) else promo_code.free_item_condition
+                    category = condition.get('category') or condition.get('level_0')
+                    
+                    # Проверяем, есть ли товар нужной категории в корзине
+                    has_category_item = False
+                    for item in request.items:
+                        # Получаем товар из БД для проверки категории
+                        product = db.query(Product).filter(Product.id == item.product_id).first()
+                        if product and product.level_0 == category:
+                            has_category_item = True
+                            break
+                    
+                    if not has_category_item:
+                        return PromoCodeCheckResponse(
+                            valid=False,
+                            message=f"Промокод действует только при заказе товара категории '{category}'"
+                        )
+                except (json.JSONDecodeError, TypeError):
+                    pass
+            
+            # Ищем товар для бесплатной выдачи
+            if promo_code.free_item_sku:
+                # Сначала проверяем, есть ли адаптер в корзине
+                has_free_item_in_cart = False
+                free_item_in_cart = None
+                
+                for item in request.items:
+                    product = db.query(Product).filter(Product.id == item.product_id).first()
+                    if product and product.sku and promo_code.free_item_sku.lower() in product.sku.lower():
+                        has_free_item_in_cart = True
+                        free_item_in_cart = product
+                        break
+                
+                if not has_free_item_in_cart:
+                    # Адаптера нет в корзине - не даем скидку
+                    return PromoCodeCheckResponse(
+                        valid=False,
+                        message=f"Промокод действует только если адаптер уже добавлен в корзину"
+                    )
+                
+                # Адаптер есть в корзине - даем скидку равную его цене
+                if free_item_in_cart:
+                    free_item_sku = free_item_in_cart.sku
+                    free_item_name = free_item_in_cart.name
+                    # Получаем цену товара
+                    price_obj = db.query(CurrentPrice).filter(CurrentPrice.sku == free_item_in_cart.sku).first()
+                    if price_obj:
+                        discount_amount = price_obj.price
+                    else:
+                        return PromoCodeCheckResponse(
+                            valid=False,
+                            message="Не удалось определить цену товара для бесплатной выдачи"
+                        )
+                else:
+                    return PromoCodeCheckResponse(
+                        valid=False,
+                        message="Товар для бесплатной выдачи не найден в корзине"
+                    )
+        
+        return PromoCodeCheckResponse(
+            valid=True,
+            discount_type=promo_code.discount_type,
+            discount_value=promo_code.discount_value,
+            discount_amount=discount_amount,
+            min_order_amount=promo_code.min_order_amount,
+            description=promo_code.description,
+            free_item_sku=free_item_sku,
+            free_item_name=free_item_name,
+            message="Промокод применен успешно"
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ошибка проверки промокода: {str(e)}")
 
 @app.post("/orders", response_model=OrderResponse)
 async def create_order(order_data: OrderCreate, db: Session = Depends(get_db)):
@@ -2540,6 +2695,16 @@ async def create_order(order_data: OrderCreate, db: Session = Depends(get_db)):
             except:
                 pass
         
+        # Обновляем счетчик использований промокода, если он применен
+        if order_data.promo_code:
+            promo_code = db.query(PromoCode).filter(PromoCode.code == order_data.promo_code.upper()).first()
+            if promo_code:
+                promo_code.used_count += 1
+        
+        # Рассчитываем конечную цену заказа
+        discount_amount = order_data.discount_amount or 0.0
+        final_total = max(0, order_data.total - discount_amount)
+        
         # Создаем заказ
         order = Order(
             order_number=order_number,
@@ -2553,6 +2718,9 @@ async def create_order(order_data: OrderCreate, db: Session = Depends(get_db)):
             pickup_address=order_data.shipping.pickup_address,
             delivery_datetime=delivery_datetime,
             total=order_data.total,
+            promo_code=order_data.promo_code,
+            discount_amount=discount_amount,
+            final_total=final_total,
             status="new"
         )
         
