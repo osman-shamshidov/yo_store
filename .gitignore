@@ -74,3 +74,6 @@ path/
 # Excel files (if not needed in repo)
 *.xlsx
 *.xls
+
+# Price storage
+current_prices.json
