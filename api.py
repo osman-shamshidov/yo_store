@@ -8,6 +8,7 @@ from models import Product, Category, CurrentPrice, ProductImage, Level2Descript
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
+from a2wsgi import ASGIMiddleware
 import json
 import io
 import pandas as pd
@@ -95,6 +96,9 @@ app = FastAPI(title="Yo Store API", version="1.0.0")
 
 # Mount static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# WSGI wrapper for Passenger
+application = ASGIMiddleware(app)
 
 # --- Simple Admin Auth (cookie-based) ---
 ADMIN_USERNAME = os.getenv('ADMIN_USERNAME', 'yo_admin')
@@ -197,7 +201,7 @@ def ensure_category_exists(db: Session, level0: Optional[str], level1: Optional[
 @app.get("/")
 async def root():
     """Redirect root path to /webapp"""
-    return RedirectResponse(url="/webapp")
+    return RedirectResponse(url="/webapp", status_code=301)
 
 @app.get("/test-products")
 async def test_products(db: Session = Depends(get_db)):

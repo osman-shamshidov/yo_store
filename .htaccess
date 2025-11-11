@@ -1,0 +1,14 @@
+# Passenger configuration for REG.RU hosting
+PassengerEnabled On
+PassengerAppRoot /var/www/u3324585/data
+PassengerPython /var/www/u3324585/data/venv/bin/python
+PassengerAppType wsgi
+PassengerStartupFile passenger_wsgi.py
+
+# Минимальная конфигурация - редирект будет работать через FastAPI
+# Если нужен редирект через .htaccess, раскомментируйте ниже
+# <IfModule mod_rewrite.c>
+#     RewriteEngine On
+#     RewriteRule ^$ /webapp [R=301,L]
+# </IfModule>
+

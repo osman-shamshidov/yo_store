@@ -17,7 +17,7 @@ from sqlalchemy.orm import sessionmaker
 # Добавляем путь к проекту для импорта модулей
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from models import Product, CurrentPrice
+from models import CurrentPrice
 from config import Config
 
 # Настройка логирования
@@ -32,7 +32,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Конфигурация из переменных окружения
-PRICE_SERVICE_URL = os.getenv('PRICE_SERVICE_URL', 'http://localhost:8005/api/prices')
+PRICE_SERVICE_URL = os.getenv('PRICE_SERVICE_URL', 'http://0.0.0.0:8005/api/prices')
 PRICE_SERVICE_TOKEN = os.getenv('PRICE_SERVICE_TOKEN', None)
 DATABASE_URL = os.getenv('DATABASE_URL', Config.DATABASE_URL)
 
@@ -43,15 +43,15 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 def get_all_skus(db: Session) -> List[str]:
     """
-    Получить все SKU из таблицы products
+    Получить все SKU из таблицы current_prices, где is_parse == True
     
     Returns:
-        List[str]: Список всех SKU
+        List[str]: Список всех SKU для обновления
     """
     try:
-        products = db.query(Product.sku).filter(Product.is_available == True).all()
-        skus = [product[0] for product in products if product[0]]
-        logger.info(f"📦 Получено {len(skus)} SKU из базы данных")
+        prices = db.query(CurrentPrice.sku).filter(CurrentPrice.is_parse == True).all()
+        skus = [price[0] for price in prices if price[0]]
+        logger.info(f"📦 Получено {len(skus)} SKU из таблицы current_prices (is_parse=True)")
         return skus
     except Exception as e:
         logger.error(f"❌ Ошибка при получении SKU из БД: {e}")
@@ -114,8 +114,16 @@ def get_prices_from_service(skus: List[str]) -> Optional[Dict]:
             logger.error(f"Ответ: {data}")
             return None
             
+    except requests.exceptions.ConnectionError as e:
+        logger.warning(f"⚠️  Сервис недоступен: {PRICE_SERVICE_URL}. Оставляем цены без изменений.")
+        logger.debug(f"Детали ошибки подключения: {e}")
+        return None
+    except requests.exceptions.Timeout as e:
+        logger.warning(f"⚠️  Таймаут при запросе к сервису: {PRICE_SERVICE_URL}. Оставляем цены без изменений.")
+        logger.debug(f"Детали ошибки таймаута: {e}")
+        return None
     except requests.exceptions.RequestException as e:
-        logger.error(f"❌ Ошибка при запросе к сервису: {e}")
+        logger.warning(f"⚠️  Ошибка при запросе к сервису: {e}. Оставляем цены без изменений.")
         return None
     except ValueError as e:
         logger.error(f"❌ Ошибка при парсинге JSON ответа: {e}")
@@ -169,48 +177,31 @@ def update_prices_in_db(prices_dict: Dict, db: Session) -> Dict[str, int]:
                     stats['errors'] += 1
                     continue
                 
-                # Находим товар по SKU
-                product = db.query(Product).filter(Product.sku == sku).first()
+                # Находим запись цены в current_prices (мы берем SKU только из current_prices)
+                current_price = db.query(CurrentPrice).filter(CurrentPrice.sku == sku).first()
                 
-                if not product:
-                    logger.warning(f"⚠️  Товар с SKU '{sku}' не найден в базе данных")
+                if not current_price:
+                    logger.warning(f"⚠️  Запись цены с SKU '{sku}' не найдена в current_prices")
                     stats['not_found'] += 1
                     continue
                 
-                # Находим или создаем запись цены
-                current_price = db.query(CurrentPrice).filter(CurrentPrice.sku == sku).first()
-                
-                if current_price:
-                    # Сохраняем старую цену как old_price, если она изменилась
-                    old_price_value = current_price.price
-                    if old_price_value != price_value:
-                        current_price.old_price = old_price_value
-                        current_price.price = price_value
-                        # Вычисляем процент скидки, если есть old_price
-                        if current_price.old_price and current_price.old_price > price_value:
-                            current_price.discount_percentage = (
-                                (current_price.old_price - price_value) / current_price.old_price * 100
-                            )
-                        else:
-                            current_price.discount_percentage = 0.0
-                        current_price.updated_at = datetime.utcnow()
-                        stats['updated'] += 1
-                        logger.info(f"✅ Обновлена цена для {sku}: {old_price_value} → {price_value} RUB")
+                # Сохраняем старую цену как old_price, если она изменилась
+                old_price_value = current_price.price
+                if old_price_value != price_value:
+                    current_price.old_price = old_price_value
+                    current_price.price = price_value
+                    # Вычисляем процент скидки, если есть old_price
+                    if current_price.old_price and current_price.old_price > price_value:
+                        current_price.discount_percentage = (
+                            (current_price.old_price - price_value) / current_price.old_price * 100
+                        )
                     else:
-                        logger.debug(f"ℹ️  Цена для {sku} не изменилась: {price_value} RUB")
+                        current_price.discount_percentage = 0.0
+                    current_price.updated_at = datetime.utcnow()
+                    stats['updated'] += 1
+                    logger.info(f"✅ Обновлена цена для {sku}: {old_price_value} → {price_value} RUB")
                 else:
-                    # Создаем новую запись цены
-                    new_price = CurrentPrice(
-                        sku=sku,
-                        price=price_value,
-                        old_price=price_value,  # При создании old_price = price
-                        currency='RUB',
-                        discount_percentage=0.0,
-                        updated_at=datetime.utcnow()
-                    )
-                    db.add(new_price)
-                    stats['created'] += 1
-                    logger.info(f"✅ Создана новая цена для {sku}: {price_value} RUB")
+                    logger.debug(f"ℹ️  Цена для {sku} не изменилась: {price_value} RUB")
                 
             except Exception as e:
                 logger.error(f"❌ Ошибка при обработке SKU {sku}: {e}")
@@ -251,7 +242,7 @@ def main():
         prices_dict = get_prices_from_service(skus)
         
         if not prices_dict:
-            logger.error("❌ Не удалось получить цены из сервиса")
+            logger.warning("⚠️  Не удалось получить цены из сервиса. Цены остаются без изменений.")
             return
         
         # Обновляем цены в базе данных
@@ -272,7 +263,8 @@ def main():
     except Exception as e:
         logger.error(f"❌ Критическая ошибка: {e}", exc_info=True)
         db.rollback()
-        sys.exit(1)
+        # Не завершаем процесс с ошибкой, чтобы шедулер мог продолжить работу
+        return
     finally:
         db.close()
 
