@@ -248,7 +248,7 @@ async def get_all_products(db: Session = Depends(get_db)):
         # Простой запрос всех товаров
         results = db.query(Product, CurrentPrice).outerjoin(
             CurrentPrice, Product.sku == CurrentPrice.sku
-        ).order_by(Product.level_0, Product.level_1, Product.level_2, Product.sku).all()
+        ).order_by(Product.level_0, Product.level_1, Product.level_2.desc(), Product.sku).all()
         
         print(f"📊 Найдено {len(results)} результатов в БД")
         
@@ -352,7 +352,7 @@ async def get_products(
         CurrentPrice, Product.sku == CurrentPrice.sku
     ).outerjoin(subquery, Product.id == subquery.c.id).filter(
         subquery.c.id.isnot(None)
-    ).order_by(Product.level_2, Product.id)
+    ).order_by(Product.level_2.desc(), Product.id)
     
     # Применяем лимит и отступ
     results = final_query.offset(offset).limit(limit).all()
@@ -653,7 +653,7 @@ async def search_products(
         CurrentPrice, Product.sku == CurrentPrice.sku
     ).filter(
         Product.id == subquery.c.id
-    ).order_by(Product.level_2, Product.id)
+    ).order_by(Product.level_2.desc(), Product.id)
     
     # Применяем лимит
     results = final_query.limit(limit).all()
