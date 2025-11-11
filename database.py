@@ -26,7 +26,9 @@ def init_database():
     create_tables()
     
     from sqlalchemy.orm import Session
-    from models import Category, Product, CurrentPrice
+    from models import Category, Product
+    from price_storage import set_price
+    from datetime import datetime
     
     db = SessionLocal()
     
@@ -52,62 +54,62 @@ def init_database():
             # Create sample products
             sample_products = [
                 {
+                    "sku": "APPIP15PRO",
                     "name": "iPhone 15 Pro",
-                    "description": "Новейший смартфон от Apple с титановым корпусом",
                     "brand": "Apple",
-                    "model": "iPhone 15 Pro",
-                    "category_id": 1,
-                    "image_url": "https://example.com/iphone15pro.jpg",
+                    "level_0": "Смартфоны",
+                    "level_1": "iPhone",
+                    "level_2": "iPhone 15 Pro",
                     "specifications": '{"storage": "256GB", "color": "Natural Titanium", "screen": "6.1 inch"}',
                     "price": 99990.0
                 },
                 {
+                    "sku": "APPMBAIRM2",
                     "name": "MacBook Air M2",
-                    "description": "Ультратонкий ноутбук с чипом M2",
                     "brand": "Apple",
-                    "model": "MacBook Air M2",
-                    "category_id": 2,
-                    "image_url": "https://example.com/macbookair.jpg",
+                    "level_0": "Ноутбуки",
+                    "level_1": "MacBook",
+                    "level_2": "MacBook Air M2",
                     "specifications": '{"storage": "256GB", "memory": "8GB", "screen": "13.6 inch"}',
                     "price": 119990.0
                 },
                 {
+                    "sku": "SONYPS5",
                     "name": "PlayStation 5",
-                    "description": "Игровая консоль нового поколения",
                     "brand": "Sony",
-                    "model": "PS5",
-                    "category_id": 3,
-                    "image_url": "https://example.com/ps5.jpg",
+                    "level_0": "Игровые приставки",
+                    "level_1": "PlayStation",
+                    "level_2": "PS5",
                     "specifications": '{"storage": "825GB", "controller": "DualSense"}',
                     "price": 59990.0
                 },
                 {
+                    "sku": "APPAPRO2",
                     "name": "AirPods Pro 2",
-                    "description": "Беспроводные наушники с активным шумоподавлением",
                     "brand": "Apple",
-                    "model": "AirPods Pro 2",
-                    "category_id": 4,
-                    "image_url": "https://example.com/airpods.jpg",
+                    "level_0": "Наушники",
+                    "level_1": "AirPods",
+                    "level_2": "AirPods Pro 2",
                     "specifications": '{"battery": "6 hours", "case": "MagSafe"}',
                     "price": 24990.0
                 },
                 {
+                    "sku": "APPIPADAIR",
                     "name": "iPad Air",
-                    "description": "Планшет с чипом M1",
                     "brand": "Apple",
-                    "model": "iPad Air",
-                    "category_id": 5,
-                    "image_url": "https://example.com/ipad.jpg",
+                    "level_0": "Планшеты",
+                    "level_1": "iPad",
+                    "level_2": "iPad Air",
                     "specifications": '{"storage": "64GB", "screen": "10.9 inch"}',
                     "price": 59990.0
                 },
                 {
+                    "sku": "APPHPMINI",
                     "name": "HomePod mini",
-                    "description": "Умная колонка с Siri",
                     "brand": "Apple",
-                    "model": "HomePod mini",
-                    "category_id": 6,
-                    "image_url": "https://example.com/homepod.jpg",
+                    "level_0": "Умные колонки",
+                    "level_1": "HomePod",
+                    "level_2": "HomePod mini",
                     "specifications": '{"color": "Space Gray", "power": "20W"}',
                     "price": 9990.0
                 }
@@ -119,14 +121,16 @@ def init_database():
                 db.add(product)
                 db.flush()  # Get the product ID
                 
-                # Create current price
-                current_price = CurrentPrice(
-                    product_id=product.id,
+                # Create current price in JSON file
+                old_price = price * 1.1  # 10% higher old price
+                # discount_percentage вычисляется автоматически из old_price и price
+                set_price(
+                    sku=product.sku,
                     price=price,
-                    old_price=price * 1.1,  # 10% higher old price
-                    discount_percentage=10.0
+                    old_price=old_price,
+                    currency="RUB",
+                    is_parse=True
                 )
-                db.add(current_price)
             
             db.commit()
             print("Yo Store database initialized with sample data")

@@ -1,0 +1,1682 @@
+{
+  "16128ultramarinesim": {
+    "price": 51700.0,
+    "old_price": 65500.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16128ultramarinedualsim": {
+    "price": 67500.0,
+    "old_price": 77625.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "APPIP16": {
+    "price": 55000.0,
+    "old_price": 65000.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "16128blacksim": {
+    "price": 40500.0,
+    "old_price": 65000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16128blackdualsim": {
+    "price": 67000.0,
+    "old_price": 77050.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16128blackdualesim": {
+    "price": 37300.0,
+    "old_price": 66000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16128pinksim": {
+    "price": 51500.0,
+    "old_price": 65800.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16128pinkdualsim": {
+    "price": 67800.0,
+    "old_price": 77970.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16128pinkdualesim": {
+    "price": 66800.0,
+    "old_price": 76820.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16128tealsim": {
+    "price": 51600.0,
+    "old_price": 65500.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16128tealdualsim": {
+    "price": 67500.0,
+    "old_price": 77625.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16128tealdualesim": {
+    "price": 66500.0,
+    "old_price": 76475.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16128whitesim": {
+    "price": 39500.0,
+    "old_price": 65000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16128whitedualsim": {
+    "price": 73900.0,
+    "old_price": 67000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16128whitedualesim": {
+    "price": 37500.0,
+    "old_price": 66000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16256blacksim": {
+    "price": 61000.0,
+    "old_price": 73000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16256blackdualsim": {
+    "price": 96100.0,
+    "old_price": 75000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16256blackdualesim": {
+    "price": 93500.0,
+    "old_price": 74000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16256pinksim": {
+    "price": 60500.0,
+    "old_price": 73800.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16256pinkdualsim": {
+    "price": 75800.0,
+    "old_price": 87170.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16256pinkdualesim": {
+    "price": 74800.0,
+    "old_price": 86020.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16256tealsim": {
+    "price": 60100.0,
+    "old_price": 73500.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16256tealdualsim": {
+    "price": 75500.0,
+    "old_price": 86825.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16256tealdualesim": {
+    "price": 74500.0,
+    "old_price": 85675.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16256whitesim": {
+    "price": 61000.0,
+    "old_price": 73000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16256whitedualsim": {
+    "price": 96000.0,
+    "old_price": 75000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16256whitedualesim": {
+    "price": 50500.0,
+    "old_price": 74000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "APPIP16PRO": {
+    "price": 85000.0,
+    "old_price": 95000.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "16pro1tbblacksim": {
+    "price": 145500.0,
+    "old_price": 113000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro1tbblackdualsim": {
+    "price": 137500.0,
+    "old_price": 115000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro1tbblackdualesim": {
+    "price": 114000.0,
+    "old_price": 131100.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro1tbbluesim": {
+    "price": 115000.0,
+    "old_price": 132250.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro1tbbluedualsim": {
+    "price": 117000.0,
+    "old_price": 134550.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro1tbbluedualesim": {
+    "price": 116000.0,
+    "old_price": 133400.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro1tbnaturalsim": {
+    "price": 114500.0,
+    "old_price": 131675.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro1tbnaturaldualsim": {
+    "price": 116500.0,
+    "old_price": 133975.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro1tbnaturaldualesim": {
+    "price": 115500.0,
+    "old_price": 132825.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro1tbwhitesim": {
+    "price": 113000.0,
+    "old_price": 129949.99999999999,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro1tbwhitedualsim": {
+    "price": 115000.0,
+    "old_price": 132250.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro1tbwhitedualesim": {
+    "price": 114000.0,
+    "old_price": 131100.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro256blacksim": {
+    "price": 98200.0,
+    "old_price": 97000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro256blackdualsim": {
+    "price": 96100.0,
+    "old_price": 99000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro256blackdualesim": {
+    "price": 93500.0,
+    "old_price": 98000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro256bluesim": {
+    "price": 99000.0,
+    "old_price": 113849.99999999999,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro256bluedualsim": {
+    "price": 101000.0,
+    "old_price": 116149.99999999999,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro256bluedualesim": {
+    "price": 100000.0,
+    "old_price": 114999.99999999999,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro256naturalsim": {
+    "price": 96100.0,
+    "old_price": 98500.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro256naturaldualsim": {
+    "price": 96100.0,
+    "old_price": 100500.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro256naturaldualesim": {
+    "price": 99500.0,
+    "old_price": 114424.99999999999,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro256whitesim": {
+    "price": 98000.0,
+    "old_price": 97000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro256whitedualsim": {
+    "price": 96000.0,
+    "old_price": 99000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro256whitedualesim": {
+    "price": 98000.0,
+    "old_price": 112699.99999999999,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro512blacksim": {
+    "price": 116800.0,
+    "old_price": 105000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro512blackdualsim": {
+    "price": 107000.0,
+    "old_price": 123049.99999999999,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro512blackdualesim": {
+    "price": 181800.0,
+    "old_price": 106000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro512bluesim": {
+    "price": 107000.0,
+    "old_price": 123049.99999999999,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro512bluedualsim": {
+    "price": 109000.0,
+    "old_price": 125349.99999999999,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro512bluedualesim": {
+    "price": 108000.0,
+    "old_price": 124199.99999999999,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro512naturalsim": {
+    "price": 114600.0,
+    "old_price": 106500.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro512naturaldualsim": {
+    "price": 108500.0,
+    "old_price": 124774.99999999999,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro512naturaldualesim": {
+    "price": 107500.0,
+    "old_price": 123624.99999999999,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro512whitesim": {
+    "price": 106400.0,
+    "old_price": 105000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro512whitedualsim": {
+    "price": 107000.0,
+    "old_price": 123049.99999999999,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro512whitedualesim": {
+    "price": 106000.0,
+    "old_price": 121899.99999999999,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "APPIP16PROMAX": {
+    "price": 109000.0,
+    "old_price": 125349.99999999999,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "16promax1tbblacksim": {
+    "price": 145500.0,
+    "old_price": 133000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax1tbblackdualsim": {
+    "price": 137500.0,
+    "old_price": 135000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax1tbblackdualesim": {
+    "price": 134000.0,
+    "old_price": 154100.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax1tbdesertsim": {
+    "price": 142500.0,
+    "old_price": 135000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax1tbdesertdualsim": {
+    "price": 137000.0,
+    "old_price": 157550.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax1tbdesertdualesim": {
+    "price": 136000.0,
+    "old_price": 156400.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax1tbnaturalsim": {
+    "price": 134500.0,
+    "old_price": 154675.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax1tbnaturaldualsim": {
+    "price": 136500.0,
+    "old_price": 156975.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax1tbnaturaldualesim": {
+    "price": 135500.0,
+    "old_price": 155825.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax1tbwhitesim": {
+    "price": 133000.0,
+    "old_price": 152950.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax1tbwhitedualsim": {
+    "price": 135000.0,
+    "old_price": 155250.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax1tbwhitedualesim": {
+    "price": 128500.0,
+    "old_price": 134000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax256blacksim": {
+    "price": 98200.0,
+    "old_price": 117000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax256blackdualsim": {
+    "price": 96100.0,
+    "old_price": 119000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax256blackdualesim": {
+    "price": 93500.0,
+    "old_price": 118000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax256desertsim": {
+    "price": 96000.0,
+    "old_price": 119000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax256desertdualsim": {
+    "price": 121000.0,
+    "old_price": 139150.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax256desertdualesim": {
+    "price": 120000.0,
+    "old_price": 138000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax256naturalsim": {
+    "price": 100600.0,
+    "old_price": 118500.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax256naturaldualsim": {
+    "price": 96100.0,
+    "old_price": 120500.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax256naturaldualesim": {
+    "price": 119500.0,
+    "old_price": 137425.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax256whitesim": {
+    "price": 98000.0,
+    "old_price": 117000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax256whitedualsim": {
+    "price": 96000.0,
+    "old_price": 119000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax256whitedualesim": {
+    "price": 118000.0,
+    "old_price": 135700.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax512blacksim": {
+    "price": 116800.0,
+    "old_price": 125000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax512blackdualsim": {
+    "price": 127000.0,
+    "old_price": 146050.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax512blackdualesim": {
+    "price": 126000.0,
+    "old_price": 144900.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax512desertsim": {
+    "price": 108900.0,
+    "old_price": 127000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax512desertdualsim": {
+    "price": 129000.0,
+    "old_price": 148350.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax512desertdualesim": {
+    "price": 106500.0,
+    "old_price": 128000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax512naturalsim": {
+    "price": 114600.0,
+    "old_price": 126500.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax512naturaldualsim": {
+    "price": 128500.0,
+    "old_price": 147775.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax512naturaldualesim": {
+    "price": 127500.0,
+    "old_price": 146625.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax512whitesim": {
+    "price": 120000.0,
+    "old_price": 125000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax512whitedualsim": {
+    "price": 127000.0,
+    "old_price": 146050.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16promax512whitedualesim": {
+    "price": 126000.0,
+    "old_price": 144900.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "APPIP17PROMAX": {
+    "price": 125000.0,
+    "old_price": 145000.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "17promax256orangesim": {
+    "price": 140000.0,
+    "old_price": 161000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax256orangedualsim": {
+    "price": 142000.0,
+    "old_price": 163300.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax256bluesim": {
+    "price": 139500.0,
+    "old_price": 160425.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax256bluedualsim": {
+    "price": 141500.0,
+    "old_price": 162725.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax256silversim": {
+    "price": 138000.0,
+    "old_price": 158700.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax256silverdualsim": {
+    "price": 140000.0,
+    "old_price": 161000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax512orangesim": {
+    "price": 148000.0,
+    "old_price": 170200.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax512orangedualsim": {
+    "price": 150000.0,
+    "old_price": 172500.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax512bluesim": {
+    "price": 147500.0,
+    "old_price": 169625.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax512bluedualsim": {
+    "price": 149500.0,
+    "old_price": 171925.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax512silversim": {
+    "price": 146000.0,
+    "old_price": 167900.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax512silverdualsim": {
+    "price": 148000.0,
+    "old_price": 170200.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16128ultramarinedualesim": {
+    "price": 50800.0,
+    "old_price": 66500.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16256ultramarinesim": {
+    "price": 60300.0,
+    "old_price": 73500.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16256ultramarinedualsim": {
+    "price": 75500.0,
+    "old_price": 86825.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16256ultramarinedualesim": {
+    "price": 74500.0,
+    "old_price": 85675.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "13128starlightsim": {
+    "price": 65000.0,
+    "old_price": 65000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "13128midnightsim": {
+    "price": 65000.0,
+    "old_price": 65000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "13128greensim": {
+    "price": 38500.0,
+    "old_price": 65000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "15128blacksim": {
+    "price": 43600.0,
+    "old_price": 65000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "15128bluesim": {
+    "price": 42700.0,
+    "old_price": 65000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "15128pinksim": {
+    "price": 65000.0,
+    "old_price": 65000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "15128greensim": {
+    "price": 43100.0,
+    "old_price": 65000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "15256blacksim": {
+    "price": 57000.0,
+    "old_price": 65000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "15256bluesim": {
+    "price": 57000.0,
+    "old_price": 65000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "15256pinksim": {
+    "price": 65000.0,
+    "old_price": 65000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "15256greensim": {
+    "price": 52600.0,
+    "old_price": 65000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro256desertsim": {
+    "price": 96000.0,
+    "old_price": 99000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro256desertdualsim": {
+    "price": 94200.0,
+    "old_price": 101000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro256desertdualesim": {
+    "price": 100000.0,
+    "old_price": 100000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro512desertsim": {
+    "price": 108900.0,
+    "old_price": 107000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro512desertdualsim": {
+    "price": 109000.0,
+    "old_price": 109000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro512desertdualesim": {
+    "price": 106500.0,
+    "old_price": 108000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro1tbdesertsim": {
+    "price": 130300.0,
+    "old_price": 115000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro1tbdesertdualsim": {
+    "price": 123500.0,
+    "old_price": 117000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "16pro1tbdesertdualesim": {
+    "price": 116000.0,
+    "old_price": 116000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "phone16promax512whitesim": {
+    "price": 125000.0,
+    "old_price": 125000.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "17256whitesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17256whitedualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17black256sim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17black256dualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17256lavendersim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17256lavenderdualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17256sagesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17256sagedualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17256bluesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17256bluedualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17512whitesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17512whitedualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17512blacksim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17512blackdualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17512lavendersim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17512lavenderdualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17512sagesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17512sagedualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17512bluesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17512bluedualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "air256cloudwhitedualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "air256blackdualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "air256golddualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "air256bluedualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "air512cloudwhitedualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "air512blackdualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "air512golddualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "air512bluedualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "air1tbcloudwhitedualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "air1tbblackdualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "air1tbgolddualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "air1tbbluedualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17pro256silversim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17pro256silverdualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17pro256bluesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17pro256bluedualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17pro256orangesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17pro256orangedualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17pro512silversim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17pro512silverdualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17pro512bluesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17pro512bluedualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17pro512orangesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17pro512orangedualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17pro1tbsilversim": {
+    "price": 155500.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17pro1tbsilverdualesim": {
+    "price": 134000.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17pro1tbbluesim": {
+    "price": 162800.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17pro1tbbluedualesim": {
+    "price": 128800.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17pro1tborangesim": {
+    "price": 137800.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17pro1tborangedualesim": {
+    "price": 127500.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax256silverdualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax256bluedualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax256orangedualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax512silverdualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax512bluedualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax512orangedualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax1tbsilversim": {
+    "price": 155500.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax1tbsilverdualesim": {
+    "price": 153300.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax1tbbluesim": {
+    "price": 162800.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax1tbbluedualesim": {
+    "price": 142800.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax1tborangesim": {
+    "price": 159800.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax1tborangedualesim": {
+    "price": 137700.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax2tbsilversim": {
+    "price": 203800.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax2tbsilverdualesim": {
+    "price": 169000.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax2tbbluesim": {
+    "price": 195000.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax2tbbluedualesim": {
+    "price": 164000.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax2tborangesim": {
+    "price": 191800.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "17promax2tborangedualesim": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "s24ultra256black": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "s24ultra256gray": {
+    "price": 89990.0,
+    "old_price": 89990.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "MW0Y3": {
+    "price": 76500.0,
+    "old_price": 136000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "MW123": {
+    "price": 77300.0,
+    "old_price": 136000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "MW0W3": {
+    "price": 77000.0,
+    "old_price": 136000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "MC6T4": {
+    "price": 77300.0,
+    "old_price": 136000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "MW103": {
+    "price": 90500.0,
+    "old_price": 136000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "MW0X3": {
+    "price": 91500.0,
+    "old_price": 136000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "MW133": {
+    "price": 91000.0,
+    "old_price": 136000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "MC6U4": {
+    "price": 92500.0,
+    "old_price": 136000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "MC6A4": {
+    "price": 108000.0,
+    "old_price": 136000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "MC6C4": {
+    "price": 109500.0,
+    "old_price": 136000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "MC6V4": {
+    "price": 109500.0,
+    "old_price": 136000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "MC7A4": {
+    "price": 91500.0,
+    "old_price": 136000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "MW1J3": {
+    "price": 91000.0,
+    "old_price": 136000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "MW1L3": {
+    "price": 91500.0,
+    "old_price": 136000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "MW1G3": {
+    "price": 95300.0,
+    "old_price": 136000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "MW1H3": {
+    "price": 136000.0,
+    "old_price": 136000.0,
+    "currency": "RUB",
+    "is_parse": true
+  },
+  "adapter20w": {
+    "price": 1490.0,
+    "old_price": 2990.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "ps5pro": {
+    "price": 79990.0,
+    "old_price": 79990.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "ps5slim": {
+    "price": 49990.0,
+    "old_price": 49990.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "ps5slimdigital": {
+    "price": 47990.0,
+    "old_price": 47990.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "yandexmini3black": {
+    "price": 6990.0,
+    "old_price": 6990.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "dualsenseblack": {
+    "price": 6590.0,
+    "old_price": 6590.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "yandexmini3grey": {
+    "price": 6990.0,
+    "old_price": 6990.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "yandexmini3purple": {
+    "price": 7990.0,
+    "old_price": 6990.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "yandexmidi3grey": {
+    "price": 12500.0,
+    "old_price": 12500.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "yandexmidiblack": {
+    "price": 12500.0,
+    "old_price": 12500.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "yandexmidigreen": {
+    "price": 12500.0,
+    "old_price": 12500.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "yandexmidipink": {
+    "price": 12500.0,
+    "old_price": 12500.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "yandexmidiorange": {
+    "price": 12500.0,
+    "old_price": 12500.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "yandexmaxbeige": {
+    "price": 35000.0,
+    "old_price": 35000.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "yandexmaxblack": {
+    "price": 35000.0,
+    "old_price": 35000.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "yandexmaxgreen": {
+    "price": 35000.0,
+    "old_price": 35000.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "yandexduomaxbeige": {
+    "price": 40000.0,
+    "old_price": 40000.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "yandexduomaxblack": {
+    "price": 40000.0,
+    "old_price": 40000.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "yandexduomaxgreen": {
+    "price": 40000.0,
+    "old_price": 40000.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "dualsensewhite": {
+    "price": 6590.0,
+    "old_price": 6590.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "dualsensecobaltblue": {
+    "price": 6590.0,
+    "old_price": 6590.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "dualsensechromateal": {
+    "price": 6590.0,
+    "old_price": 6590.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "dualsensepink": {
+    "price": 6590.0,
+    "old_price": 6590.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "dualsensepurple": {
+    "price": 6590.0,
+    "old_price": 6590.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "dualsensered": {
+    "price": 6590.0,
+    "old_price": 6590.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "jblflip6grey": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "jblflip6black": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "jblflip6blue": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "jblflip6pink": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "jblflip6red": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "jblflip6camouflage": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "jblflip7white": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "jblflip7black": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "jblflip7blue": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "jblflip7purple": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "jblflip7red": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "jblflip7squad": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "jblboombox3black": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "jblboombox3squad": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "jblxtreme4black": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "jblxtreme4blue": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "jblxtreme4camouflage": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "s25ultra12256gray": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "s25ultra12256black": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "s25ultra12256silver": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "s25ultra12256blue": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "s25ultra12512gray": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "s25ultra12512black": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "s25ultra12512silver": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "s25ultra12512blue": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "s25ultra121024gray": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "s25ultra121024black": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "s25ultra121024silver": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "s25ultra121024blue": {
+    "price": 0.0,
+    "old_price": 0.0,
+    "currency": "RUB",
+    "is_parse": false
+  },
+  "whooplifemg": {
+    "price": 33500.0,
+    "old_price": 33500.0,
+    "currency": "RUB",
+    "is_parse": false
+  }
+}

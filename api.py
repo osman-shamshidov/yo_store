@@ -4,7 +4,8 @@ from fastapi.responses import HTMLResponse, FileResponse, StreamingResponse, Red
 from sqlalchemy.orm import Session
 from sqlalchemy import and_, func
 from database import get_db
-from models import Product, Category, CurrentPrice, ProductImage, Level2Description, Order, OrderItem, PromoCode
+from models import Product, Category, ProductImage, Level2Description, Order, OrderItem, PromoCode
+from price_storage import get_price, get_all_prices, set_price, update_prices
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
@@ -246,29 +247,28 @@ async def get_all_products(db: Session = Depends(get_db)):
     """Endpoint для получения всех товаров без группировки"""
     try:
         # Простой запрос всех товаров
-        results = db.query(Product, CurrentPrice).outerjoin(
-            CurrentPrice, Product.sku == CurrentPrice.sku
-        ).order_by(Product.level_0, Product.level_1, Product.level_2.desc(), Product.sku).all()
+        results = db.query(Product).order_by(Product.level_0, Product.level_1, Product.level_2.desc(), Product.sku).all()
         
         print(f"📊 Найдено {len(results)} результатов в БД")
         
         products = []
-        for idx, result in enumerate(results):
-            print(f"🔄 Обрабатываем товар {idx + 1}/{len(results)}: ID {result[0].id}")
-            product = result[0]  # Product
-            price = result[1]    # CurrentPrice или None
+        for idx, product in enumerate(results):
+            print(f"🔄 Обрабатываем товар {idx + 1}/{len(results)}: ID {product.id}")
+            
+            # Получаем цену из JSON файла
+            price_data = get_price(product.sku)
             
             # Получаем данные о цене с безопасными значениями по умолчанию
-            if price is None:
+            if price_data is None:
                 product_price = 0.0
                 product_old_price = 0.0
                 product_discount = 0.0
                 product_currency = "RUB"
             else:
-                product_price = price.price if price.price is not None else 0.0
-                product_old_price = price.old_price if price.old_price is not None else 0.0
-                product_discount = price.discount_percentage if price.discount_percentage is not None else 0.0
-                product_currency = price.currency if price.currency else "RUB"
+                product_price = price_data.get('price', 0.0)
+                product_old_price = price_data.get('old_price', 0.0)
+                product_discount = price_data.get('discount_percentage', 0.0)
+                product_currency = price_data.get('currency', 'RUB')
             
             # Получаем изображения
             images = get_product_images(product, db)
@@ -321,9 +321,7 @@ async def get_products(
 ):
     """Get unique product models (grouped by level2) with optional hierarchical filters"""
     # Простая логика: получаем все товары, затем группируем в Python
-    query = db.query(Product, CurrentPrice).outerjoin(
-        CurrentPrice, Product.sku == CurrentPrice.sku
-    )
+    query = db.query(Product)
     
     # Применяем фильтры
     filters = []
@@ -348,9 +346,7 @@ async def get_products(
     ).filter(*filters).group_by(Product.level_2, Product.brand).subquery()
     
     # Теперь получаем только те товары, которые являются представителями групп
-    final_query = db.query(Product, CurrentPrice).outerjoin(
-        CurrentPrice, Product.sku == CurrentPrice.sku
-    ).outerjoin(subquery, Product.id == subquery.c.id).filter(
+    final_query = db.query(Product).outerjoin(subquery, Product.id == subquery.c.id).filter(
         subquery.c.id.isnot(None)
     ).order_by(Product.level_2.desc(), Product.id)
     
@@ -358,22 +354,62 @@ async def get_products(
     results = final_query.offset(offset).limit(limit).all()
     
     products = []
-    for result in results:
-        product = result[0]  # Product
-
-
-        price = result[1]    # CurrentPrice или None
+    for product in results:
+        # Для карточки модели нужно найти минимальную цену среди всех вариантов этой модели
+        # Получаем все товары этой модели
+        all_model_products = db.query(Product).filter(
+            Product.level_2 == product.level_2,
+            Product.brand == product.brand
+        ).all()
         
-        # Если цена отсутствует, используем значения по умолчанию
-        if price is None:
-            price_obj = type('Price', (), {
-                'price': 0.0,
-                'old_price': 0.0,
-                'discount_percentage': 0.0,
-                'currency': 'RUB'
-            })()
+        # Находим минимальную цену среди всех вариантов
+        min_price = None
+        min_old_price = None
+        currency = "RUB"
+        best_variant_price = None  # Сохраняем весь объект цены для варианта с минимальной ценой
+        
+        for model_product in all_model_products:
+            variant_price = get_price(model_product.sku)
+            if variant_price:
+                variant_price_value = variant_price.get('price', 0.0)
+                if min_price is None or variant_price_value < min_price:
+                    min_price = variant_price_value
+                    best_variant_price = variant_price  # Сохраняем весь объект
+                    currency = variant_price.get('currency', 'RUB')
+        
+        # Если не нашли цену, используем цену представительного товара
+        if min_price is None:
+            price_data = get_price(product.sku)
+            if price_data:
+                price_obj = price_data
+            else:
+                price_obj = {
+                    'price': 0.0,
+                    'old_price': 0.0,
+                    'discount_percentage': 0.0,
+                    'currency': 'RUB'
+                }
         else:
-            price_obj = price
+            # Используем old_price от варианта с минимальной ценой
+            if best_variant_price:
+                min_old_price = best_variant_price.get('old_price')
+                # Если old_price не указан, используем price
+                if not min_old_price:
+                    min_old_price = min_price
+            else:
+                min_old_price = min_price
+            
+            # Формируем объект с минимальной ценой
+            price_obj = {
+                'price': min_price,
+                'old_price': min_old_price,
+                'currency': currency
+            }
+            # Вычисляем discount_percentage
+            if min_old_price and min_old_price > min_price:
+                price_obj['discount_percentage'] = ((min_old_price - min_price) / min_old_price) * 100
+            else:
+                price_obj['discount_percentage'] = 0.0
         
         try:
             specifications = json.loads(product.specifications) if product.specifications else {}
@@ -417,10 +453,10 @@ async def get_products(
             image_url=images[0] if images else '',
             images=images,
             specifications=specifications,
-            price=price_obj.price,
-            old_price=price_obj.old_price,
-            discount_percentage=price_obj.discount_percentage,
-            currency=price_obj.currency,
+            price=price_obj.get('price', 0.0),
+            old_price=price_obj.get('old_price', 0.0),
+            discount_percentage=price_obj.get('discount_percentage', 0.0),
+            currency=price_obj.get('currency', 'RUB'),
         ))
     
     return products
@@ -455,11 +491,8 @@ async def get_model_variants(model: str, db: Session = Depends(get_db)):
             sorted_variants = sorted(specifications['variants'], key=lambda x: x.get('specifications', {}).get('color', ''))
             
             for variant_info in sorted_variants:
-                # Находим цену для этого варианта по SKU
-                variant_product = db.query(Product).filter(Product.sku == variant_info['sku']).first()
-                price = None
-                if variant_product:
-                    price = db.query(CurrentPrice).filter(CurrentPrice.sku == variant_product.sku).first()
+                # Находим цену для этого варианта по SKU из JSON файла
+                price_data = get_price(variant_info['sku'])
                 
                 variant_specs = variant_info.get('specifications', {})
                 
@@ -483,10 +516,10 @@ async def get_model_variants(model: str, db: Session = Depends(get_db)):
                 variant_data = {
                     "sku": variant_info['sku'],
                     "name": variant_info['name'],
-                    "price": price.price if price else 0.0,
-                    "old_price": price.old_price if price else 0.0,
-                    "discount_percentage": price.discount_percentage if price else 0.0,
-                    "currency": price.currency if price else "RUB",
+                    "price": price_data.get('price', 0.0) if price_data else 0.0,
+                    "old_price": price_data.get('old_price', 0.0) if price_data else 0.0,
+                    "discount_percentage": price_data.get('discount_percentage', 0.0) if price_data else 0.0,
+                    "currency": price_data.get('currency', 'RUB') if price_data else "RUB",
                     "stock": variant_info.get('stock', 0),
                     "is_available": variant_info.get('is_available', True),
                     
@@ -510,14 +543,12 @@ async def get_model_variants(model: str, db: Session = Depends(get_db)):
         }
     
     # Fallback: Если основного продукта нет, найдем все варианты для данной модели
-    variants_query = db.query(Product, CurrentPrice).outerjoin(
-        CurrentPrice, Product.sku == CurrentPrice.sku
-    ).filter(Product.level_2 == model).order_by(Product.specifications)  # Сортируем по specifications
+    variants_query = db.query(Product).filter(Product.level_2 == model).order_by(Product.specifications)  # Сортируем по specifications
     
     variants = []
-    for result in variants_query.all():
-        product = result[0]
-        price = result[1]
+    for product in variants_query.all():
+        # Получаем цену из JSON файла
+        price_data = get_price(product.sku)
         
         # Получаем спецификации варианта
         specifications = {}
@@ -539,10 +570,10 @@ async def get_model_variants(model: str, db: Session = Depends(get_db)):
         variant_data = {
             "sku": product.sku,
             "name": product.name,
-            "price": price.price if price else 0.0,
-            "old_price": price.old_price if price else 0.0,
-            "discount_percentage": price.discount_percentage if price else 0.0,
-            "currency": price.currency if price else "RUB",
+            "price": price_data.get('price', 0.0) if price_data else 0.0,
+            "old_price": price_data.get('old_price', 0.0) if price_data else 0.0,
+            "discount_percentage": price_data.get('discount_percentage', 0.0) if price_data else 0.0,
+            "currency": price_data.get('currency', 'RUB') if price_data else "RUB",
             "stock": product.stock,
             "is_available": product.is_available,
             
@@ -571,16 +602,16 @@ async def get_model_variants(model: str, db: Session = Depends(get_db)):
 @app.get("/products/{product_id}", response_model=ProductDetailResponse)
 async def get_product(product_id: int, db: Session = Depends(get_db)):
     """Get detailed product information"""
-    result = db.query(Product, CurrentPrice).join(
-        CurrentPrice, Product.sku == CurrentPrice.sku
-    ).filter(
-        Product.id == product_id
-    ).first()
+    product = db.query(Product).filter(Product.id == product_id).first()
     
-    if not result:
+    if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     
-    product, price = result
+    # Получаем цену из JSON файла
+    price_data = get_price(product.sku)
+    
+    if not price_data:
+        raise HTTPException(status_code=404, detail="Price not found for this product")
     
     try:
         specifications = json.loads(product.specifications) if product.specifications else {}
@@ -616,10 +647,10 @@ async def get_product(product_id: int, db: Session = Depends(get_db)):
         image_url=images[0] if images else '',
         images=images,
         specifications=all_specifications,
-        price=price.price,
-        old_price=price.old_price,
-        discount_percentage=price.discount_percentage,
-        currency=price.currency,
+        price=price_data.get('price', 0.0),
+        old_price=price_data.get('old_price', 0.0),
+        discount_percentage=price_data.get('discount_percentage', 0.0),
+        currency=price_data.get('currency', 'RUB'),
         is_available=product.is_available,
         created_at=product.created_at.isoformat()
     )
@@ -649,9 +680,7 @@ async def search_products(
     ).filter(*search_filters).group_by(Product.level_2, Product.brand).subquery()
     
     # Теперь получаем только те товары, которые являются представителями групп
-    final_query = db.query(Product, CurrentPrice).outerjoin(
-        CurrentPrice, Product.sku == CurrentPrice.sku
-    ).filter(
+    final_query = db.query(Product).filter(
         Product.id == subquery.c.id
     ).order_by(Product.level_2.desc(), Product.id)
     
@@ -659,7 +688,63 @@ async def search_products(
     results = final_query.limit(limit).all()
     
     products = []
-    for product, price in results:
+    for product in results:
+        # Для карточки модели нужно найти минимальную цену среди всех вариантов этой модели
+        # Получаем все товары этой модели
+        all_model_products = db.query(Product).filter(
+            Product.level_2 == product.level_2,
+            Product.brand == product.brand
+        ).all()
+        
+        # Находим минимальную цену среди всех вариантов
+        min_price = None
+        min_old_price = None
+        currency = "RUB"
+        best_variant_price = None  # Сохраняем весь объект цены для варианта с минимальной ценой
+        
+        for model_product in all_model_products:
+            variant_price = get_price(model_product.sku)
+            if variant_price:
+                variant_price_value = variant_price.get('price', 0.0)
+                if min_price is None or variant_price_value < min_price:
+                    min_price = variant_price_value
+                    best_variant_price = variant_price  # Сохраняем весь объект
+                    currency = variant_price.get('currency', 'RUB')
+        
+        # Если не нашли цену, используем цену представительного товара
+        if min_price is None:
+            price_data = get_price(product.sku)
+            if price_data:
+                price_obj = price_data
+            else:
+                price_obj = {
+                    'price': 0.0,
+                    'old_price': 0.0,
+                    'discount_percentage': 0.0,
+                    'currency': 'RUB'
+                }
+        else:
+            # Используем old_price от варианта с минимальной ценой
+            if best_variant_price:
+                min_old_price = best_variant_price.get('old_price')
+                # Если old_price не указан, используем price
+                if not min_old_price:
+                    min_old_price = min_price
+            else:
+                min_old_price = min_price
+            
+            # Формируем объект с минимальной ценой
+            price_obj = {
+                'price': min_price,
+                'old_price': min_old_price,
+                'currency': currency
+            }
+            # Вычисляем discount_percentage
+            if min_old_price and min_old_price > min_price:
+                price_obj['discount_percentage'] = ((min_old_price - min_price) / min_old_price) * 100
+            else:
+                price_obj['discount_percentage'] = 0.0
+        
         try:
             specifications = json.loads(product.specifications) if product.specifications else {}
         except json.JSONDecodeError:
@@ -690,17 +775,6 @@ async def search_products(
         if product.level_2:
             category_name += f" / {product.level_2}"
         
-        # Если цена отсутствует, используем значения по умолчанию (аналогично get_products)
-        if price is None:
-            price_obj = type('Price', (), {
-                'price': 0.0,
-                'old_price': 0.0,
-                'discount_percentage': 0.0,
-                'currency': 'RUB'
-            })()
-        else:
-            price_obj = price
-        
         products.append(ProductResponse(
             id=product.id,
             sku=product.sku,
@@ -713,10 +787,10 @@ async def search_products(
             image_url=images[0] if images else '',
             images=images,
             specifications=specifications,
-            price=price_obj.price,
-            old_price=price_obj.old_price,
-            discount_percentage=price_obj.discount_percentage,
-            currency=price_obj.currency,
+            price=price_obj.get('price', 0.0),
+            old_price=price_obj.get('old_price', 0.0),
+            discount_percentage=price_obj.get('discount_percentage', 0.0),
+            currency=price_obj.get('currency', 'RUB'),
         ))
     
     return products
@@ -901,17 +975,14 @@ async def import_products_from_excel(file: UploadFile = File(...), db: Session =
                 # Ensure categories exist
                 ensure_category_exists(db, product_data.get('level0'), product_data.get('level1'), product_data.get('level2'))
                 
-                # Создать начальную цену
-                db_price = CurrentPrice(
+                # Создать начальную цену в JSON файле
+                set_price(
                     sku=sku,
                     price=product_data['price'],
                     old_price=product_data['price'],
-                    discount_percentage=0.0,
-                    currency=product_data['currency'],
-                    updated_at=datetime.utcnow()
+                    currency=product_data.get('currency', 'RUB'),
+                    is_parse=product_data.get('is_parse', True)
                 )
-                
-                db.add(db_price)
                 
                 # Создать запись изображений в ProductImage если есть изображения
                 if parsed_images and product_data.get('level2') and product_data.get('color'):
@@ -1100,21 +1171,16 @@ async def update_or_create_products_from_excel(file: UploadFile = File(...), db:
                             )
                             db.add(product_image)
                     
-                    # Обновляем цену
-                    current_price = db.query(CurrentPrice).filter(CurrentPrice.sku == product_data['sku']).first()
-                    if current_price:
-                        current_price.price = product_data['price']
-                        current_price.currency = product_data.get('currency', 'RUB')
-                        current_price.last_updated = datetime.now()
-                    else:
-                        # Создаем новую цену
-                        new_price = CurrentPrice(
-                            sku=product_data['sku'],
-                            price=product_data['price'],
-                            old_price=product_data['price'],
-                            currency=product_data.get('currency', 'RUB')
-                        )
-                        db.add(new_price)
+                    # Обновляем цену в JSON файле
+                    existing_price = get_price(product_data['sku'])
+                    is_parse = existing_price.get('is_parse', True) if existing_price else True
+                    set_price(
+                        sku=product_data['sku'],
+                        price=product_data['price'],
+                        old_price=product_data.get('old_price', product_data['price']),
+                        currency=product_data.get('currency', 'RUB'),
+                        is_parse=is_parse
+                    )
                     
                     updated_count += 1
                 else:
@@ -1146,14 +1212,14 @@ async def update_or_create_products_from_excel(file: UploadFile = File(...), db:
                     # Ensure categories exist
                     ensure_category_exists(db, product_data.get('level0'), product_data.get('level1'), product_data.get('level2'))
                     
-                    # Добавляем цену
-                    db_price = CurrentPrice(
+                    # Добавляем цену в JSON файле
+                    set_price(
                         sku=product_data['sku'],
                         price=product_data['price'],
-                        old_price=product_data['price'],
-                        currency=product_data.get('currency', 'RUB')
+                        old_price=product_data.get('old_price', product_data['price']),
+                        currency=product_data.get('currency', 'RUB'),
+                        is_parse=product_data.get('is_parse', True)
                     )
-                    db.add(db_price)
                     
                     # Создать запись изображений в ProductImage если есть изображения
                     if parsed_images and product_data.get('level_2') and product_data.get('color'):
@@ -1294,18 +1360,17 @@ async def download_price_template(db: Session = Depends(get_db)):
         from io import BytesIO
         
         # Получаем существующие товары с их SKU и текущими ценами
-        products = db.query(Product, CurrentPrice).outerjoin(
-            CurrentPrice, Product.sku == CurrentPrice.sku
-        ).filter(Product.is_available == True).limit(50).all()
+        products = db.query(Product).filter(Product.is_available == True).limit(50).all()
         
         # Создаем DataFrame с примерами
         data = []
         if products:
-            for product, price in products:
+            for product in products:
+                price_data = get_price(product.sku)
                 data.append({
                     'SKU': product.sku,
-                    'Новая цена': price.price if price else 0.0,
-                    'Старая цена': price.old_price if price and price.old_price else (price.price if price else 0.0)
+                    'Новая цена': price_data.get('price', 0.0) if price_data else 0.0,
+                    'Старая цена': price_data.get('old_price', 0.0) if price_data else 0.0
                 })
         else:
             # Примеры если нет товаров
@@ -1397,24 +1462,16 @@ async def import_prices_simple(file: UploadFile = File(...), db: Session = Depen
                     not_found.append(f"Строка {index + 2}: Товар с SKU '{sku}' не найден")
                     continue
                 
-                # Обновить или создать цену
-                current_price = db.query(CurrentPrice).filter(CurrentPrice.sku == product.sku).first()
-                
-                if current_price:
-                    # Обновить существующую цену
-                    current_price.price = new_price
-                    current_price.old_price = old_price
-                    current_price.discount_percentage = ((old_price - new_price) / old_price * 100) if old_price > new_price else 0
-                else:
-                    # Создать новую цену
-                    new_price_obj = CurrentPrice(
-                        product_id=product.id,
-                        price=new_price,
-                        old_price=old_price,
-                        discount_percentage=((old_price - new_price) / old_price * 100) if old_price > new_price else 0,
-                        currency='RUB'
-                    )
-                    db.add(new_price_obj)
+                # Обновить или создать цену в JSON файле
+                existing_price = get_price(product.sku)
+                is_parse = existing_price.get('is_parse', True) if existing_price else True
+                set_price(
+                    sku=product.sku,
+                    price=new_price,
+                    old_price=old_price,
+                    currency='RUB',
+                    is_parse=is_parse
+                )
                 
                 updated_count += 1
                 
@@ -1442,9 +1499,7 @@ async def export_products_to_excel(db: Session = Depends(get_db)):
         from openpyxl.styles import Font, PatternFill, Alignment
         
         # Получить все товары с ценами
-        results = db.query(Product, CurrentPrice).outerjoin(
-            CurrentPrice, Product.sku == CurrentPrice.sku
-        ).all()
+        results = db.query(Product).all()
         
         # Создаем Excel файл
         wb = Workbook()
@@ -1467,7 +1522,10 @@ async def export_products_to_excel(db: Session = Depends(get_db)):
             cell.alignment = Alignment(horizontal="center", vertical="center")
         
         # Добавляем данные товаров
-        for row_idx, (product, price) in enumerate(results, 2):
+        for row_idx, product in enumerate(results, 2):
+            # Получаем цену из JSON файла
+            price_data = get_price(product.sku)
+            
             # Получаем характеристики
             try:
                 specifications = json.loads(product.specifications) if product.specifications else {}
@@ -1483,8 +1541,8 @@ async def export_products_to_excel(db: Session = Depends(get_db)):
             ws.cell(row=row_idx, column=5, value=product.level_1 or '')
             ws.cell(row=row_idx, column=6, value=product.level_2 or '')
             ws.cell(row=row_idx, column=7, value=product.brand or '')
-            ws.cell(row=row_idx, column=8, value=price.price if price else 0.0)
-            ws.cell(row=row_idx, column=9, value=price.currency if price else 'RUB')
+            ws.cell(row=row_idx, column=8, value=price_data.get('price', 0.0) if price_data else 0.0)
+            ws.cell(row=row_idx, column=9, value=price_data.get('currency', 'RUB') if price_data else 'RUB')
             ws.cell(row=row_idx, column=10, value=product.stock or 0)
             ws.cell(row=row_idx, column=11, value=specs_str)
         
@@ -1693,27 +1751,18 @@ async def update_price_by_sku(price_data: dict, db: Session = Depends(get_db)):
         if not product:
             raise HTTPException(status_code=404, detail=f"Товар с SKU '{sku}' не найден")
         
-        # Обновить или создать цену
-        current_price = db.query(CurrentPrice).filter(CurrentPrice.sku == sku).first()
+        # Получаем существующую цену для сохранения is_parse
+        existing_price = get_price(sku)
+        is_parse = existing_price.get('is_parse', True) if existing_price else True
         
-        if current_price:
-            # Обновить существующую цену
-            current_price.price = float(new_price)
-            current_price.old_price = float(old_price) if old_price else float(new_price)
-            current_price.discount_percentage = ((float(old_price) - float(new_price)) / float(old_price) * 100) if old_price and float(old_price) > float(new_price) else 0
-            current_price.updated_at = datetime.utcnow()
-        else:
-            # Создать новую цену
-            new_price_obj = CurrentPrice(
-                sku=sku,
-                price=float(new_price),
-                old_price=float(old_price) if old_price else float(new_price),
-                discount_percentage=((float(old_price) - float(new_price)) / float(old_price) * 100) if old_price and float(old_price) > float(new_price) else 0,
-                currency='RUB'
-            )
-            db.add(new_price_obj)
-        
-        db.commit()
+        # Обновить или создать цену в JSON файле
+        set_price(
+            sku=sku,
+            price=float(new_price),
+            old_price=float(old_price) if old_price else float(new_price),
+            currency='RUB',
+            is_parse=is_parse
+        )
         
         return {
             "message": f"Цена для товара {sku} успешно обновлена",
@@ -1998,13 +2047,11 @@ async def get_skus_with_info(
         filters.append(Product.level_2 == level2)
     
     # Получаем SKU с ценами
-    results = db.query(Product, CurrentPrice).join(
-        CurrentPrice, Product.sku == CurrentPrice.sku,
-        isouter=True
-    ).filter(and_(*filters)).all()
+    results = db.query(Product).filter(and_(*filters)).all()
     
     skus_info = []
-    for product, price in results:
+    for product in results:
+        price_data = get_price(product.sku)
         sku_data = {
             "sku": product.sku,
             "name": product.name,
@@ -2013,8 +2060,8 @@ async def get_skus_with_info(
             "level0": product.level_0 or "",
             "level1": product.level_1 or "",
             "level2": product.level_2 or "",
-            "price": price.price if price else 0.0,
-            "currency": price.currency if price else "RUB",
+            "price": price_data.get('price', 0.0) if price_data else 0.0,
+            "currency": price_data.get('currency', 'RUB') if price_data else "RUB",
             "stock": product.stock
         }
         skus_info.append(sku_data)
@@ -2027,7 +2074,8 @@ async def debug_db_status(db: Session = Depends(get_db)):
     try:
         product_count = db.query(Product).count()
         category_count = db.query(Category).count()
-        price_count = db.query(CurrentPrice).count()
+        all_prices = get_all_prices()
+        price_count = len(all_prices)
         
         # Get sample products
         sample_products = db.query(Product).limit(5).all()
@@ -2113,15 +2161,13 @@ async def import_single_product(product_data: dict, db: Session = Depends(get_db
         
         # Добавляем цену, если она указана
         if 'price' in product_data and product_data['price']:
-            price_obj = CurrentPrice(
-                product_id=new_product.id,
+            set_price(
+                sku=new_product.sku,
                 price=float(product_data['price']),
                 old_price=float(product_data.get('old_price', product_data['price'])),
                 currency='RUB',
-                discount_percentage=0.0
+                is_parse=product_data.get('is_parse', True)
             )
-            db.add(price_obj)
-            db.commit()
         
         # Создать запись изображений в ProductImage если есть изображения
         if images_json and product_data.get('level_2') and product_data.get('color'):
@@ -2151,12 +2197,13 @@ async def export_all_products(db: Session = Depends(get_db)):
     """Скачать полный ассортимент в Excel с всеми столбцами"""
     try:
         # Получить все товары с ценами
-        results = db.query(Product, CurrentPrice).outerjoin(
-            CurrentPrice, Product.sku == CurrentPrice.sku
-        ).all()
+        results = db.query(Product).all()
         
         products_data = []
-        for product, price in results:
+        for product in results:
+            # Получаем цену из JSON файла
+            price_data = get_price(product.sku)
+            
             try:
                 specifications = json.loads(product.specifications) if product.specifications else {}
             except json.JSONDecodeError:
@@ -2178,10 +2225,10 @@ async def export_all_products(db: Session = Depends(get_db)):
                 'Цвет': product.color or '',
                 'Память': product.disk or '',
                 'SIM': product.sim_config or '',
-                'Цена': price.price if price else 0.0,
-                'Старая цена': price.old_price if price else (price.price if price else 0.0),
-                'Валюта': price.currency if price else 'RUB',
-                'Скидка %': price.discount_percentage if price else 0.0,
+                'Цена': price_data.get('price', 0.0) if price_data else 0.0,
+                'Старая цена': price_data.get('old_price', 0.0) if price_data else 0.0,
+                'Валюта': price_data.get('currency', 'RUB') if price_data else 'RUB',
+                'Скидка %': price_data.get('discount_percentage', 0.0) if price_data else 0.0,
                 'Склад': product.stock,
                 'В наличии': 'Да' if product.is_available else 'Нет',
                 'Изображения': ' | '.join(images) if images else '',
@@ -2228,25 +2275,26 @@ async def export_all_prices(db: Session = Depends(get_db)):
     """Скачать все цены в Excel"""
     try:
         # Получить все товары с ценами
-        results = db.query(Product, CurrentPrice).outerjoin(
-            CurrentPrice, Product.sku == CurrentPrice.sku
-        ).filter(Product.is_available == True).all()
+        results = db.query(Product).filter(Product.is_available == True).all()
         
         prices_data = []
-        for product, price in results:
-            if price:  # Только товары с ценами
+        for product in results:
+            # Получаем цену из JSON файла
+            price_data = get_price(product.sku)
+            
+            if price_data:  # Только товары с ценами
                 prices_data.append({
                     'SKU': product.sku,
                     'Название товара': product.name,
                     'Бренд': product.brand,
-                    'Текущая цена': price.price,
-                    'Старая цена': price.old_price,
-                    'Валюта': price.currency,
-                    'Скидка %': f"{price.discount_percentage:.1f}%" if price.discount_percentage else "0%",
-                    'Разница': f"{price.old_price - price.price:.0f}" if price.old_price and price.old_price > price.price else "0",
+                    'Текущая цена': price_data.get('price', 0.0),
+                    'Старая цена': price_data.get('old_price', 0.0),
+                    'Валюта': price_data.get('currency', 'RUB'),
+                    'Скидка %': f"{price_data.get('discount_percentage', 0.0):.1f}%",
+                    'Разница': f"{price_data.get('old_price', 0.0) - price_data.get('price', 0.0):.0f}" if price_data.get('old_price', 0.0) > price_data.get('price', 0.0) else "0",
                     'Категория': product.level_0 or 'Без категории',
                     'В наличии': product.stock,
-                    'Обновлено': price.last_updated.strftime('%Y-%m-%d %H:%M:%S') if hasattr(price, 'last_updated') and price.last_updated else 'Неизвестно'
+                    'Обновлено': 'Неизвестно'  # updated_at больше не хранится
                 })
         
         if not prices_data:
@@ -2459,21 +2507,15 @@ async def update_product(product_id: int, product_data: dict, db: Session = Depe
         
         # Обновление цены, если передана
         if 'price' in product_data:
-            current_price = db.query(CurrentPrice).filter(CurrentPrice.sku == product.sku).first()
-            if current_price:
-                current_price.price = product_data['price']
-                if 'old_price' in product_data:
-                    current_price.old_price = product_data['old_price']
-                current_price.last_updated = datetime.now()
-            else:
-                # Создаем новую цену если не существует
-                new_price = CurrentPrice(
-                    sku=product.sku,
-                    price=product_data['price'],
-                    old_price=product_data.get('old_price', product_data['price']),
-                    currency=product_data.get('currency', 'RUB')
-                )
-                db.add(new_price)
+            existing_price = get_price(product.sku)
+            is_parse = existing_price.get('is_parse', True) if existing_price else True
+            set_price(
+                sku=product.sku,
+                price=product_data['price'],
+                old_price=product_data.get('old_price', product_data['price']),
+                currency=product_data.get('currency', 'RUB'),
+                is_parse=is_parse
+            )
         
         db.commit()
         db.refresh(product)
@@ -2512,8 +2554,9 @@ async def delete_product(product_id: int, db: Session = Depends(get_db)):
         product_name = product.name
         product_sku = product.sku
         
-        # Удалить связанные цены
-        db.query(CurrentPrice).filter(CurrentPrice.sku == product_sku).delete()
+        # Удалить связанные цены из JSON файла
+        from price_storage import delete_price
+        delete_price(product_sku)
         
         # Удалить товар
         db.delete(product)
@@ -2545,8 +2588,9 @@ async def delete_product_by_sku(sku: str, db: Session = Depends(get_db)):
         product_name = product.name
         product_id = product.id
         
-        # Удалить связанные цены
-        db.query(CurrentPrice).filter(CurrentPrice.sku == sku).delete()
+        # Удалить связанные цены из JSON файла
+        from price_storage import delete_price
+        delete_price(sku)
         
         # Удалить товар
         db.delete(product)
@@ -2756,10 +2800,10 @@ async def check_promo_code(request: PromoCodeCheckRequest, db: Session = Depends
                 if free_item_in_cart:
                     free_item_sku = free_item_in_cart.sku
                     free_item_name = free_item_in_cart.name
-                    # Получаем цену товара
-                    price_obj = db.query(CurrentPrice).filter(CurrentPrice.sku == free_item_in_cart.sku).first()
-                    if price_obj:
-                        discount_amount = price_obj.price
+                    # Получаем цену товара из JSON файла
+                    price_data = get_price(free_item_in_cart.sku)
+                    if price_data:
+                        discount_amount = price_data.get('price', 0.0)
                     else:
                         return PromoCodeCheckResponse(
                             valid=False,

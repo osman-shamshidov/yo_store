@@ -1,0 +1,49 @@
+#!/usr/bin/env python3
+"""
+Скрипт для удаления поля discount_percentage из current_prices.json
+discount_percentage теперь вычисляется динамически из old_price и price
+"""
+
+import json
+import os
+from price_storage import _get_prices_file_path
+
+def cleanup_discount_percentage():
+    """Удалить поле discount_percentage из всех записей в JSON файле"""
+    print("🔄 Начало очистки поля discount_percentage из current_prices.json...")
+    
+    file_path = _get_prices_file_path()
+    
+    if not os.path.exists(file_path):
+        print("⚠️  Файл current_prices.json не найден")
+        return
+    
+    try:
+        # Загружаем данные
+        with open(file_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        # Удаляем discount_percentage из всех записей
+        cleaned_count = 0
+        for sku, price_info in data.items():
+            if 'discount_percentage' in price_info:
+                del price_info['discount_percentage']
+                cleaned_count += 1
+        
+        # Сохраняем очищенные данные
+        with open(file_path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        
+        print(f"✅ Успешно удалено поле discount_percentage из {cleaned_count} записей")
+        print(f"📊 Всего записей в файле: {len(data)}")
+        print("💡 discount_percentage теперь вычисляется автоматически из old_price и price")
+        
+    except Exception as e:
+        print(f"❌ Ошибка при очистке: {e}")
+        import traceback
+        traceback.print_exc()
+
+
+if __name__ == "__main__":
+    cleanup_discount_percentage()
+

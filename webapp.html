@@ -7225,6 +7225,31 @@
                         console.log('💱 Обновлена цена из colorGroups:', fallbackVariant.price, '₽');
                     }
                     
+                    // Обновляем старую цену и скидку
+                    const priceContainer = productCard?.querySelector('.product-price');
+                    if (priceContainer) {
+                        // Удаляем старые элементы old-price и discount
+                        const oldOldPrice = priceContainer.querySelector('.old-price');
+                        const oldDiscount = priceContainer.querySelector('.discount');
+                        if (oldOldPrice) oldOldPrice.remove();
+                        if (oldDiscount) oldDiscount.remove();
+                        
+                        // Добавляем новые элементы, если есть old_price и discount
+                        if (fallbackVariant.old_price && fallbackVariant.old_price > fallbackVariant.price) {
+                            const oldPriceSpan = document.createElement('span');
+                            oldPriceSpan.className = 'old-price';
+                            oldPriceSpan.textContent = `${Math.round(fallbackVariant.old_price).toLocaleString()} ₽`;
+                            currentPriceElement.after(oldPriceSpan);
+                        }
+                        
+                        if (fallbackVariant.discount_percentage && fallbackVariant.discount_percentage > 0) {
+                            const discountSpan = document.createElement('span');
+                            discountSpan.className = 'discount';
+                            discountSpan.textContent = `-${Math.round(fallbackVariant.discount_percentage)}%`;
+                            priceContainer.appendChild(discountSpan);
+                        }
+                    }
+                    
                     // Обновляем бейдж "Осталась 1 шт" на основе stock выбранного варианта
                     const variantsElement = productCard?.querySelector('.product-variants');
                     const productId = variantsElement?.dataset.productId || productCard?.querySelector('[data-product-id]')?.dataset.productId;
@@ -7285,6 +7310,31 @@
                         const price = Math.round(finalVariant.price).toLocaleString();
                         currentPriceElement.textContent = `${price} ₽`;
                         console.log('💱 Обновлена цена из API:', finalVariant.price, '₽', 'для варианта:', finalVariant.sku);
+                    }
+                    
+                    // Обновляем старую цену и скидку
+                    const priceContainer = productCard?.querySelector('.product-price');
+                    if (priceContainer) {
+                        // Удаляем старые элементы old-price и discount
+                        const oldOldPrice = priceContainer.querySelector('.old-price');
+                        const oldDiscount = priceContainer.querySelector('.discount');
+                        if (oldOldPrice) oldOldPrice.remove();
+                        if (oldDiscount) oldDiscount.remove();
+                        
+                        // Добавляем новые элементы, если есть old_price и discount
+                        if (finalVariant.old_price && finalVariant.old_price > finalVariant.price) {
+                            const oldPriceSpan = document.createElement('span');
+                            oldPriceSpan.className = 'old-price';
+                            oldPriceSpan.textContent = `${Math.round(finalVariant.old_price).toLocaleString()} ₽`;
+                            currentPriceElement.after(oldPriceSpan);
+                        }
+                        
+                        if (finalVariant.discount_percentage && finalVariant.discount_percentage > 0) {
+                            const discountSpan = document.createElement('span');
+                            discountSpan.className = 'discount';
+                            discountSpan.textContent = `-${Math.round(finalVariant.discount_percentage)}%`;
+                            priceContainer.appendChild(discountSpan);
+                        }
                     }
                     
                     // Обновляем бейдж "Осталась 1 шт" на основе stock выбранного варианта

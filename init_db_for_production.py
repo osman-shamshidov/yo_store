@@ -11,7 +11,9 @@ import json
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from database import init_database, create_tables, SessionLocal
-from models import Category, Product, CurrentPrice
+from models import Category, Product
+from price_storage import set_price
+from datetime import datetime
 
 def create_full_product_catalog():
     """Создает полный каталог товаров"""
@@ -132,16 +134,16 @@ def create_full_product_catalog():
             db.add(product)
             db.flush()  # Получаем ID товара
             
-            # Создаем текущую цену
-            current_price = CurrentPrice(
-                product_id=product.id,
+            # Создаем текущую цену в JSON файле
+            old_price = price * 1.15  # Старая цена на 15% выше
+            # discount_percentage вычисляется автоматически из old_price и price
+            set_price(
+                sku=product.sku,
                 price=price,
-                old_price=price * 1.15,  # Старая цена на 15% выше
-                discount_percentage=15.0,
+                old_price=old_price,
                 currency="RUB",
-                updated_at=db.query(CurrentPrice).count()  # Простой способ создать timestamp
+                is_parse=True
             )
-            db.add(current_price)
         
         db.commit()
         print("✅ Успешно создан каталог товаров")

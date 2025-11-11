@@ -70,10 +70,6 @@ class Product(Base):
         """Алиас для disk (для обратной совместимости)"""
         return self.disk
 
-    
-    # Связь с ценой
-    price = relationship("CurrentPrice", back_populates="product", uselist=False, cascade="all, delete-orphan")
-
 class ProductImage(Base):
     """
     Изображения товаров (связь по level_2 + color)
@@ -120,22 +116,6 @@ class SkuVariant(Base):
     variant_fields = Column(Text, nullable=False)  # JSON массив полей
     created_at = Column(DateTime, default=datetime.utcnow)
 
-class CurrentPrice(Base):
-    """
-    Текущие цены для товаров (привязка по SKU)
-    """
-    __tablename__ = "current_prices"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    sku = Column(String(50), ForeignKey('products.sku', ondelete='CASCADE'), unique=True, nullable=False, index=True)
-    price = Column(Float, nullable=False)
-    old_price = Column(Float)
-    currency = Column(String(3), default="RUB")
-    discount_percentage = Column(Float, default=0.0)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
-    # Связь с продуктом
-    product = relationship("Product", back_populates="price")
 
 class Level2Description(Base):
     """

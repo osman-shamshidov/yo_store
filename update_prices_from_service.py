@@ -10,15 +10,11 @@ import requests
 import logging
 from datetime import datetime
 from typing import List, Dict, Optional
-from sqlalchemy.orm import Session
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 
 # Добавляем путь к проекту для импорта модулей
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from models import CurrentPrice
-from config import Config
+from price_storage import get_prices_by_parse_flag, update_prices
 
 # Настройка логирования
 logging.basicConfig(
@@ -34,27 +30,21 @@ logger = logging.getLogger(__name__)
 # Конфигурация из переменных окружения
 PRICE_SERVICE_URL = os.getenv('PRICE_SERVICE_URL', 'http://0.0.0.0:8005/api/prices')
 PRICE_SERVICE_TOKEN = os.getenv('PRICE_SERVICE_TOKEN', None)
-DATABASE_URL = os.getenv('DATABASE_URL', Config.DATABASE_URL)
-
-# Создаем подключение к БД
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-def get_all_skus(db: Session) -> List[str]:
+def get_all_skus() -> List[str]:
     """
-    Получить все SKU из таблицы current_prices, где is_parse == True
+    Получить все SKU из JSON файла, где is_parse == True
     
     Returns:
         List[str]: Список всех SKU для обновления
     """
     try:
-        prices = db.query(CurrentPrice.sku).filter(CurrentPrice.is_parse == True).all()
-        skus = [price[0] for price in prices if price[0]]
-        logger.info(f"📦 Получено {len(skus)} SKU из таблицы current_prices (is_parse=True)")
+        skus = get_prices_by_parse_flag(is_parse=True)
+        logger.info(f"📦 Получено {len(skus)} SKU из JSON файла (is_parse=True)")
         return skus
     except Exception as e:
-        logger.error(f"❌ Ошибка при получении SKU из БД: {e}")
+        logger.error(f"❌ Ошибка при получении SKU из JSON файла: {e}")
         return []
 
 
@@ -133,13 +123,12 @@ def get_prices_from_service(skus: List[str]) -> Optional[Dict]:
         return None
 
 
-def update_prices_in_db(prices_dict: Dict, db: Session) -> Dict[str, int]:
+def update_prices_in_json(prices_dict: Dict) -> Dict[str, int]:
     """
-    Обновить цены в базе данных
+    Обновить цены в JSON файле
     
     Args:
         prices_dict: Словарь с ценами в формате {sku: {price: float, name: str}}
-        db: Сессия базы данных
         
     Returns:
         Dict с статистикой обновлений
@@ -156,6 +145,13 @@ def update_prices_in_db(prices_dict: Dict, db: Session) -> Dict[str, int]:
         return stats
     
     try:
+        # Получаем все существующие цены для сохранения is_parse
+        from price_storage import get_all_prices
+        all_prices = get_all_prices()
+        
+        # Формируем словарь для обновления
+        update_dict = {}
+        
         for sku, price_info in prices_dict.items():
             try:
                 # Проверяем формат данных
@@ -177,27 +173,26 @@ def update_prices_in_db(prices_dict: Dict, db: Session) -> Dict[str, int]:
                     stats['errors'] += 1
                     continue
                 
-                # Находим запись цены в current_prices (мы берем SKU только из current_prices)
-                current_price = db.query(CurrentPrice).filter(CurrentPrice.sku == sku).first()
+                # Проверяем, существует ли цена в JSON файле
+                existing_price = all_prices.get(sku)
                 
-                if not current_price:
-                    logger.warning(f"⚠️  Запись цены с SKU '{sku}' не найдена в current_prices")
+                if not existing_price:
+                    logger.warning(f"⚠️  Запись цены с SKU '{sku}' не найдена в JSON файле")
                     stats['not_found'] += 1
                     continue
                 
                 # Сохраняем старую цену как old_price, если она изменилась
-                old_price_value = current_price.price
+                old_price_value = existing_price.get('price', 0.0)
                 if old_price_value != price_value:
-                    current_price.old_price = old_price_value
-                    current_price.price = price_value
-                    # Вычисляем процент скидки, если есть old_price
-                    if current_price.old_price and current_price.old_price > price_value:
-                        current_price.discount_percentage = (
-                            (current_price.old_price - price_value) / current_price.old_price * 100
-                        )
-                    else:
-                        current_price.discount_percentage = 0.0
-                    current_price.updated_at = datetime.utcnow()
+                    # Сохраняем is_parse из существующей записи
+                    is_parse = existing_price.get('is_parse', True)
+                    
+                    update_dict[sku] = {
+                        'price': price_value,
+                        'old_price': old_price_value,
+                        'currency': existing_price.get('currency', 'RUB'),
+                        'is_parse': is_parse
+                    }
                     stats['updated'] += 1
                     logger.info(f"✅ Обновлена цена для {sku}: {old_price_value} → {price_value} RUB")
                 else:
@@ -208,13 +203,13 @@ def update_prices_in_db(prices_dict: Dict, db: Session) -> Dict[str, int]:
                 stats['errors'] += 1
                 continue
         
-        # Сохраняем изменения в БД
-        db.commit()
-        logger.info("💾 Изменения сохранены в базу данных")
+        # Обновляем цены в JSON файле
+        if update_dict:
+            update_prices(update_dict)
+            logger.info("💾 Изменения сохранены в JSON файл")
         
     except Exception as e:
-        logger.error(f"❌ Ошибка при обновлении цен в БД: {e}")
-        db.rollback()
+        logger.error(f"❌ Ошибка при обновлении цен в JSON файле: {e}")
         stats['errors'] += 1
     
     return stats
@@ -228,14 +223,12 @@ def main():
     logger.info(f"🔄 Начало обновления цен - {start_time.strftime('%Y-%m-%d %H:%M:%S')}")
     logger.info(f"📍 URL сервиса: {PRICE_SERVICE_URL}")
     
-    db = SessionLocal()
-    
     try:
-        # Получаем все SKU из базы данных
-        skus = get_all_skus(db)
+        # Получаем все SKU из JSON файла
+        skus = get_all_skus()
         
         if not skus:
-            logger.warning("⚠️  Не найдено ни одного SKU в базе данных")
+            logger.warning("⚠️  Не найдено ни одного SKU в JSON файле")
             return
         
         # Получаем цены из внешнего сервиса
@@ -245,8 +238,8 @@ def main():
             logger.warning("⚠️  Не удалось получить цены из сервиса. Цены остаются без изменений.")
             return
         
-        # Обновляем цены в базе данных
-        stats = update_prices_in_db(prices_dict, db)
+        # Обновляем цены в JSON файле
+        stats = update_prices_in_json(prices_dict)
         
         # Выводим статистику
         end_time = datetime.now()
@@ -262,11 +255,8 @@ def main():
         
     except Exception as e:
         logger.error(f"❌ Критическая ошибка: {e}", exc_info=True)
-        db.rollback()
         # Не завершаем процесс с ошибкой, чтобы шедулер мог продолжить работу
         return
-    finally:
-        db.close()
 
 
 if __name__ == "__main__":

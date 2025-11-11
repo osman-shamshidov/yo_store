@@ -7,7 +7,8 @@ import json
 from datetime import datetime
 from sqlalchemy.orm import Session
 from database import SessionLocal
-from models import Product, CurrentPrice
+from models import Product
+from price_storage import get_price, set_price, get_all_prices
 
 class ManualPriceManager:
     """Класс для ручного управления ценами через Excel файлы"""
@@ -46,36 +47,27 @@ class ManualPriceManager:
             else:
                 raise ValueError("Необходимо указать либо product_id, либо sku")
             
-            # Найти текущую цену
-            current_price = db.query(CurrentPrice).filter(
-                CurrentPrice.product_id == product.id
-            ).first()
+            # Получаем текущую цену из JSON файла
+            existing_price = get_price(product.sku)
             
-            if current_price:
-                # Обновить существующую цену
-                current_price.old_price = current_price.price
-                current_price.price = new_price
-                current_price.currency = currency
-                current_price.updated_at = datetime.utcnow()
-                
-                # Рассчитать скидку
-                if current_price.old_price > current_price.price:
-                    current_price.discount_percentage = round(
-                        ((current_price.old_price - current_price.price) / current_price.old_price) * 100, 2
-                    )
-                else:
-                    current_price.discount_percentage = 0.0
+            # Сохраняем is_parse из существующей записи
+            is_parse = existing_price.get('is_parse', True) if existing_price else True
+            
+            # Вычисляем old_price: если цена изменилась, сохраняем старую цену
+            if existing_price and existing_price.get('price') != new_price:
+                old_price_to_save = existing_price.get('price')
             else:
-                # Создать новую цену
-                new_price_record = CurrentPrice(
-                    product_id=product.id,
-                    price=new_price,
-                    old_price=old_price,
-                    discount_percentage=0.0,
-                    currency=currency,
-                    updated_at=datetime.utcnow()
-                )
-                db.add(new_price_record)
+                old_price_to_save = old_price
+            
+            # Обновляем или создаем цену в JSON файле
+            # discount_percentage вычисляется автоматически из old_price и price
+            set_price(
+                sku=product.sku,
+                price=new_price,
+                old_price=old_price_to_save,
+                currency=currency,
+                is_parse=is_parse
+            )
             
             # История цен удалена из новой структуры БД
             
@@ -138,21 +130,26 @@ class ManualPriceManager:
         """Получить все текущие цены с информацией о товарах"""
         db = SessionLocal()
         try:
-            results = db.query(Product, CurrentPrice).join(
-                CurrentPrice, Product.sku == CurrentPrice.sku
-            ).filter(Product.is_available == True).all()
+            # Получаем все товары
+            products = db.query(Product).filter(Product.is_available == True).all()
+            
+            # Получаем все цены из JSON файла
+            all_prices = get_all_prices()
             
             prices = []
-            for product, price in results:
-                prices.append({
-                    'product_id': product.id,
-                    'product_name': product.name,
-                    'current_price': price.price,
-                    'old_price': price.old_price,
-                    'discount_percentage': price.discount_percentage,
-                    'currency': price.currency,
-                    'last_updated': price.updated_at.isoformat() if price.updated_at else None
-                })
+            for product in products:
+                price_data = all_prices.get(product.sku)
+                if price_data:
+                    prices.append({
+                        'product_id': product.id,
+                        'product_name': product.name,
+                        'sku': product.sku,
+                        'current_price': price_data.get('price', 0.0),
+                        'old_price': price_data.get('old_price', 0.0),
+                        'discount_percentage': price_data.get('discount_percentage', 0.0),
+                        'currency': price_data.get('currency', 'RUB'),
+                        'last_updated': price_data.get('updated_at', None)
+                    })
             
             return prices
         finally:
