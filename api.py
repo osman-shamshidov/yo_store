@@ -133,6 +133,7 @@ class ProductResponse(BaseModel):
     discount_percentage: Optional[float] = 0.0
     currency: str = "RUB"
     is_available: bool = True
+    is_parse: Optional[bool] = True  # Флаг парсинга цен
     
     class Config:
         from_attributes = True
@@ -264,11 +265,13 @@ async def get_all_products(db: Session = Depends(get_db)):
                 product_old_price = 0.0
                 product_discount = 0.0
                 product_currency = "RUB"
+                product_is_parse = True
             else:
                 product_price = price_data.get('price', 0.0)
                 product_old_price = price_data.get('old_price', 0.0)
                 product_discount = price_data.get('discount_percentage', 0.0)
                 product_currency = price_data.get('currency', 'RUB')
+                product_is_parse = price_data.get('is_parse', True)
             
             # Получаем изображения
             images = get_product_images(product, db)
@@ -301,7 +304,8 @@ async def get_all_products(db: Session = Depends(get_db)):
                 old_price=product_old_price,
                 discount_percentage=product_discount,
                 currency=product_currency,
-                is_available=True
+                is_available=True,
+                is_parse=product_is_parse
             ))
         
         return products
@@ -1741,6 +1745,7 @@ async def update_price_by_sku(price_data: dict, db: Session = Depends(get_db)):
         sku = price_data.get('sku')
         new_price = price_data.get('price')
         old_price = price_data.get('old_price', new_price)
+        is_parse = price_data.get('is_parse')
         
         if not sku or new_price is None:
             raise HTTPException(status_code=400, detail="SKU и цена обязательны")
@@ -1751,9 +1756,10 @@ async def update_price_by_sku(price_data: dict, db: Session = Depends(get_db)):
         if not product:
             raise HTTPException(status_code=404, detail=f"Товар с SKU '{sku}' не найден")
         
-        # Получаем существующую цену для сохранения is_parse
-        existing_price = get_price(sku)
-        is_parse = existing_price.get('is_parse', True) if existing_price else True
+        # Если is_parse не передан, получаем из существующей цены
+        if is_parse is None:
+            existing_price = get_price(sku)
+            is_parse = existing_price.get('is_parse', True) if existing_price else True
         
         # Обновить или создать цену в JSON файле
         set_price(
@@ -1761,7 +1767,7 @@ async def update_price_by_sku(price_data: dict, db: Session = Depends(get_db)):
             price=float(new_price),
             old_price=float(old_price) if old_price else float(new_price),
             currency='RUB',
-            is_parse=is_parse
+            is_parse=bool(is_parse)
         )
         
         return {

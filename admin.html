@@ -1110,13 +1110,23 @@ IPHONE17PROMAX   | 129990     | 149990
                 const productsWithPrices = products
                     .filter(p => p.sku)
                     .map(product => {
+                        // Получаем is_parse из price_storage через API
+                        // Важно: проверяем строго на boolean, так как false тоже валидное значение
+                        let is_parse = true; // По умолчанию true
+                        if (typeof product.is_parse === 'boolean') {
+                            is_parse = product.is_parse;
+                        } else if (product.is_parse !== undefined && product.is_parse !== null) {
+                            // Если пришло не boolean, конвертируем
+                            is_parse = Boolean(product.is_parse);
+                        }
                         return {
                             sku: product.sku,
                             name: product.name,
                             brand: product.brand,
                             model: product.model,
                             current_price: product.price || 0,
-                            old_price: product.old_price || product.price || 0
+                            old_price: product.old_price || product.price || 0,
+                            is_parse: is_parse
                         };
                     })
                     .sort((a, b) => a.sku.localeCompare(b.sku));
@@ -1135,6 +1145,7 @@ IPHONE17PROMAX   | 129990     | 149990
                                     <th style="padding: 12px; text-align: left; font-weight: 600; color: #111827; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.5px;">Товар</th>
                                     <th style="padding: 12px; text-align: right; font-weight: 600; color: #111827; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.5px;">Текущая цена</th>
                                     <th style="padding: 12px; text-align: right; font-weight: 600; color: #111827; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.5px;">Старая цена</th>
+                                    <th style="padding: 12px; text-align: center; font-weight: 600; color: #111827; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.5px;">Парсить</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1172,6 +1183,16 @@ IPHONE17PROMAX   | 129990     | 149990
                                        onfocus="this.style.borderColor='#007AFF'; this.style.boxShadow='0 0 0 3px rgba(0,122,255,0.1)'"
                                        onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'"
                                        onchange="markPriceChanged('${item.sku}')">
+                            </td>
+                            <td style="padding: 12px; text-align: center;">
+                                <input type="checkbox" 
+                                       id="is-parse-${item.sku}" 
+                                       ${item.is_parse === true ? 'checked' : ''}
+                                       data-sku="${item.sku}"
+                                       data-original-is-parse="${item.is_parse === true ? 'true' : 'false'}"
+                                       style="width: 20px; height: 20px; cursor: pointer;"
+                                       onchange="markPriceChanged('${item.sku}')"
+                                       title="Парсить цены для этого товара">
                             </td>
                         </tr>
                     `;
@@ -1215,7 +1236,7 @@ IPHONE17PROMAX   | 129990     | 149990
             
             // Собираем только измененные цены
             allInputs.forEach(input => {
-                if (input.id.startsWith('price-') && !input.id.startsWith('old-price-')) {
+                if (input.id.startsWith('price-') && !input.id.startsWith('old-price-') && !input.id.startsWith('is-parse-')) {
                     const sku = input.dataset.sku;
                     const originalPrice = parseFloat(input.dataset.originalPrice || 0);
                     const newPrice = parseFloat(input.value);
@@ -1223,15 +1244,22 @@ IPHONE17PROMAX   | 129990     | 149990
                     const originalOldPrice = oldPriceInput ? parseFloat(oldPriceInput.dataset.originalOldPrice || 0) : originalPrice;
                     const oldPrice = oldPriceInput ? parseFloat(oldPriceInput.value) : newPrice;
                     
-                    // Проверяем, изменилась ли цена
+                    // Получаем is_parse
+                    const isParseCheckbox = document.getElementById(`is-parse-${sku}`);
+                    const originalIsParse = isParseCheckbox ? (isParseCheckbox.dataset.originalIsParse === 'true') : true;
+                    const isParse = isParseCheckbox ? isParseCheckbox.checked : true;
+                    
+                    // Проверяем, изменилась ли цена или is_parse
                     const priceChanged = Math.abs(newPrice - originalPrice) > 0.01;
                     const oldPriceChanged = oldPriceInput && Math.abs(oldPrice - originalOldPrice) > 0.01;
+                    const isParseChanged = isParse !== originalIsParse;
                     
-                    if ((priceChanged || oldPriceChanged) && !isNaN(newPrice) && newPrice >= 0) {
+                    if ((priceChanged || oldPriceChanged || isParseChanged) && !isNaN(newPrice) && newPrice >= 0) {
                         pricesToUpdate.push({
                             sku: sku,
                             price: newPrice,
-                            old_price: oldPrice || newPrice
+                            old_price: oldPrice || newPrice,
+                            is_parse: isParse
                         });
                     }
                 }
@@ -1287,11 +1315,15 @@ IPHONE17PROMAX   | 129990     | 149990
                     pricesToUpdate.forEach(priceData => {
                         const priceInput = document.getElementById(`price-${priceData.sku}`);
                         const oldPriceInput = document.getElementById(`old-price-${priceData.sku}`);
+                        const isParseCheckbox = document.getElementById(`is-parse-${priceData.sku}`);
                         if (priceInput) {
                             priceInput.dataset.originalPrice = priceData.price;
                         }
                         if (oldPriceInput) {
                             oldPriceInput.dataset.originalOldPrice = priceData.old_price;
+                        }
+                        if (isParseCheckbox) {
+                            isParseCheckbox.dataset.originalIsParse = priceData.is_parse;
                         }
                     });
                 } else {
