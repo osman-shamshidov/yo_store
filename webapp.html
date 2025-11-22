@@ -2695,224 +2695,6 @@
             }
         }
         
-        /* Стили для детального просмотра товара */
-        .product-details {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 0.6s ease forwards;
-        }
-        
-        .product-details.animate-in {
-            animation: fadeInUp 0.6s ease forwards;
-        }
-        
-        .product-details-header {
-            display: flex;
-            gap: 30px;
-            margin-bottom: 30px;
-            background: white;
-            padding: 30px;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 0.6s ease 0.1s forwards;
-        }
-        
-        .product-details-header.animate-in {
-            animation: fadeInUp 0.6s ease 0.1s forwards;
-        }
-        
-        .product-details-header {
-            border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
-        
-        .product-details-image {
-            flex: 0 0 300px;
-        }
-        
-        .details-img {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            border-radius: 15px;
-        }
-        
-        .details-placeholder {
-            width: 100%;
-            height: 300px;
-            background: #f5f5f5;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 60px;
-        }
-        
-        .product-details-info {
-            flex: 1;
-        }
-        
-        .product-details-name {
-            font-size: 2.5em;
-            font-weight: bold;
-            color: #333;
-            margin: 0 0 10px 0;
-        }
-        
-        .product-details-brand {
-            font-size: 1.2em;
-            color: #666;
-            margin-bottom: 20px;
-        }
-        
-        .product-details-price {
-            margin-bottom: 15px;
-        }
-        
-        .product-details-sku {
-            font-size: 0.9em;
-            color: #888;
-            font-family: monospace;
-        }
-        
-        .product-details-content {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 0.6s ease 0.2s forwards;
-        }
-        
-        .product-details-content.animate-in {
-            animation: fadeInUp 0.6s ease 0.2s forwards;
-        }
-        
-        .product-description-section,
-        .product-specifications-section {
-            margin-bottom: 30px;
-        }
-        
-        .product-description-section h3,
-        .product-specifications-section h3 {
-            font-size: 1.2em;
-            color: #333;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #007AFF;
-        }
-        
-        .product-full-description {
-            line-height: 1.6;
-            color: #555;
-            font-size: 1.1em;
-        }
-        
-        .specifications-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        
-        .spec-category {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            border-left: 4px solid #007AFF;
-        }
-        
-        .spec-category h4 {
-            margin: 0 0 15px 0;
-            color: #333;
-            font-size: 1.2em;
-            text-transform: capitalize;
-        }
-        
-        .spec-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            padding: 5px 0;
-        }
-        
-        .spec-key {
-            font-weight: 600;
-            color: #555;
-            flex: 0 0 40%;
-        }
-        
-        .spec-value {
-            color: #333;
-            flex: 1;
-            text-align: right;
-        }
-        
-        .product-actions {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-        }
-        
-        .buy-button,
-        .favorite-button {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .buy-button {
-            background: #007AFF;
-            color: #333;
-            flex: 1;
-        }
-        
-        .buy-button:hover {
-            background: #0056CC;
-            transform: translateY(-2px);
-        }
-        
-        .favorite-button {
-            background: #f8f9fa;
-            color: #333;
-            border: 2px solid #ddd;
-        }
-        
-        .favorite-button:hover {
-            background: #e9ecef;
-            border-color: #007AFF;
-        }
-        
-        @media (max-width: 768px) {
-            .product-details-header {
-                flex-direction: column;
-            }
-            
-            .product-details-image {
-                flex: none;
-            }
-            
-            .product-details-name {
-                font-size: 2em;
-            }
-            
-            .specifications-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .product-actions {
-                flex-direction: column;
-            }
-        }
         
         @media (max-width: 768px) {
             .container {
@@ -3422,11 +3204,6 @@
             gap: 15px;
         }
         
-        .cart-recommendations {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid #e5e7eb;
-        }
         
         .cart-recommendations-title {
             font-size: 0.95rem;
@@ -3436,9 +3213,42 @@
         }
         
         .cart-recommendations-list {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cart-recommendations-slider {
+            display: flex;
+            transition: transform 0.3s ease;
+        }
+        
+        .cart-recommendations-slide {
+            min-width: 100%;
             display: flex;
             flex-direction: column;
             gap: 10px;
+        }
+        
+        .cart-recommendations-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .cart-recommendations-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #d1d5db;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .cart-recommendations-dot.active {
+            background: #3b82f6;
+            width: 18px;
+            border-radius: 3px;
         }
         
         .cart-recommendation-item {
@@ -3448,7 +3258,6 @@
             background: transparent;
             border: 1px solid #3b82f6;
             border-radius: 8px;
-            cursor: pointer;
             transition: all 0.2s ease;
         }
         
@@ -3656,6 +3465,35 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
+        }
+        
+        .promo-code-section {
+            order: 1;
+        }
+        
+        .cart-recommendations {
+            margin-top: 0;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            order: 2; /* В десктопной версии после промокода */
+        }
+        
+        .cart-total-item:not(.cart-total-final) {
+            order: 3;
+        }
+        
+        .cart-total-final {
+            order: 4; /* Итого после всех в десктопе */
+        }
+        
+        @media (max-width: 768px) {
+            .cart-recommendations {
+                order: 10; /* В мобильной версии после Итого */
+            }
+            
+            .cart-total-final {
+                order: 4; /* Итого перед рекомендациями в мобильной версии */
+            }
         }
         
         .cart-total-item {
@@ -4127,7 +3965,7 @@
                         <input type="tel" id="contactWhatsApp" name="contact_whatsapp" placeholder="WhatsApp номер" autocomplete="tel">
                     </div>
                     <div class="form-group">
-                        <label class="form-group-title">Доставка</label>
+                        <label class="form-group-title">Способ получения</label>
                         <div class="shipping-switch">
                             <label class="shipping-option">
                                 <input type="radio" name="shipping_type" value="delivery" checked>
@@ -4246,13 +4084,9 @@
                         Корзина пуста
                     </div>
                 </div>
-                <div class="cart-recommendations" id="cartRecommendations" style="display: none;">
-                    <div class="cart-recommendations-title">Рекомендуем также</div>
-                    <div class="cart-recommendations-list" id="cartRecommendationsList"></div>
-                </div>
                 <div class="cart-total" id="cartTotal" style="display: none;">
                     <!-- Промокод -->
-                    <div class="promo-code-section" style="margin-bottom: 16px;">
+                    <div class="promo-code-section" style="margin-bottom: 12px;">
                         <!-- Кликабельный текст "Добавить промокод" -->
                         <div 
                             id="addPromoCodeBtn" 
@@ -4334,6 +4168,12 @@
                     <div class="cart-total-item cart-total-final">
                         <span class="cart-total-label">Итого</span>
                         <span class="cart-total-price" id="cartTotalPrice">0 ₽</span>
+                    </div>
+                    
+                    <!-- Рекомендации -->
+                    <div class="cart-recommendations" id="cartRecommendations" style="display: none;">
+                        <div class="cart-recommendations-title">Рекомендуем также</div>
+                        <div class="cart-recommendations-list" id="cartRecommendationsList"></div>
                     </div>
                 </div>
             </div>
@@ -4620,9 +4460,6 @@
                     loadGuaranteePage();
                 } else if (stateRestored && currentView === 'delivery') {
                     loadDeliveryPage();
-                } else if (stateRestored && currentProductId) {
-                    // Если был открыт товар, загружаем его
-                    showProductDetails(currentProductId);
                 } else if (stateRestored && currentBrandFilter) {
                     // Если был выбран бренд, загружаем товары бренда
                     loadProductsByBrand(currentBrandFilter, currentLevel0Filter);
@@ -7694,100 +7531,6 @@
             return 'Black'; // Fallback цвет
         }
         
-        // Show product details
-        async function showProductDetails(productId) {
-            try {
-                showLoading();
-                
-                // Сохраняем состояние перед переходом к товару
-                currentProductId = productId;
-                saveAppState();
-                
-                const response = await fetch(`${API_BASE}/products/${productId}`);
-                const product = await response.json();
-                
-                // Получить полное описание из характеристик
-                let fullDescription = product.description;
-                if (product.specifications && product.specifications.full_description) {
-                    fullDescription = product.specifications.full_description;
-                }
-                
-                // Создать HTML для детального просмотра
-                const detailsHtml = `
-                    <button class="back-button" onclick="loadProducts(${currentCategoryId || 1})">← Назад к товарам</button>
-                    <div class="product-details animate-in">
-                        <div class="product-details-header animate-in">
-                            <div class="product-details-image">
-                                ${product.images && product.images.length > 0 ? 
-                                    `<img src="${product.images[0]}" alt="${product.name}" class="details-img">` :
-                                    `<div class="details-placeholder">📱</div>`
-                                }
-                            </div>
-                            <div class="product-details-info">
-                                <h1 class="product-details-name">${product.name}</h1>
-                                <div class="product-details-brand">${product.brand} ${product.model}</div>
-                                <div class="product-details-price">
-                                    <span class="current-price">${Math.round(product.price).toLocaleString()} ₽</span>
-                                    ${product.old_price > product.price ? 
-                                        `<span class="old-price">${Math.round(product.old_price).toLocaleString()} ₽</span>` : ''
-                                    }
-                                    ${product.discount_percentage > 0 ? 
-                                        `<span class="discount">-${Math.round(product.discount_percentage)}%</span>` : ''
-                                    }
-                                </div>
-                                <div class="product-details-sku">SKU: ${product.sku}</div>
-                            </div>
-                        </div>
-                        
-                        <div class="product-details-content animate-in">
-                            <div class="product-description-section">
-                                <h3>📝 Описание</h3>
-                                <div class="product-full-description">${fullDescription.replace(/\n/g, '<br>')}</div>
-                            </div>
-                            
-                            ${product.specifications ? `
-                                <div class="product-specifications-section">
-                                    <h3>⚙️ Характеристики</h3>
-                                    <div class="specifications-grid">
-                                        ${Object.entries(product.specifications)
-                                            .filter(([key, value]) => !['full_description', 'variants', 'images', 'image_folder', 'memories', 'colors', 'sim_types', 'цвета'].includes(key))
-                                            .map(([category, details]) => `
-                                                <div class="spec-category">
-                                                    <h4>${category.charAt(0).toUpperCase() + category.slice(1)}</h4>
-                                                    ${typeof details === 'object' ? 
-                                                        Object.entries(details).map(([key, value]) => 
-                                                            `<div class="spec-item">
-                                                                <span class="spec-key">${key.replace(/_/g, ' ')}:</span>
-                                                                <span class="spec-value">${Array.isArray(value) ? value.join(', ') : value}</span>
-                                                            </div>`
-                                                        ).join('') :
-                                                        `<div class="spec-item">${details}</div>`
-                                                    }
-                                                </div>
-                                            `).join('')}
-                                    </div>
-                                </div>
-                            ` : ''}
-                            
-                            <div class="product-actions">
-                                <button class="buy-button" onclick="addProductToCartFromDetails(${product.id})">
-                                    🛒 Купить
-                                </button>
-                                <button class="favorite-button" onclick="alert('Функция избранного будет добавлена позже')">
-                                    ❤️ В избранное
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                
-                document.getElementById('content').innerHTML = detailsHtml;
-                
-            } catch (error) {
-                showError('Ошибка загрузки деталей товара');
-            }
-        }
-        
         // Управление каруселью изображений
         const productImages = {}; // Хранилище изображений для каждого товара
         
@@ -9132,6 +8875,7 @@
             // Показываем рекомендации только если в корзине есть товары
             if (cart.length === 0) {
                 recommendationsSection.style.display = 'none';
+                stopRecommendationsAutoSlide(); // Останавливаем автопереключение
                 return;
             }
             
@@ -9166,42 +8910,253 @@
                 // Если нет доступных товаров, скрываем секцию
                 if (availableProducts.length === 0) {
                     recommendationsSection.style.display = 'none';
+                    stopRecommendationsAutoSlide(); // Останавливаем автопереключение
                     return;
                 }
                 
-                // Выбираем случайные 2-3 товара
+                // Выбираем случайные 6 товаров (3 пары)
                 const shuffled = availableProducts.sort(() => 0.5 - Math.random());
-                const recommendations = shuffled.slice(0, Math.min(3, shuffled.length));
+                const recommendations = shuffled.slice(0, Math.min(6, shuffled.length));
                 
-                // Отображаем рекомендации
-                recommendationsList.innerHTML = recommendations.map(product => {
+                // Получаем варианты для всех рекомендованных товаров параллельно
+                const recommendationsWithVariants = await Promise.all(recommendations.map(async (product) => {
+                    let specsText = '';
+                    try {
+                        // Используем level_2 (модель) для получения вариантов
+                        const model = product.level_2 || product.model || '';
+                        if (model) {
+                            const variantsResponse = await fetch(`${API_BASE}/products/${encodeURIComponent(model)}/variants`);
+                            if (variantsResponse.ok) {
+                                const variantsData = await variantsResponse.json();
+                                if (variantsData.variants && variantsData.variants.length > 0) {
+                                    const firstVariant = variantsData.variants[0];
+                                    const specs = [
+                                        firstVariant.color || '',
+                                        firstVariant.memory || '',
+                                        firstVariant.sim_type || '',
+                                        firstVariant.ram || ''
+                                    ].filter(s => s);
+                                    specsText = specs.join(', ');
+                                }
+                            }
+                        }
+                    } catch (error) {
+                        console.warn('Ошибка получения вариантов для рекомендации:', error);
+                    }
+                    return { ...product, specsText };
+                }));
+                
+                // Разделяем товары на пары (по 2 товара)
+                const pairs = [];
+                for (let i = 0; i < recommendationsWithVariants.length; i += 2) {
+                    pairs.push(recommendationsWithVariants.slice(i, i + 2));
+                }
+                
+                // Функция для создания HTML товара
+                const createProductHTML = (product) => {
                     const price = Math.round(product.price || 0);
                     const oldPrice = product.old_price ? Math.round(product.old_price) : null;
                     const imageUrl = product.image_url || '/static/images/logo.jpg';
                     const productName = product.level_2 || product.name || 'Товар';
                     
                     return `
-                        <div class="cart-recommendation-item" onclick="showProductDetails(${product.id}); closeCart();">
+                        <div class="cart-recommendation-item">
                             <img src="${imageUrl}" alt="${productName}" class="cart-recommendation-image" onerror="this.src='/static/images/logo.jpg'">
                             <div class="cart-recommendation-info">
                                 <div class="cart-recommendation-name">${productName}</div>
+                                ${product.specsText ? `<div class="cart-item-specs">${product.specsText}</div>` : ''}
                                 <div class="cart-recommendation-price">
                                     ${price.toLocaleString()} ₽
                                     ${oldPrice && oldPrice > price ? `<span style="font-size: 0.75rem; color: #6b7280; text-decoration: line-through; margin-left: 6px;">${oldPrice.toLocaleString()} ₽</span>` : ''}
                                 </div>
                             </div>
-                            <button class="cart-recommendation-add-btn" onclick="event.stopPropagation(); addRecommendedProductToCart(${product.id}, '${productName.replace(/'/g, "\\'")}', ${price}, '${imageUrl.replace(/'/g, "\\'")}', '${(product.level_2 || '').replace(/'/g, "\\'")}')">
+                            <button class="cart-recommendation-add-btn" onclick="addRecommendedProductToCart(${product.id}, '${productName.replace(/'/g, "\\'")}', ${price}, '${imageUrl.replace(/'/g, "\\'")}', '${(product.level_2 || '').replace(/'/g, "\\'")}')">
                                 Добавить
                             </button>
                         </div>
                     `;
-                }).join('');
+                };
+                
+                // Создаем слайды для каждой пары
+                const slidesHTML = pairs.map((pair, index) => `
+                    <div class="cart-recommendations-slide" data-slide="${index}">
+                        ${pair.map(createProductHTML).join('')}
+                    </div>
+                `).join('');
+                
+                // Создаем индикаторы (точки)
+                const dotsHTML = pairs.map((_, index) => `
+                    <div class="cart-recommendations-dot ${index === 0 ? 'active' : ''}" onclick="stopRecommendationsAutoSlide(); switchRecommendationSlide(${index}, true)"></div>
+                `).join('');
+                
+                // Отображаем рекомендации со слайдером
+                recommendationsList.innerHTML = `
+                    <div class="cart-recommendations-slider" id="cartRecommendationsSlider">
+                        ${slidesHTML}
+                    </div>
+                    <div class="cart-recommendations-dots">
+                        ${dotsHTML}
+                    </div>
+                `;
+                
+                // Сбрасываем на первый слайд
+                currentRecommendationSlide = 0;
+                
+                // Инициализируем свайп
+                initRecommendationsSwipe();
+                
+                // Запускаем автоматическое переключение
+                startRecommendationsAutoSlide();
                 
                 recommendationsSection.style.display = 'block';
             } catch (error) {
                 console.error('Ошибка загрузки рекомендаций:', error);
                 recommendationsSection.style.display = 'none';
+                stopRecommendationsAutoSlide(); // Останавливаем автопереключение
             }
+        }
+        
+        let currentRecommendationSlide = 0;
+        let recommendationsSlider = null;
+        let recommendationsStartX = 0;
+        let recommendationsCurrentX = 0;
+        let recommendationsIsDragging = false;
+        let recommendationsAutoSlideInterval = null;
+        
+        function switchRecommendationSlide(slideIndex, restartAutoSlide = false) {
+            const slider = document.getElementById('cartRecommendationsSlider');
+            const dots = document.querySelectorAll('.cart-recommendations-dot');
+            if (!slider) return;
+            
+            currentRecommendationSlide = slideIndex;
+            slider.style.transform = `translateX(-${slideIndex * 100}%)`;
+            
+            // Обновляем активную точку
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === slideIndex);
+            });
+            
+            // Перезапускаем автоматическое переключение только если явно указано
+            if (restartAutoSlide) {
+                startRecommendationsAutoSlide();
+            }
+        }
+        
+        function startRecommendationsAutoSlide() {
+            // Останавливаем предыдущий интервал
+            if (recommendationsAutoSlideInterval) {
+                clearInterval(recommendationsAutoSlideInterval);
+            }
+            
+            // Получаем количество слайдов
+            const dots = document.querySelectorAll('.cart-recommendations-dot');
+            const totalSlides = dots.length;
+            if (totalSlides <= 1) return; // Не нужно автопереключение, если слайд один
+            
+            // Запускаем автоматическое переключение каждые 5 секунд
+            recommendationsAutoSlideInterval = setInterval(() => {
+                const nextSlide = (currentRecommendationSlide + 1) % totalSlides;
+                switchRecommendationSlide(nextSlide, false); // Не перезапускаем интервал при автопереключении
+            }, 5000);
+        }
+        
+        function stopRecommendationsAutoSlide() {
+            if (recommendationsAutoSlideInterval) {
+                clearInterval(recommendationsAutoSlideInterval);
+                recommendationsAutoSlideInterval = null;
+            }
+        }
+        
+        function initRecommendationsSwipe() {
+            const slider = document.getElementById('cartRecommendationsSlider');
+            if (!slider) return;
+            
+            recommendationsSlider = slider;
+            
+            // Touch events для мобильных устройств
+            slider.addEventListener('touchstart', (e) => {
+                recommendationsStartX = e.touches[0].clientX;
+                recommendationsIsDragging = true;
+                stopRecommendationsAutoSlide(); // Останавливаем автопереключение при взаимодействии
+            });
+            
+            slider.addEventListener('touchmove', (e) => {
+                if (!recommendationsIsDragging) return;
+                recommendationsCurrentX = e.touches[0].clientX;
+                const diff = recommendationsStartX - recommendationsCurrentX;
+                slider.style.transform = `translateX(calc(-${currentRecommendationSlide * 100}% - ${diff}px))`;
+            });
+            
+            slider.addEventListener('touchend', () => {
+                if (!recommendationsIsDragging) return;
+                recommendationsIsDragging = false;
+                
+                const diff = recommendationsStartX - recommendationsCurrentX;
+                const threshold = 50; // Минимальное расстояние для свайпа
+                
+                if (Math.abs(diff) > threshold) {
+                    if (diff > 0 && currentRecommendationSlide < 2) {
+                        // Свайп влево - следующий слайд
+                        switchRecommendationSlide(currentRecommendationSlide + 1, true);
+                    } else if (diff < 0 && currentRecommendationSlide > 0) {
+                        // Свайп вправо - предыдущий слайд
+                        switchRecommendationSlide(currentRecommendationSlide - 1, true);
+                    } else {
+                        // Возвращаемся к текущему слайду
+                        switchRecommendationSlide(currentRecommendationSlide, true);
+                    }
+                } else {
+                    // Возвращаемся к текущему слайду
+                    switchRecommendationSlide(currentRecommendationSlide, true);
+                }
+            });
+            
+            // Mouse events для десктопа
+            slider.addEventListener('mousedown', (e) => {
+                recommendationsStartX = e.clientX;
+                recommendationsIsDragging = true;
+                slider.style.cursor = 'grabbing';
+                stopRecommendationsAutoSlide(); // Останавливаем автопереключение при взаимодействии
+            });
+            
+            slider.addEventListener('mousemove', (e) => {
+                if (!recommendationsIsDragging) return;
+                e.preventDefault();
+                recommendationsCurrentX = e.clientX;
+                const diff = recommendationsStartX - recommendationsCurrentX;
+                slider.style.transform = `translateX(calc(-${currentRecommendationSlide * 100}% - ${diff}px))`;
+            });
+            
+            slider.addEventListener('mouseup', () => {
+                if (!recommendationsIsDragging) return;
+                recommendationsIsDragging = false;
+                slider.style.cursor = 'grab';
+                
+                const diff = recommendationsStartX - recommendationsCurrentX;
+                const threshold = 50;
+                
+                if (Math.abs(diff) > threshold) {
+                    if (diff > 0 && currentRecommendationSlide < 2) {
+                        switchRecommendationSlide(currentRecommendationSlide + 1, true);
+                    } else if (diff < 0 && currentRecommendationSlide > 0) {
+                        switchRecommendationSlide(currentRecommendationSlide - 1, true);
+                    } else {
+                        switchRecommendationSlide(currentRecommendationSlide, true);
+                    }
+                } else {
+                    switchRecommendationSlide(currentRecommendationSlide, true);
+                }
+            });
+            
+            slider.addEventListener('mouseleave', () => {
+                if (recommendationsIsDragging) {
+                    recommendationsIsDragging = false;
+                    slider.style.cursor = 'grab';
+                    switchRecommendationSlide(currentRecommendationSlide, true);
+                }
+            });
+            
+            slider.style.cursor = 'grab';
         }
         
         async function addRecommendedProductToCart(productId, productName, price, imageUrl, level2) {
@@ -9214,23 +9169,26 @@
                 
                 const product = await response.json();
                 
-                // Получаем варианты товара
-                const variantsResponse = await fetch(`${API_BASE}/products/${productId}/variants`);
+                // Получаем варианты товара по модели (level_2)
+                const model = level2 || product.level_2 || product.model || '';
                 let variants = {};
-                if (variantsResponse.ok) {
-                    const variantsData = await variantsResponse.json();
-                    if (variantsData.variants && variantsData.variants.length > 0) {
-                        // Берем первый вариант по умолчанию
-                        const firstVariant = variantsData.variants[0];
-                        variants = {
-                            color: firstVariant.color || '',
-                            memory: firstVariant.memory || '',
-                            sim: firstVariant.sim || '',
-                            ram: firstVariant.ram || '',
-                            ssd: firstVariant.ssd || '',
-                            screen: firstVariant.screen || '',
-                            capacity: firstVariant.capacity || ''
-                        };
+                if (model) {
+                    const variantsResponse = await fetch(`${API_BASE}/products/${encodeURIComponent(model)}/variants`);
+                    if (variantsResponse.ok) {
+                        const variantsData = await variantsResponse.json();
+                        if (variantsData.variants && variantsData.variants.length > 0) {
+                            // Берем первый вариант по умолчанию
+                            const firstVariant = variantsData.variants[0];
+                            variants = {
+                                color: firstVariant.color || '',
+                                memory: firstVariant.memory || '',
+                                sim: firstVariant.sim_type || '',
+                                ram: firstVariant.ram || '',
+                                ssd: firstVariant.ssd || '',
+                                screen: firstVariant.screen || '',
+                                capacity: firstVariant.capacity || ''
+                            };
+                        }
                     }
                 }
                 
@@ -9434,15 +9392,8 @@
         
         // Helper function to get selected variants from product card or details page
         function getSelectedVariants(productId) {
-            // Сначала пытаемся найти в карточке товара
-            let productCard = document.querySelector(`[data-product-id="${productId}"]`)?.closest('.product-card');
-            
-            // Если не найдено в карточке, ищем на странице деталей
-            if (!productCard) {
-                productCard = document.querySelector(`#product-details-${productId}`) || 
-                             document.querySelector(`[data-product-id="${productId}"]`)?.closest('.product-details') ||
-                             document.querySelector(`.product-details[data-product-id="${productId}"]`);
-            }
+            // Ищем карточку товара
+            const productCard = document.querySelector(`[data-product-id="${productId}"]`)?.closest('.product-card');
             
             if (!productCard) return { color: '', memory: '', sim: '', ram: '', ssd: '', screen: '', capacity: '' };
             
@@ -9620,88 +9571,6 @@
         }
         
         // Add product to cart from product details page
-        async function addProductToCartFromDetails(productId) {
-            try {
-                // Get product data
-                const response = await fetch(`${API_BASE}/products/${productId}`);
-                if (!response.ok) {
-                    alert('Ошибка загрузки товара');
-                    return;
-                }
-                
-                const product = await response.json();
-                
-                // Get selected variants from details page
-                const variants = getSelectedVariants(productId);
-                
-                // Get current price
-                const priceElement = document.querySelector(`#price-${productId}`);
-                let currentPrice = product.price;
-                if (priceElement) {
-                    const priceText = priceElement.textContent.replace(/[^\d]/g, '');
-                    currentPrice = parseInt(priceText) || product.price;
-                }
-                
-                // Получаем изображение для выбранного цвета
-                let productImage = '';
-                if (variants.color) {
-                    try {
-                        // Получаем modelKey для API запроса
-                        const brandModel = product.model || product.name || '';
-                        const modelKey = getModelKey(brandModel);
-                        if (modelKey && variants.color) {
-                            // Запрашиваем изображения для выбранного цвета
-                            const imageResponse = await fetch(`/product-images/${modelKey}/${encodeURIComponent(variants.color)}`);
-                            if (imageResponse.ok) {
-                                const imageData = await imageResponse.json();
-                                if (imageData.image_paths && imageData.image_paths.length > 0) {
-                                    productImage = imageData.image_paths[0];
-                                }
-                            }
-                        }
-                    } catch (error) {
-                        console.warn('Ошибка получения изображения для цвета:', error);
-                    }
-                }
-                
-                // Если изображение для цвета не найдено, используем первое доступное
-                if (!productImage) {
-                    if (product.images && product.images.length > 0) {
-                        productImage = product.images[0];
-                    } else if (product.image_url) {
-                        productImage = product.image_url;
-                    }
-                }
-                
-                // Для одного товара level_2 может быть в поле model, так как ProductDetailResponse не имеет level_2
-                const level2Value = product.level_2 || product.model || product.name;
-                
-                const productData = {
-                    id: product.id,
-                    level_2: level2Value,
-                    name: product.name,
-                    image: productImage,
-                    price: currentPrice,
-                    selectedColor: variants.color || '',
-                    selectedMemory: variants.memory || '',
-                    selectedSim: variants.sim || '',
-                    selectedRam: variants.ram || '',
-                    selectedSsd: variants.ssd || '',
-                    selectedScreen: variants.screen || '',
-                    selectedCapacity: variants.capacity || '',
-                    specs: {}
-                };
-                
-                addToCart(productId, productData);
-                
-                // Open cart after adding
-                openCart();
-                
-            } catch (error) {
-                console.error('Ошибка добавления в корзину:', error);
-                alert('Ошибка добавления товара в корзину');
-            }
-        }
         
         // Handle contact method change
         function handleContactMethodChange(method) {
