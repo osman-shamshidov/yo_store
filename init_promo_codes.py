@@ -30,7 +30,7 @@ def init_promo_codes():
             print("Проверяем наличие нужных промокодов...")
             
             # Проверяем наличие каждого промокода
-            codes_to_check = ['test1000', 'test20', 'test_adapter']
+            codes_to_check = ['test1000', 'test20', 'test_adapter', 'bashlynsky']
             for code in codes_to_check:
                 code_upper = code.upper()
                 existing = db.query(PromoCode).filter(PromoCode.code == code_upper).first()
@@ -45,6 +45,7 @@ def init_promo_codes():
             create_promo_code(db, 'test1000')
             create_promo_code(db, 'test20')
             create_promo_code(db, 'test_adapter')
+            create_promo_code(db, 'bashlynsky')
         
         db.commit()
         print("✅ Промокоды успешно инициализированы")
@@ -121,6 +122,23 @@ def create_promo_code(db, code: str):
         )
         db.add(promo)
         print(f"  ✅ Создан промокод test_adapter: бесплатный адаптер adapter20w при заказе смартфона")
+        
+    elif code == 'bashlynsky':
+        # bashlynsky - 2000р скидка при заказе от 102000
+        promo = PromoCode(
+            code='BASHLYNSKY',
+            discount_type='fixed',
+            discount_value=2000.0,
+            min_order_amount=102000.0,
+            is_active=True,
+            usage_limit=None,  # Безлимит
+            used_count=0,
+            valid_from=datetime.utcnow(),
+            valid_until=None,  # Без срока действия
+            description='Скидка 2000 рублей при заказе от 102 000 рублей'
+        )
+        db.add(promo)
+        print(f"  ✅ Создан промокод bashlynsky: скидка 2000 рублей при заказе от 102 000 рублей")
 
 if __name__ == "__main__":
     init_promo_codes()
