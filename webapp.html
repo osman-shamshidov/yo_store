@@ -3121,7 +3121,7 @@
             width: 95%;
             max-width: 900px;
             margin: 20px auto;
-            padding: 30px;
+            padding: 30px 30px 50px 30px;
             display: flex;
             gap: 30px;
             flex-direction: row;
@@ -3422,6 +3422,99 @@
             gap: 15px;
         }
         
+        .cart-recommendations {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .cart-recommendations-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 12px;
+        }
+        
+        .cart-recommendations-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .cart-recommendation-item {
+            display: flex;
+            gap: 10px;
+            padding: 8px;
+            background: transparent;
+            border: 1px solid #3b82f6;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .cart-recommendation-item:hover {
+            background: transparent;
+            border-color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+        }
+        
+        .cart-recommendation-image {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            border-radius: 6px;
+            flex-shrink: 0;
+            background: white;
+            padding: 3px;
+        }
+        
+        .cart-recommendation-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
+        }
+        
+        .cart-recommendation-name {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #111827;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .cart-recommendation-price {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #007AFF;
+        }
+        
+        .cart-recommendation-add-btn {
+            padding: 5px 10px;
+            background: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            align-self: center;
+        }
+        
+        .cart-recommendation-add-btn:hover {
+            background: #0056CC;
+            transform: scale(1.05);
+        }
+        
+        .cart-recommendation-add-btn:active {
+            transform: scale(0.95);
+        }
+        
         .cart-item {
             display: flex;
             gap: 12px;
@@ -3585,6 +3678,7 @@
         
         .cart-total-final {
             margin-top: 4px;
+            margin-bottom: 20px;
             padding-top: 12px;
             border-top: 1px solid #e5e7eb;
         }
@@ -4151,6 +4245,10 @@
                     <div style="text-align: center; padding: 40px; color: #6b7280;">
                         Корзина пуста
                     </div>
+                </div>
+                <div class="cart-recommendations" id="cartRecommendations" style="display: none;">
+                    <div class="cart-recommendations-title">Рекомендуем также</div>
+                    <div class="cart-recommendations-list" id="cartRecommendationsList"></div>
                 </div>
                 <div class="cart-total" id="cartTotal" style="display: none;">
                     <!-- Промокод -->
@@ -9019,6 +9117,149 @@
             }
             if (cartTotalPrice) {
                 cartTotalPrice.textContent = `${Math.round(finalTotal).toLocaleString()} ₽`;
+            }
+            
+            // Загружаем рекомендации
+            await loadCartRecommendations();
+        }
+        
+        async function loadCartRecommendations() {
+            const recommendationsSection = document.getElementById('cartRecommendations');
+            const recommendationsList = document.getElementById('cartRecommendationsList');
+            
+            if (!recommendationsSection || !recommendationsList) return;
+            
+            // Показываем рекомендации только если в корзине есть товары
+            if (cart.length === 0) {
+                recommendationsSection.style.display = 'none';
+                return;
+            }
+            
+            try {
+                // Получаем список всех товаров
+                const response = await fetch(`${API_BASE}/products?limit=100`);
+                if (!response.ok) {
+                    recommendationsSection.style.display = 'none';
+                    return;
+                }
+                
+                const allProducts = await response.json();
+                
+                // Получаем ID товаров, которые уже в корзине
+                const cartProductIds = new Set(cart.map(item => item.id));
+                const cartLevel2s = new Set(cart.map(item => item.level_2).filter(Boolean));
+                
+                // Фильтруем товары: исключаем те, что уже в корзине (по ID и по level_2)
+                const availableProducts = allProducts.filter(product => {
+                    // Исключаем товары с теми же ID
+                    if (cartProductIds.has(product.id)) return false;
+                    
+                    // Исключаем товары с теми же level_2 (моделями)
+                    if (product.level_2 && cartLevel2s.has(product.level_2)) return false;
+                    
+                    // Показываем только товары с ценой
+                    if (!product.price || product.price <= 0) return false;
+                    
+                    return true;
+                });
+                
+                // Если нет доступных товаров, скрываем секцию
+                if (availableProducts.length === 0) {
+                    recommendationsSection.style.display = 'none';
+                    return;
+                }
+                
+                // Выбираем случайные 2-3 товара
+                const shuffled = availableProducts.sort(() => 0.5 - Math.random());
+                const recommendations = shuffled.slice(0, Math.min(3, shuffled.length));
+                
+                // Отображаем рекомендации
+                recommendationsList.innerHTML = recommendations.map(product => {
+                    const price = Math.round(product.price || 0);
+                    const oldPrice = product.old_price ? Math.round(product.old_price) : null;
+                    const imageUrl = product.image_url || '/static/images/logo.jpg';
+                    const productName = product.level_2 || product.name || 'Товар';
+                    
+                    return `
+                        <div class="cart-recommendation-item" onclick="showProductDetails(${product.id}); closeCart();">
+                            <img src="${imageUrl}" alt="${productName}" class="cart-recommendation-image" onerror="this.src='/static/images/logo.jpg'">
+                            <div class="cart-recommendation-info">
+                                <div class="cart-recommendation-name">${productName}</div>
+                                <div class="cart-recommendation-price">
+                                    ${price.toLocaleString()} ₽
+                                    ${oldPrice && oldPrice > price ? `<span style="font-size: 0.75rem; color: #6b7280; text-decoration: line-through; margin-left: 6px;">${oldPrice.toLocaleString()} ₽</span>` : ''}
+                                </div>
+                            </div>
+                            <button class="cart-recommendation-add-btn" onclick="event.stopPropagation(); addRecommendedProductToCart(${product.id}, '${productName.replace(/'/g, "\\'")}', ${price}, '${imageUrl.replace(/'/g, "\\'")}', '${(product.level_2 || '').replace(/'/g, "\\'")}')">
+                                Добавить
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+                
+                recommendationsSection.style.display = 'block';
+            } catch (error) {
+                console.error('Ошибка загрузки рекомендаций:', error);
+                recommendationsSection.style.display = 'none';
+            }
+        }
+        
+        async function addRecommendedProductToCart(productId, productName, price, imageUrl, level2) {
+            try {
+                // Получаем информацию о товаре для добавления в корзину
+                const response = await fetch(`${API_BASE}/products/${productId}`);
+                if (!response.ok) {
+                    throw new Error('Товар не найден');
+                }
+                
+                const product = await response.json();
+                
+                // Получаем варианты товара
+                const variantsResponse = await fetch(`${API_BASE}/products/${productId}/variants`);
+                let variants = {};
+                if (variantsResponse.ok) {
+                    const variantsData = await variantsResponse.json();
+                    if (variantsData.variants && variantsData.variants.length > 0) {
+                        // Берем первый вариант по умолчанию
+                        const firstVariant = variantsData.variants[0];
+                        variants = {
+                            color: firstVariant.color || '',
+                            memory: firstVariant.memory || '',
+                            sim: firstVariant.sim || '',
+                            ram: firstVariant.ram || '',
+                            ssd: firstVariant.ssd || '',
+                            screen: firstVariant.screen || '',
+                            capacity: firstVariant.capacity || ''
+                        };
+                    }
+                }
+                
+                // Добавляем товар в корзину
+                const productData = {
+                    id: productId,
+                    name: productName,
+                    level_2: level2 || product.level_2 || product.model || productName,
+                    image: imageUrl,
+                    price: price,
+                    selectedColor: variants.color || '',
+                    selectedMemory: variants.memory || '',
+                    selectedSim: variants.sim || '',
+                    selectedRam: variants.ram || '',
+                    selectedSsd: variants.ssd || '',
+                    selectedScreen: variants.screen || '',
+                    selectedCapacity: variants.capacity || '',
+                    specs: {}
+                };
+                
+                addToCart(productId, productData);
+                updateCartBadge();
+                renderCart();
+                
+                // Показываем уведомление
+                showNotification('success', 'Товар добавлен', `${productName} добавлен в корзину`);
+            } catch (error) {
+                console.error('Ошибка добавления товара в корзину:', error);
+                showNotification('error', 'Ошибка', 'Не удалось добавить товар в корзину');
             }
         }
         

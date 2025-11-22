@@ -63,11 +63,11 @@ class ManualPriceManager:
             # discount_percentage вычисляется автоматически из old_price и price
             set_price(
                 sku=product.sku,
-                price=new_price,
+                    price=new_price,
                 old_price=old_price_to_save,
-                currency=currency,
+                    currency=currency,
                 is_parse=is_parse
-            )
+                )
             
             # История цен удалена из новой структуры БД
             
